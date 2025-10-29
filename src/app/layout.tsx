@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { icons } from "lucide-react";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dev.HaroneMagalhães",
-  description: "Dev.HaroneMagalhães",
+  title: "HaroneMagalhães.Dev",
+  description: "Portfólio e projetos de Harone Magalhães",
+  icons: {
+    icon: "/favicon.png",       
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{

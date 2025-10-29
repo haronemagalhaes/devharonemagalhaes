@@ -1,76 +1,264 @@
 "use client";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {Home,PanelsTopLeft,Briefcase,MessageSquareText,Menu,X,type LucideIcon,} from "lucide-react";
 
-import { motion, useScroll } from "framer-motion";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button"; 
+type LinkItem = { label: string; id: string; icon: LucideIcon };
 
-export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const { scrollY } = useScroll();
+const LINKS: LinkItem[] = [
+  { label: "Início", id: "inicio", icon: Home },
+  { label: "Serviços", id: "servicos", icon: PanelsTopLeft },
+  { label: "Trabalhos", id: "trabalhos", icon: Briefcase },
+  { label: "Contato", id: "contato", icon: MessageSquareText },
+];
+
+function ensureInicioSentinel() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById("inicio")) return;
+  if (!document.getElementById("inicio-sentinel")) {
+    const d = document.createElement("div");
+    d.id = "inicio-sentinel";
+    d.style.height = "1px";
+    document.body.prepend(d);
+  }
+}
+
+function headerOffset() {
+  const h = document.getElementById("site-header");
+  return (h?.offsetHeight ?? 0) + 8;
+}
+
+function scrollToId(id: string) {
+  if (id === "inicio" || id === "inicio-sentinel") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
+  const el = document.getElementById(id);
+  if (!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - headerOffset();
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
+
+export default function Header() {
+  const [active, setActive] = useState<string>("inicio");
+  const [open, setOpen] = useState(false);
+
+  // progress bar
+  const { scrollYProgress } = useScroll();
+  const progressX = useSpring(scrollYProgress, { stiffness: 140, damping: 24, mass: 0.2 });
 
   useEffect(() => {
-    return scrollY.on("change", (latest) => {
-      setIsScrolled(latest > 50);
-    });
-  }, [scrollY]);
+    ensureInicioSentinel();
+  }, []);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+  const rafLock = useRef(false);
+  const recomputeAndPick = useCallback(() => {
+    const observedIds = LINKS.map((l) => l.id);
+    if (!document.getElementById("inicio") && document.getElementById("inicio-sentinel")) {
+      observedIds[0] = "inicio-sentinel";
     }
-  };
+    const els = observedIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => !!el);
+
+    if (!els.length) return;
+
+    const headerH = headerOffset();
+    const ACTIVATION_RATIO = 0.38;
+    const HYSTERESIS = 24;
+    const yLine = window.scrollY + headerH + window.innerHeight * ACTIVATION_RATIO;
+
+    const sections = els.map((el) => ({
+      id: el.id,
+      top: Math.max(0, el.getBoundingClientRect().top + window.scrollY),
+    }));
+
+    if (yLine < sections[0].top + HYSTERESIS) {
+      setActive(sections[0].id === "inicio-sentinel" ? "inicio" : sections[0].id);
+      return;
+    }
+
+    const atBottom =
+      Math.abs(window.innerHeight + window.scrollY - document.documentElement.scrollHeight) <= 2;
+    if (atBottom) {
+      const last = sections[sections.length - 1].id;
+      setActive(last === "inicio-sentinel" ? "inicio" : last);
+      return;
+    }
+
+    let idx = 0;
+    for (let i = 0; i < sections.length; i++) {
+      if (sections[i].top <= yLine) idx = i;
+      else break;
+    }
+
+    const next = sections[idx + 1];
+    if (next) {
+      const boundary = next.top - HYSTERESIS;
+      if (yLine >= boundary) idx = idx + 1;
+    }
+
+    const current = sections[idx].id;
+    setActive(current === "inicio-sentinel" ? "inicio" : current);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const onScroll = () => {
+      if (rafLock.current) return;
+      rafLock.current = true;
+      requestAnimationFrame(() => {
+        recomputeAndPick();
+        rafLock.current = false;
+      });
+    };
+    const onResizeOrLoad = () => {
+      recomputeAndPick();
+    };
+
+    requestAnimationFrame(recomputeAndPick);
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResizeOrLoad);
+    window.addEventListener("load", onResizeOrLoad);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResizeOrLoad);
+      window.removeEventListener("load", onResizeOrLoad);
+    };
+  }, [recomputeAndPick]);
+
+  const onNav = useCallback((id: string) => {
+    setOpen(false);
+    scrollToId(id);
+  }, []);
 
   return (
-    <motion.header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-[#0a0a0f]/80 backdrop-blur-lg border-b border-white/5"
-          : "bg-transparent"
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-    >
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <motion.div
-            className="cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    <header id="site-header" className="fixed inset-x-0 top-0 z-50">
+      <motion.div
+        style={{ scaleX: progressX }}
+        className="origin-left h-[2px] w-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500"
+        aria-hidden
+      />
+
+      <div className="mx-auto max-w-[1280px] px-6 lg:px-8">
+        <div className="mt-2 mb-2 flex h-14 items-center justify-between rounded-2xl px-4 border border-white/10 bg-white/5 backdrop-blur-xl">
+          <button
+            onClick={() => onNav("inicio")}
+            className="select-none text-lg font-semibold tracking-tight text-white/90 hover:text-white"
+            aria-label="Voltar ao início"
           >
-            <span className="text-xl tracking-tight">H</span>
-          </motion.div>
+            H
+          </button>
 
-          {/* Menu principal */}
-          <nav className="hidden md:flex items-center gap-8">
-            {["Serviços", "Trabalhos", "Sobre", "Contato"].map((item) => (
+          <nav className="hidden md:flex items-center gap-6" aria-label="Navegação">
+            {LINKS.map(({ label, id }) => (
               <button
-                key={item}
-                onClick={() => scrollToSection(item.toLowerCase())}
-              className="text-white hover:text-cyan-400 transition-colors duration-200"
-
+                key={id}
+                onClick={() => onNav(id)}
+                className="group relative px-0.5 text-sm font-medium text-white/80 hover:text-white"
+                aria-current={active === id ? "page" : undefined}
               >
-                {item}
+                {label}
+                <span
+                  className={[
+                    "absolute -bottom-1 left-0 h-[2px] w-full rounded bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-300",
+                    active === id ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0",
+                    "origin-left group-hover:opacity-100 group-hover:scale-x-100",
+                  ].join(" ")}
+                  aria-hidden
+                />
               </button>
             ))}
           </nav>
 
-          {/* Botão principal */}
-        <Button
-  variant="ghost"
-  onClick={() => scrollToSection("contato")}
-  className="text-white border border-cyan-500/50 rounded-md
-             bg-transparent hover:bg-cyan-500/10 hover:text-cyan-300
-             focus-visible:ring-0 focus-visible:outline-none"
->
-  Fale comigo
-</Button>
+          <div className="flex items-center gap-2 md:gap-3">
+            <Button
+              variant="ghost"
+              onClick={() =>
+                window.open(
+                  `https://wa.me/5579981164388?text=${encodeURIComponent(
+                    "Olá! Quero conversar sobre um projeto digital."
+                  )}`,
+                  "_blank"
+                )
+              }
+              className="rounded-lg border border-cyan-500/50 bg-transparent text-white hover:bg-cyan-500/10 hover:text-cyan-300"
+            >
+              Fale comigo
+            </Button>
 
+            <div className="md:hidden">
+              <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" aria-label="Abrir menu" className="rounded-lg border border-white/10 bg-white/5">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+
+                <SheetContent
+                  side="top"
+                  className="border-none bg-[#0a0a0f]/90 text-white backdrop-blur-2xl p-0 [&>button.absolute.right-4.top-4]:hidden"
+                >
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-base font-semibold">Navegação</span>
+                    <SheetClose asChild>
+                      <button aria-label="Fechar" className="rounded-md border border-white/10 bg-white/5 p-2">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </SheetClose>
+                  </div>
+
+                  <Separator className="bg-white/10" />
+
+                  <ScrollArea className="h-[60vh] px-3 py-3">
+                    <ul className="space-y-2">
+                      {LINKS.map(({ label, id, icon: Icon }) => (
+                        <li key={id}>
+                          <SheetClose asChild>
+                            <button
+                              onClick={() => onNav(id)}
+                              className={[
+                                "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors",
+                                "border border-white/10 bg-white/[0.06] hover:border-cyan-500/40 hover:bg-cyan-500/10",
+                                active === id ? "text-cyan-300" : "text-white/90",
+                              ].join(" ")}
+                              aria-current={active === id ? "page" : undefined}
+                            >
+                              <Icon className="h-5 w-5" />
+                              <span className="text-base font-medium">{label}</span>
+                            </button>
+                          </SheetClose>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Separator className="my-4 bg-white/10" />
+
+                    <div className="px-2">
+                      <Button
+                        onClick={() => {
+                          window.open("https://wa.me/5579981164388", "_blank");
+                          setOpen(false);
+                        }}
+                        className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-600"
+                      >
+                        Iniciar proposta
+                      </Button>
+                    </div>
+                  </ScrollArea>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
         </div>
       </div>
-    </motion.header>
+    </header>
   );
 }

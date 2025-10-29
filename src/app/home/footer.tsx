@@ -28,21 +28,19 @@ export default function Footer() {
     >
       <div className="mx-auto max-w-[1280px] px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          {/* Brand */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h3 className="text-2xl mb-4 text-white">Harone</h3>
+            <h3 className="text-2xl mb-4 text-white">Harone Magalhães</h3>
             <p className="text-sm text-white/80 leading-relaxed">
               Desenvolvedor especializado em criar experiências digitais modernas
               e funcionais.
             </p>
           </motion.div>
 
-          {/* Quick Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +62,6 @@ export default function Footer() {
             </ul>
           </motion.div>
 
-          {/* Social & Contact */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -91,19 +88,23 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Botão de Contato */}
             <Button
               asChild
+               onClick={() =>
+    window.open(
+      "https://wa.me/5579981164388?text=Olá%20Harone!%20Tenho%20interesse%20em%20criar%20um%20projeto%20digital%20com%20você.%20Podemos%20conversar%20sobre%20detalhes%20e%20possibilidades%3F",
+      "_blank"
+    )
+  }
               className="w-full mt-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-xl py-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-200"
             >
-              <a href="mailto:harone@example.com">Contato</a>
+              <a href="">Contato</a>
             </Button>
 
-            <p className="text-sm text-white/80 mt-4">harone@example.com</p>
+            <p className="text-sm text-white/80 mt-4"></p>
           </motion.div>
         </div>
 
-        {/* Copyright */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

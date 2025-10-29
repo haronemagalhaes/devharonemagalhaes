@@ -34,7 +34,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Project Image */}
+       
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
             <Image
               src={project.image}
@@ -46,7 +46,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           </div>
 
-          {/* Stats */}
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <ThumbsUp className="w-4 h-4" />
@@ -61,7 +60,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             </Badge>
           </div>
 
-          {/* Description */}
+
           <div>
             <h3 className="text-xl mb-3">Sobre o Projeto</h3>
             <p className="text-muted-foreground leading-relaxed">
@@ -69,7 +68,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             </p>
           </div>
 
-          {/* Technologies */}
           <div>
             <h3 className="text-xl mb-3">Tecnologias Utilizadas</h3>
             <div className="flex flex-wrap gap-2">
@@ -84,7 +82,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             </div>
           </div>
 
-          {/* CTA */}
           {project.link && (
             <Button
               className="w-full bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/20"
