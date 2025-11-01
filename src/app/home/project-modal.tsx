@@ -34,7 +34,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
         </DialogHeader>
 
         <div className="space-y-6">
-       
+
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
             <Image
               src={project.image}

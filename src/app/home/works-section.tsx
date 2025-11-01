@@ -59,7 +59,7 @@ const projects: Project[] = [
     views: 2150,
     description:
       "Landing page de alta conversão com animações, SEO e integrações de marketing.",
-    technologies: ["","", "", ""],
+    technologies: ["", "", "", ""],
     link: "https://example.com",
     aspectRatio: "1/1",
   },

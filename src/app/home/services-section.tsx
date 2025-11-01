@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Globe, Briefcase, LayoutTemplate } from "lucide-react";
+import { Globe, LayoutTemplate, Briefcase, Bot } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 const services = [
   {
@@ -11,28 +10,31 @@ const services = [
     title: "Desenvolvimento de Sites",
     description:
       "Sites profissionais e responsivos, desenvolvidos com as tecnologias mais modernas do mercado.",
-
-  },
-  {
-    icon: Briefcase,
-    title: "Portfólio",
-    description:
-      "Portfólios personalizados para destacar seus projetos e conquistas de forma elegante.",
-  
   },
   {
     icon: LayoutTemplate,
     title: "Landing Pages",
     description:
       "Páginas de alta conversão, otimizadas para transformar visitantes em clientes.",
- 
+  },
+  {
+    icon: Briefcase,
+    title: "Portfólio",
+    description:
+      "Portfólios personalizados para destacar seus projetos e conquistas de forma elegante.",
+  },
+  {
+    icon: Bot,
+    title: "Automação de Tarefas",
+    description:
+      "Automatizo fluxos e processos repetitivos com integrações inteligentes, reduzindo tempo e aumentando a eficiência do seu negócio.",
   },
 ];
 
 export function ServicesSection() {
   return (
     <section id="servicos" className="relative py-24 scroll-mt-24">
-      <div className="mx-auto max-w-[1280px] px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -40,7 +42,9 @@ export function ServicesSection() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-4 text-4xl md:text-5xl text-white">Categorias de Serviços</h2>
+          <h2 className="mb-4 text-4xl md:text-5xl text-white">
+            Categorias de Serviços
+          </h2>
           <p className="mx-auto max-w-2xl text-white/70">
             Soluções completas para transformar suas ideias em realidade digital
           </p>
@@ -82,10 +86,6 @@ export function ServicesSection() {
                     <p className="leading-relaxed text-white/80">
                       {service.description}
                     </p>
-
-                    <div className="flex flex-wrap gap-2">
-                  
-                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
