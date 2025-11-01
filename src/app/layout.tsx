@@ -8,7 +8,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "HaroneMagalhães.Dev",
   description: "Portfólio e projetos de Harone Magalhães",
-  themeColor: "#0b0d10", // evita barra branca no mobile
+  themeColor: "#0b0d10",
   icons: {
     icon: "/favicon.png",
     shortcut: "/favicon.png",
@@ -23,14 +23,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={[
           geistSans.variable,
           geistMono.variable,
-          // fundo global + dark + correções mobile
           "min-h-dvh bg-[#0b0d10] text-neutral-100 antialiased overflow-x-hidden",
           "[color-scheme:dark]",
           "flex flex-col",
         ].join(" ")}
       >
         <main className="flex-1">{children}</main>
-        {/* se tiver <Footer/>, garanta bg no próprio Footer também */}
       </body>
     </html>
   );

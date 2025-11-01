@@ -120,18 +120,16 @@
     @apply bg-background text-foreground;
   }
 }
-/* Fundo sempre escuro */
+
 html,
 body {
   background: #0b0d10;
 }
 
-/* Evita “borrachão” branco ao puxar/scroll no mobile */
 body {
   overscroll-behavior-y: contain;
 }
 
-/* Padding seguro para iOS/Android (use pb-safe no último bloco/rodapé) */
 @supports (padding: env(safe-area-inset-bottom)) {
   .pb-safe {
     padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
