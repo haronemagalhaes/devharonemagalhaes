@@ -105,7 +105,7 @@ export function HeroSection() {
               Desenvolvedor | Landing Page | Sites | Portfólio | Automação de Tarefas
             </p>
             <div className="flex items-center gap-2 justify-center text-white">
-              <Globe className="w-4 h-4 text-white" />
+              {/* <Globe className="w-4 h-4 text-white" /> */}
               <span className="text-sm"></span>
             </div>
           </motion.div>
