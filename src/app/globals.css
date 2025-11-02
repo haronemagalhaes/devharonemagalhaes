@@ -121,15 +121,36 @@
   }
 }
 
+/* ====== Suas cores de fundo gerais ====== */
 html,
 body {
   background: #0b0d10;
 }
 
+/* ====== Estabilidade do layout / scroll ====== */
+@layer base {
+  html {
+    /* Mantém o espaço da scrollbar SEMPRE, evitando “pulo” do layout */
+    scrollbar-gutter: stable;
+  }
+  body {
+    /* Garante a reserva do espaço da barra de rolagem */
+    overflow-y: scroll;
+  }
+}
+
+/* Quando um modal estiver aberto, bloqueia o scroll e corrige a largura com padding-right */
+html.modal-open body {
+  overflow: hidden; /* bloqueia a rolagem de fundo */
+  padding-right: calc(100vw - 100%); /* compensação da scrollbar */
+}
+
+/* ====== Comportamento de over-scroll suave no mobile ====== */
 body {
   overscroll-behavior-y: contain;
 }
 
+/* ====== Safe area (iOS) ====== */
 @supports (padding: env(safe-area-inset-bottom)) {
   .pb-safe {
     padding-bottom: calc(env(safe-area-inset-bottom) + 16px);

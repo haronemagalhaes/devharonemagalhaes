@@ -106,7 +106,7 @@ export function HeroSection() {
             </p>
             <div className="flex items-center gap-2 justify-center text-white">
               <Globe className="w-4 h-4 text-white" />
-              <span className="text-sm">Brasília - DF, Brasil</span>
+              <span className="text-sm"></span>
             </div>
           </motion.div>
 
@@ -120,7 +120,7 @@ export function HeroSection() {
               size="lg"
               onClick={() => {
                 const saudacao = getSaudacao();
-                const mensagem = `${saudacao}, Harone! Tenho interesse em criar um projeto digital com você. Podemos conversar sobre detalhes e possibilidades?`;
+                const mensagem = `${saudacao}, Harone! Tenho interesse em criar um projeto com você. Podemos conversar sobre detalhes e possibilidades?`;
                 abrirWhatsApp(mensagem);
               }}
               className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 rounded-full 
