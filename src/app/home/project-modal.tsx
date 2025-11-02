@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -21,13 +22,35 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+  // 🔒 Evita "pulo" e bloqueia o scroll do fundo quando o modal abre
+  useEffect(() => {
+    const html = document.documentElement;
+    if (isOpen) {
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      html.style.overflow = "hidden";
+      html.style.paddingRight = `${scrollBarWidth}px`;
+    } else {
+      html.style.overflow = "";
+      html.style.paddingRight = "";
+    }
+    return () => {
+      html.style.overflow = "";
+      html.style.paddingRight = "";
+    };
+  }, [isOpen]);
+
   if (!project) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#0a0a0f]/95 backdrop-blur-xl border-white/10">
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#0a0a0f]/95 backdrop-blur-xl border-white/10"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
-          <DialogTitle className="text-3xl mb-4 text-white">{project.title}</DialogTitle>
+          <DialogTitle className="text-3xl mb-4 text-white">
+            {project.title}
+          </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -53,7 +76,9 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
           {/* Descrição */}
           <div>
             <h3 className="text-xl mb-3 text-white">Sobre o Projeto</h3>
-            <p className="text-gray-300 leading-relaxed">{project.description}</p>
+            <p className="text-gray-300 leading-relaxed">
+              {project.description}
+            </p>
           </div>
 
           {/* Link funcional */}
