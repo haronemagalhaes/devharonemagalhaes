@@ -9,19 +9,19 @@ const services = [
     icon: Globe,
     title: "Desenvolvimento de Sites",
     description:
-      "Sites profissionais e responsivos, desenvolvidos com as tecnologias mais modernas do mercado.",
+      "Planejamento e desenvolvimento de sites voltados à consolidação da marca, comunicação e captação de novos negócios.",
   },
   {
     icon: LayoutTemplate,
     title: "Landing Pages",
     description:
-      "Páginas de alta conversão, otimizadas para transformar visitantes em clientes.",
+      "Criação de páginas estratégicas para divulgação de serviços e produtos, voltadas à captação de oportunidades e fortalecimento das ações comerciais.",
   },
   {
     icon: Briefcase,
     title: "Portfólio",
     description:
-      "Portfólios personalizados para destacar seus projetos e conquistas de forma elegante.",
+      "Desenvolvimento de portfólio digital destinado à apresentação de projetos e conquistas profissionais, reforçando a credibilidade e a qualidade das soluções oferecidas.",
   },
   {
     icon: Bot,
