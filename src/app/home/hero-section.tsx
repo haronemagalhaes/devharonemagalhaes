@@ -9,6 +9,26 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/assets/Logomarca.png";
 
+// Função: Saudação conforme horário de Brasília (America/Sao_Paulo)
+function getSaudacao(): string {
+  const horaStr = new Intl.DateTimeFormat("pt-BR", {
+    hour: "2-digit",
+    hour12: false,
+    timeZone: "America/Sao_Paulo", // Horário de Brasília
+  }).format(new Date());
+  const hour = parseInt(horaStr, 10);
+
+  if (hour >= 5 && hour < 12) return "Bom dia";
+  if (hour >= 12 && hour < 18) return "Boa tarde";
+  return "Boa noite";
+}
+
+// Abrir WhatsApp com mensagem formatada
+function abrirWhatsApp(mensagem: string) {
+  const url = `https://wa.me/5579981164388?text=${encodeURIComponent(mensagem)}`;
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -24,7 +44,7 @@ export function HeroSection() {
       ref={containerRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Fundo com parallax */}
+      {/* Fundo com efeito parallax */}
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
         <div
           className="absolute inset-0 bg-cover bg-center grayscale"
@@ -33,10 +53,10 @@ export function HeroSection() {
               "url('https://images.unsplash.com/photo-1753715613373-90b1ea010731?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600')",
           }}
         />
-        {/* VOLTA para bg-gradient-to-b */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/60 via-[#0a0a0f]/80 to-[#0a0a0f]" />
       </motion.div>
 
+      {/* Conteúdo principal */}
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-20">
         <div className="flex flex-col items-center text-center space-y-8">
           {/* Logo */}
@@ -58,7 +78,7 @@ export function HeroSection() {
             />
           </motion.div>
 
-          {/* Título + status */}
+          {/* Título e status */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -68,14 +88,13 @@ export function HeroSection() {
             <h1 className="text-4xl md:text-6xl tracking-tight text-white font-semibold">
               Harone Magalhães
             </h1>
-
             <Badge className="bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20 transition-colors duration-200">
               <span className="inline-block w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse" />
               Disponível agora (Freelance)
             </Badge>
           </motion.div>
 
-          {/* Subtítulo + localização */}
+          {/* Subtítulo */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -87,11 +106,11 @@ export function HeroSection() {
             </p>
             <div className="flex items-center gap-2 justify-center text-white">
               <Globe className="w-4 h-4 text-white" />
-              <span className="text-sm">Aracaju-SE, Brasil</span>
+              <span className="text-sm">Brasília - DF, Brasil</span>
             </div>
           </motion.div>
 
-          {/* CTA principal */}
+          {/* Botão de mensagem */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -100,15 +119,9 @@ export function HeroSection() {
             <Button
               size="lg"
               onClick={() => {
-                const hour = new Date().getHours();
-                let saudacao = "Olá";
-                if (hour >= 5 && hour < 12) saudacao = "Bom dia";
-                else if (hour >= 12 && hour < 18) saudacao = "Boa tarde";
-                else saudacao = "Boa noite";
-
+                const saudacao = getSaudacao();
                 const mensagem = `${saudacao}, Harone! Tenho interesse em criar um projeto digital com você. Podemos conversar sobre detalhes e possibilidades?`;
-                const link = `https://wa.me/5579981164388?text=${encodeURIComponent(mensagem)}`;
-                window.open(link, "_blank");
+                abrirWhatsApp(mensagem);
               }}
               className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 rounded-full 
                          text-lg shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 
@@ -118,7 +131,7 @@ export function HeroSection() {
             </Button>
           </motion.div>
 
-
+          {/* Card informativo */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -134,7 +147,7 @@ export function HeroSection() {
                          transition-all duration-500"
             >
               <CardContent className="px-6 py-5 text-center space-y-4">
-                <h3 className="text-[15px] leading-6 text-white/90 text-center md:text-left">
+                <h3 className="text-[15px] leading-6 text-white/90">
                   Desenvolvo soluções digitais{" "}
                   <span className="text-white font-medium">sob medida para o seu negócio!</span>{" "}
                   <span className="text-white font-medium">Landing pages,</span>{" "}
@@ -146,7 +159,6 @@ export function HeroSection() {
                   otimizam processos e geram resultados reais.
                 </h3>
 
-
                 <div className="mx-auto h-px w-10/12 bg-white/10" />
 
                 <div className="text-[13px] text-white/70 leading-6">
@@ -157,15 +169,9 @@ export function HeroSection() {
 
                 <Button
                   onClick={() => {
-                    const hour = new Date().getHours();
-                    let saudacao = "Olá";
-                    if (hour >= 5 && hour < 12) saudacao = "Bom dia";
-                    else if (hour >= 12 && hour < 18) saudacao = "Boa tarde";
-                    else saudacao = "Boa noite";
-
+                    const saudacao = getSaudacao();
                     const mensagem = `${saudacao}, Harone! Quero iniciar um projeto com você.`;
-                    const link = `https://wa.me/5579981164388?text=${encodeURIComponent(mensagem)}`;
-                    window.open(link, "_blank", "noopener,noreferrer");
+                    abrirWhatsApp(mensagem);
                   }}
                   className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-600"
                 >
