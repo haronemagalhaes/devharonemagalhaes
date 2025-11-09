@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import Logo from "@/assets/Logomarca.png";
 
-// Função: Saudação conforme horário de Brasília (America/Sao_Paulo)
 function getSaudacao(): string {
   const horaStr = new Intl.DateTimeFormat("pt-BR", {
     hour: "2-digit",

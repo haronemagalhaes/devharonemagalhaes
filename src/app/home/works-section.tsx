@@ -25,22 +25,22 @@ const projects: Project[] = [
     category: "Web",
     description:
       "Projeto desenvolvido para o Centro Médico Vitalle, com foco em presença digital, performance e acessibilidade. O site oferece navegação fluida e responsiva, permitindo que pacientes acessem serviços, especialidades e canais de contato de forma rápida e intuitiva em qualquer dispositivo.",
-    technologies: ["HTML", "CSS", "JavaScript"],
+    technologies: [""],
     link: "https://centromedicovitalle.blog.br/",
     aspectRatio: "16/9",
   },
-  // {
-  //   id: "1",
-  //   title: "Dashboard Analytics Pro",
-  //   image:
-  //     "https://images.unsplash.com/photo-1665470909939-959569b20021?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
-  //   category: "Dashboard",
-  //   description:
-  //     "Dashboard completo para análise de métricas e KPIs em tempo real. Interface moderna com gráficos interativos.",
-  //   technologies: ["Next.js", "React", "Recharts", "Tailwind CSS", "shadcn-ui"],
-  //   link: "https://example.com",
-  //   aspectRatio: "16/9",
-  // },
+   {
+  id: "Albuquerque V.A",
+  title: "Albuquerque V.A — Moda Feminina",
+  image: "/loja.png",
+  category: "Web",
+  description:
+    "Projeto para a loja Albuquerque V.A, desenvolvido com foco em identidade visual, desempenho e experiência do usuário, conectando clientes aos canais de atendimento e redes sociais por meio de uma navegação fluida e responsiva.",
+  technologies: [""],
+  link: "https://abmoda.com.br",
+  aspectRatio: "4/3",
+}
+
   // {
   //   id: "2",
   //   title: "E-commerce Platform",
