@@ -27,44 +27,45 @@ const projects: Project[] = [
       "Projeto desenvolvido para o Centro Médico Vitalle, com foco em presença digital, performance e acessibilidade. O site oferece navegação fluida e responsiva, permitindo que pacientes acessem serviços, especialidades e canais de contato de forma rápida e intuitiva em qualquer dispositivo.",
     technologies: [""],
     link: "https://centromedicovitalle.blog.br/",
-    aspectRatio: "16/9",
+    aspectRatio: "4/3",
   },
-   {
-  id: "Albuquerque V.A",
-  title: "Albuquerque V.A — Moda Feminina",
-  image: "/loja.png",
+  {
+    id: "albuquerque-va",
+    title: "Albuquerque V.A — Moda Feminina",
+    image: "/loja.png",
+    category: "Web",
+    description:
+      "Projeto para a loja Albuquerque V.A, desenvolvido com foco em identidade visual, desempenho e experiência do usuário, conectando clientes aos canais de atendimento e redes sociais por meio de uma navegação fluida e responsiva.",
+    technologies: [""],
+    link: "https://abmoda.com.br",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "angelica-cruz",
+    title: "Angelica Cruz - Nutricionista",
+    image: "/angelicacruz.jpeg",
+    category: "Web",
+    description:
+      "Microsite estilo Linktree com design moderno, links rápidos e foco em agendamento.",
+    technologies: [""],
+    link: "https://www.angelicacruznutricionista.com.br",
+    aspectRatio: "4/3",
+  },
+
+
+
+{
+  id: "unicortte",
+  title: "Armarinho Unicortte",
+  image: "/unicortte.jpeg",
   category: "Web",
   description:
-    "Projeto para a loja Albuquerque V.A, desenvolvido com foco em identidade visual, desempenho e experiência do usuário, conectando clientes aos canais de atendimento e redes sociais por meio de uma navegação fluida e responsiva.",
+    "Pagina desenvolvida para Armarinho Unicortte, apresentando botões de contato, cursos, plataforma online e informações da loja. Design leve, responsivo e alinhado à identidade da marca com mais de 30 anos de tradição.",
   technologies: [""],
-  link: "https://abmoda.com.br",
+  link: "https://armarinhounicortte.vercel.app/",
   aspectRatio: "4/3",
-}
+},
 
-  // {
-  //   id: "2",
-  //   title: "E-commerce Platform",
-  //   image:
-  //     "https://images.unsplash.com/photo-1658297063569-162817482fb6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
-  //   category: "Web",
-  //   description:
-  //     "Plataforma de e-commerce completa com carrinho, checkout, área administrativa e integração de pagamentos online.",
-  //   technologies: ["Next.js", "TypeScript", "Stripe", "Prisma", "PostgreSQL"],
-  //   link: "https://example.com",
-  //   aspectRatio: "4/3",
-  // },
-  // {
-  //   id: "3",
-  //   title: "Landing Page Conversion",
-  //   image:
-  //     "https://images.unsplash.com/photo-1753715613373-90b1ea010731?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
-  //   category: "Web",
-  //   description:
-  //     "Landing page de alta conversão com foco em performance, SEO e integrações de marketing digital.",
-  //   technologies: ["Next.js", "Tailwind CSS", "Framer Motion", "Vercel"],
-  //   link: "https://example.com",
-  //   aspectRatio: "1/1",
-  // },
   // {
   //   id: "4",
   //   title: "Sistema de Automação Empresarial",
