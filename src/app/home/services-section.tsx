@@ -9,25 +9,25 @@ const services = [
     icon: Globe,
     title: "Desenvolvimento de Sites",
     description:
-      "Planejamento e desenvolvimento de sites voltados à consolidação da marca, comunicação e captação de novos negócios.",
+      "Planejamento e desenvolvimento de sites voltados à consolidação da marca.",
   },
   {
     icon: LayoutTemplate,
     title: "Landing Pages",
     description:
-      "Criação de páginas estratégicas para divulgação de serviços e produtos, voltadas à captação de oportunidades e fortalecimento das ações comerciais.",
+      "Criação de páginas estratégicas para divulgação de serviços e produtos.",
   },
   {
     icon: Briefcase,
     title: "Portfólio",
     description:
-      "Desenvolvimento de portfólio digital destinado à apresentação de projetos e conquistas profissionais, reforçando a credibilidade e a qualidade das soluções oferecidas.",
+      "Desenvolvimento de portfólio digital destinado à apresentação de projetos e conquistas profissionais.",
   },
   {
     icon: Bot,
     title: "Automação de Tarefas",
     description:
-      "Automatizo fluxos e processos repetitivos com integrações inteligentes, reduzindo tempo e aumentando a eficiência do seu negócio.",
+      "Automatizo fluxos e processos repetitivos com integrações inteligentes.",
   },
 ];
 
