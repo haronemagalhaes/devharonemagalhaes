@@ -15,7 +15,7 @@ export default function Footer() {
     },
     {
       icon: Instagram,
-      href: "https://www.instagram.com/haronemagalhaes?igsh=MTJ6c2cwbGx6ZnY3ZQ%3D%3D&utm_source=qr",
+      href: "https://www.instagram.com/haronedev_?igsh=YzVzMG9rM3prb2Zi&utm_source=qr",
       label: "Instagram",
     },
   ];
