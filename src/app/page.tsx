@@ -25,16 +25,11 @@ export default function Home() {
       <div className="w-full border-t border-white/5 bg-[#0a0a0f] py-6 text-center">
         <p className="text-white/60 text-sm mb-2">Desenvolvido por</p>
         <div className="flex items-center justify-center gap-2">
-          <Image
-            src={Logo}
-            alt="Logo Harone Magalhães"
-            width={26}
-            height={26}
-            className="rounded-full object-contain shadow-md shadow-cyan-500/10"
-          />
-          <span className="font-semibold text-white hover:text-cyan-400 transition-colors duration-200">
-            haronedev.com.br
-          </span>
+        
+       <span className="font-semibold text-white text-xs hover:text-cyan-400 transition-colors duration-200">
+        haronedev.com.br
+       </span>
+
         </div>
       </div>
     </div>
