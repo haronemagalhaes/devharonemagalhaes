@@ -4,7 +4,6 @@ import { HeroSection } from "@/app/home/hero-section";
 import { ServicesSection } from "@/app/home/services-section";
 import { WorksSection } from "@/app/home/works-section";
 import Footer from "@/app/home/footer";
-import Logo from "@/assets/Logomarca.png";
 
 export default function Home() {
   return (

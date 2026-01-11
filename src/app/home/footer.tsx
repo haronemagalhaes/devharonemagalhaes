@@ -45,8 +45,8 @@ export default function Footer() {
               Harone Magalhães
             </h3>
             <p className="text-sm text-white/80 leading-relaxed">
-              Desenvolvedor especializado em criar experiências digitais modernas
-              e funcionais.
+              Desenvolvedor especializado em criar experiências digitais
+              modernas e funcionais.
             </p>
           </motion.div>
 

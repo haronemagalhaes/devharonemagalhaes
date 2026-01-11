@@ -51,33 +51,17 @@ const projects: Project[] = [
     link: "https://www.angelicacruznutricionista.com.br",
     aspectRatio: "4/3",
   },
-
-
-
-{
-  id: "unicortte",
-  title: "Armarinho Unicortte",
-  image: "/unicortte.jpeg",
-  category: "Web",
-  description:
-    "Pagina desenvolvida para Armarinho Unicortte, apresentando botões de contato, cursos, plataforma online e informações da loja. Design leve, responsivo e alinhado à identidade da marca com mais de 30 anos de tradição.",
-  technologies: [""],
-  link: "https://armarinhounicortte.vercel.app/",
-  aspectRatio: "4/3",
-},
-
-  // {
-  //   id: "4",
-  //   title: "Sistema de Automação Empresarial",
-  //   image:
-  //     "https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600",
-  //   category: "Automação",
-  //   description:
-  //     "Sistema completo de automação para empresas, integrando APIs, relatórios e controle de processos internos.",
-  //   technologies: ["Node.js", "Express", "MongoDB", "React"],
-  //   link: "https://example.com",
-  //   aspectRatio: "4/3",
-  // },
+  {
+    id: "unicortte",
+    title: "Armarinho Unicortte",
+    image: "/unicortte.jpeg",
+    category: "Web",
+    description:
+      "Pagina desenvolvida para Armarinho Unicortte, apresentando botões de contato, cursos, plataforma online e informações da loja. Design leve, responsivo e alinhado à identidade da marca com mais de 30 anos de tradição.",
+    technologies: [""],
+    link: "https://armarinhounicortte.vercel.app/",
+    aspectRatio: "4/3",
+  },
 ];
 
 const categories = ["Todos"] as const;
@@ -94,25 +78,25 @@ export function WorksSection() {
 
   return (
     <>
-      <section id="trabalhos" className="py-24 relative">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-          {/* Cabeçalho da seção */}
+      <section id="trabalhos" className="relative py-12 md:py-16">
+        <div className="mx-auto max-w-[1280px] px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-6 md:mb-8"
           >
-            <h2 className="text-4xl md:text-5xl mb-4 text-white">Trabalhos</h2>
-            <p className="text-white/80 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-5xl text-white tracking-tight">
+              Trabalhos
+            </h2>
+            <p className="mt-2 text-white/80 max-w-2xl mx-auto text-sm md:text-base">
               Projetos selecionados que demonstram qualidade e atenção aos
               detalhes.
             </p>
           </motion.div>
 
-          {/* Filtro por categoria */}
-          <div className="flex justify-center mb-12">
+          <div className="flex justify-center mb-6 md:mb-8">
             <Tabs
               value={selectedCategory}
               onValueChange={(v) => setSelectedCategory(v as Category)}
@@ -134,15 +118,14 @@ export function WorksSection() {
             </Tabs>
           </div>
 
-          {/* Grid de projetos */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
             {filteredProjects.map((project, index) => (
               <motion.div
                 key={project.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
                 className="group cursor-pointer"
                 onClick={() => setSelectedProject(project)}
               >
@@ -157,25 +140,27 @@ export function WorksSection() {
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    {/* Botão central que abre o modal */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
+
+                    <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedProject(project);
                         }}
-                        className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-6 py-3 text-sm text-white"
+                        className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-5 py-2.5 text-sm text-white
+                                   active:scale-[0.98] active:brightness-110 transition-all duration-200"
                       >
                         Ver Projeto
                       </button>
                     </div>
                   </div>
 
-                  {/* Rodapé do card */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
-                    <h3 className="text-lg text-white">{project.title}</h3>
+                  <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+                    <h3 className="text-base md:text-lg text-white leading-snug">
+                      {project.title}
+                    </h3>
                   </div>
                 </div>
               </motion.div>
@@ -184,7 +169,6 @@ export function WorksSection() {
         </div>
       </section>
 
-      {/* Modal */}
       <ProjectModal
         project={selectedProject}
         isOpen={!!selectedProject}

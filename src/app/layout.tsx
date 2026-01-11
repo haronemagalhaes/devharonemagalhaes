@@ -6,7 +6,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "HaroneMagalhães.Dev",
+  title: "Harone Magalhães",
   description: "Portfólio e projetos de Harone Magalhães",
   themeColor: "#0b0d10",
   icons: {

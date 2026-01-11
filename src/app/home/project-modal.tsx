@@ -3,7 +3,12 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 
 type ModalProject = {
@@ -22,11 +27,11 @@ interface ProjectModalProps {
 }
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
-  // 🔒 Evita "pulo" e bloqueia o scroll do fundo quando o modal abre
   useEffect(() => {
     const html = document.documentElement;
     if (isOpen) {
-      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      const scrollBarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
       html.style.overflow = "hidden";
       html.style.paddingRight = `${scrollBarWidth}px`;
     } else {
@@ -54,7 +59,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Imagem */}
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
             <Image
               src={project.image}
@@ -66,14 +70,11 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           </div>
 
-          {/* Categoria */}
           <div className="flex items-center gap-3">
             <Badge className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs text-white">
               {project.category}
             </Badge>
           </div>
-
-          {/* Descrição */}
           <div>
             <h3 className="text-xl mb-3 text-white">Sobre o Projeto</h3>
             <p className="text-gray-300 leading-relaxed">
@@ -81,7 +82,6 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             </p>
           </div>
 
-          {/* Link funcional */}
           {project.link && (
             <a
               href={project.link}
