@@ -57,9 +57,56 @@ const projects: Project[] = [
     image: "/unicortte.jpeg",
     category: "Web",
     description:
-      "Pagina desenvolvida para Armarinho Unicortte, apresentando botões de contato, cursos, plataforma online e informações da loja. Design leve, responsivo e alinhado à identidade da marca com mais de 30 anos de tradição.",
+      "Página desenvolvida para o Armarinho Unicortte, com foco em apresentação institucional, cursos e presença digital. Interface leve, responsiva e alinhada à identidade da marca.",
     technologies: [""],
     link: "https://armarinhounicortte.vercel.app/",
+    aspectRatio: "4/3",
+  },
+
+  // 🔥 NOVOS PROJETOS
+
+  {
+    id: "mendonca",
+    title: "Mendonça Advocacia",
+    image: "/mendonca.png",
+    category: "Web",
+    description:
+      "Website institucional desenvolvido para o escritório Mendonça Advocacia, focado em autoridade, credibilidade e posicionamento profissional. Layout moderno com navegação clara e foco em conversão de clientes.",
+    technologies: [""],
+    link: "https://www.mendonca-advocaciaa.com.br/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "tathi-rocha",
+    title: "Link Bio — Tathi Rocha",
+    image: "/tathi.png",
+    category: "Web",
+    description:
+      "Página estilo Link in Bio desenvolvida para centralizar redes sociais, serviços e canais de contato. Design moderno, direto e altamente otimizado para mobile.",
+    technologies: [""],
+    link: "https://tathi-rocha-website.vercel.app/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "siagenda",
+    title: "SI-Agenda — Plataforma de Agendamento",
+    image: "/si-agenda.png",
+    category: "Web",
+    description:
+      "Plataforma completa de agendamento online para clínicas e profissionais de saúde. Sistema moderno com foco em automação, gestão de pacientes, organização de agenda e experiência do usuário.",
+    technologies: [""],
+    link: "https://si-agenda.com.br/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "unicortte-penedo",
+    title: "Armarinho Unicortte — Penedo",
+    image: "/unicortte2.png",
+    category: "Web",
+    description:
+      "Website desenvolvido para a unidade de Penedo do Armarinho Unicortte, com foco em divulgação de produtos, cursos e presença digital. Interface simples, funcional e otimizada para conversão.",
+    technologies: [""],
+    link: "https://armarinhounicortte-penedo.vercel.app/",
     aspectRatio: "4/3",
   },
 ];

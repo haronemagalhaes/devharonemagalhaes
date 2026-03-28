@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { Mail, Instagram } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import LogoMarca from "@/assets/Logomarca.png";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -33,18 +35,29 @@ export default function Footer() {
       className="relative border-t border-white/10 bg-white/5 backdrop-blur-sm"
       aria-labelledby="footer-title"
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 mb-12">
+      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-3">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h3 id="footer-title" className="text-2xl mb-4 text-white">
-              Harone Magalhães
-            </h3>
-            <p className="text-sm text-white/80 leading-relaxed">
+            <div className="mb-4 flex items-center gap-3">
+              <Image
+                src={LogoMarca}
+                alt="Logomarca Harone"
+                width={36}
+                height={36}
+                className="h-9 w-9 object-contain"
+              />
+
+              <h3 id="footer-title" className="text-2xl text-white">
+                Harone Magalhães
+              </h3>
+            </div>
+
+            <p className="text-sm leading-relaxed text-white/80">
               Desenvolvedor especializado em criar experiências digitais
               modernas e funcionais.
             </p>
@@ -62,7 +75,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-white/80 hover:text-cyan-400 transition-colors duration-200"
+                    className="text-sm text-white/80 transition-colors duration-200 hover:text-cyan-400"
                   >
                     {link.label}
                   </a>
@@ -79,7 +92,7 @@ export default function Footer() {
           >
             <h4 className="mb-4 text-white">Conecte-se</h4>
 
-            <div className="flex flex-wrap gap-3 mb-4">
+            <div className="mb-4 flex flex-wrap gap-3">
               {socialLinks.map(({ icon: Icon, href, label }) => {
                 const isMailto = href.startsWith("mailto:");
                 return (
@@ -88,7 +101,7 @@ export default function Footer() {
                     asChild
                     type="button"
                     variant="outline"
-                    className="rounded-xl border-white/10 bg-white/5 text-white hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-300 transition-all duration-200 px-4 py-2"
+                    className="rounded-xl border-white/10 bg-white/5 px-4 py-2 text-white transition-all duration-200 hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-300"
                   >
                     <a
                       href={href}
@@ -108,7 +121,7 @@ export default function Footer() {
 
             <Button
               asChild
-              className="w-full mt-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-xl py-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-200"
+              className="mt-4 w-full rounded-xl bg-cyan-500 py-2 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:bg-cyan-600 hover:shadow-cyan-500/40"
             >
               <a
                 href="#whatsapp"
@@ -116,14 +129,16 @@ export default function Footer() {
                   e.preventDefault();
                   const hour = new Date().getHours();
                   let saudacao = "Olá";
+
                   if (hour >= 5 && hour < 12) saudacao = "Bom dia";
                   else if (hour >= 12 && hour < 18) saudacao = "Boa tarde";
                   else saudacao = "Boa noite";
 
                   const mensagem = `${saudacao}! Tudo bem? Tenho interesse em conversar sobre um projeto digital e gostaria de saber como funciona o seu processo de trabalho.`;
                   const link = `https://wa.me/5579981164388?text=${encodeURIComponent(
-                    mensagem
+                    mensagem,
                   )}`;
+
                   window.open(link, "_blank", "noopener,noreferrer");
                 }}
                 aria-label="Abrir conversa no WhatsApp"
@@ -132,7 +147,7 @@ export default function Footer() {
               </a>
             </Button>
 
-            <p className="text-sm text-white/80 mt-4" />
+            <p className="mt-4 text-sm text-white/80" />
           </motion.div>
         </div>
 
@@ -141,7 +156,7 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="pt-8 border-t border-white/10 text-center text-sm text-white/70"
+          className="border-t border-white/10 pt-8 text-center text-sm text-white/70"
         >
           <p>© {currentYear} Harone. Todos os direitos reservados.</p>
         </motion.div>
