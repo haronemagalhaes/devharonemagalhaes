@@ -90,7 +90,7 @@ const projects: Project[] = [
   {
     id: "siagenda",
     title: "SI-Agenda — Plataforma de Agendamento",
-    image: "/si-agenda.png",
+    image: "/si-agenda1.png",
     category: "Web",
     description:
       "Plataforma completa de agendamento online para clínicas e profissionais de saúde. Sistema moderno com foco em automação, gestão de pacientes, organização de agenda e experiência do usuário.",
