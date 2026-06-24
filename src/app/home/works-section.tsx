@@ -112,7 +112,7 @@ const projects: Project[] = [
   {
     id: "via-reta-engenharia",
     title: "Via Reta Engenharia",
-    image: "/viareta.png",
+    image: "/ViaReta.png",
     category: "Web",
     description:
       "Site institucional para a Via Reta Engenharia, especializada em iluminação pública e sistemas elétricos. Apresenta soluções em SPDA, subestações, compliance e projetos para o setor público, com layout técnico e profissional que transmite autoridade e confiança.",
@@ -123,7 +123,7 @@ const projects: Project[] = [
   {
     id: "yangled-luminarias",
     title: "YangLed Luminárias",
-    image: "/yangled.png",
+    image: "/YangLed.png",
     category: "Web",
     description:
       "Site institucional para a YangLed, fabricante de luminárias públicas LED de engenharia voltadas a prefeituras, concessionárias e integradores. Destaque para especificações técnicas (IP66, IK08, DPS 10 kV, conformidade RoHS) em uma interface moderna e orientada a credibilidade.",
@@ -134,7 +134,7 @@ const projects: Project[] = [
   {
     id: "marina-pier-mosqueiro",
     title: "Marina Pier Mosqueiro",
-    image: "/marina.png",
+    image: "/Marina.png",
     category: "Web",
     description:
       "Site para a Marina Pier Mosqueiro, marina exclusiva de jet skis em Aracaju. Apresenta vagas secas, segurança 24h, espaço gourmet e processos automatizados, com design imersivo à beira do rio que valoriza a experiência e converte visitantes em clientes.",
