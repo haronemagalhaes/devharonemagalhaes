@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Mail, Instagram } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { PaymentMethods } from "@/components/payment-methods";
 import LogoMarca from "@/assets/Logomarca.png";
 
 export default function Footer() {
@@ -156,9 +157,12 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="border-t border-white/10 pt-8 text-center text-sm text-white/70"
+          className="border-t border-white/10 pt-8"
         >
-          <p>© {currentYear} Harone. Todos os direitos reservados.</p>
+          <PaymentMethods className="mb-6" />
+          <p className="text-center text-sm text-white/70">
+            © {currentYear} Harone. Todos os direitos reservados.
+          </p>
         </motion.div>
       </div>
     </footer>

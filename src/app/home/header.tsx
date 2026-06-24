@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Home,
   PanelsTopLeft,
+  Calculator,
   Briefcase,
   MessageSquareText,
   Menu,
@@ -27,6 +28,7 @@ const LINKS: LinkItem[] = [
   { label: "Início", id: "inicio", icon: Home },
   { label: "Serviços", id: "servicos", icon: PanelsTopLeft },
   { label: "Trabalhos", id: "trabalhos", icon: Briefcase },
+  { label: "Orçamento", id: "orcamento", icon: Calculator },
   { label: "Contato", id: "contato", icon: MessageSquareText },
 ];
 

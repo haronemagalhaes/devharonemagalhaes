@@ -21,12 +21,12 @@ const projects: Project[] = [
   {
     id: "vitalle",
     title: "Centro Médico Vitalle",
-    image: "/image.png",
+    image: "/Vitalle.png",
     category: "Web",
     description:
       "Projeto desenvolvido para o Centro Médico Vitalle, com foco em presença digital, performance e acessibilidade. O site oferece navegação fluida e responsiva, permitindo que pacientes acessem serviços, especialidades e canais de contato de forma rápida e intuitiva em qualquer dispositivo.",
     technologies: [""],
-    link: "https://centromedicovitalle.blog.br/",
+    link: "https://link-bio.centromedicovitalle.com.br/",
     aspectRatio: "4/3",
   },
   {
@@ -107,6 +107,39 @@ const projects: Project[] = [
       "Website desenvolvido para a unidade de Penedo do Armarinho Unicortte, com foco em divulgação de produtos, cursos e presença digital. Interface simples, funcional e otimizada para conversão.",
     technologies: [""],
     link: "https://armarinhounicortte-penedo.vercel.app/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "via-reta-engenharia",
+    title: "Via Reta Engenharia",
+    image: "/viareta.png",
+    category: "Web",
+    description:
+      "Site institucional para a Via Reta Engenharia, especializada em iluminação pública e sistemas elétricos. Apresenta soluções em SPDA, subestações, compliance e projetos para o setor público, com layout técnico e profissional que transmite autoridade e confiança.",
+    technologies: [""],
+    link: "https://www.viaretaluz.com.br/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "yangled-luminarias",
+    title: "YangLed Luminárias",
+    image: "/yangled.png",
+    category: "Web",
+    description:
+      "Site institucional para a YangLed, fabricante de luminárias públicas LED de engenharia voltadas a prefeituras, concessionárias e integradores. Destaque para especificações técnicas (IP66, IK08, DPS 10 kV, conformidade RoHS) em uma interface moderna e orientada a credibilidade.",
+    technologies: [""],
+    link: "https://www.yangledbr.com.br/",
+    aspectRatio: "4/3",
+  },
+  {
+    id: "marina-pier-mosqueiro",
+    title: "Marina Pier Mosqueiro",
+    image: "/marina.png",
+    category: "Web",
+    description:
+      "Site para a Marina Pier Mosqueiro, marina exclusiva de jet skis em Aracaju. Apresenta vagas secas, segurança 24h, espaço gourmet e processos automatizados, com design imersivo à beira do rio que valoriza a experiência e converte visitantes em clientes.",
+    technologies: [""],
+    link: "https://www.marinapiermosqueiro.com.br/",
     aspectRatio: "4/3",
   },
 ];

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Globe, Briefcase, Bot, Link2 } from "lucide-react";
+import { Globe, Briefcase, Bot, Link2, LayoutDashboard } from "lucide-react";
 
 const services = [
   {
@@ -23,6 +23,13 @@ const services = [
     icon: Bot,
     title: "Automação de Tarefas",
     bg: "https://images.unsplash.com/photo-1759752393975-7ca7b302fcc6?fm=jpg&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8d29ya2Zsb3clMjBhdXRvbWF0aW9ufGVufDB8fDB8fHww&ixlib=rb-4.1.0&q=60&w=3000",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Sistema para Empresas",
+    // Placeholder: adicione a imagem em public/sistema-empresas.png.
+    // Enquanto não existir, o overlay escuro mantém o card no tema dark.
+    bg: "/image.png",
   },
 ];
 

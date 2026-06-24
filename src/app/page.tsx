@@ -2,6 +2,7 @@ import Image from "next/image";
 import Header from "./home/header";
 import { HeroSection } from "@/app/home/hero-section";
 import { ServicesSection } from "@/app/home/services-section";
+import { BudgetSection } from "@/app/home/budget-section";
 import { WorksSection } from "@/app/home/works-section";
 import Footer from "@/app/home/footer";
 
@@ -15,6 +16,7 @@ export default function Home() {
         <HeroSection />
         <ServicesSection />
         <WorksSection />
+        <BudgetSection />
       </main>
 
 
