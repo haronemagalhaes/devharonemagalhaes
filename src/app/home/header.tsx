@@ -8,6 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetTitle,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -253,6 +254,10 @@ export default function Header() {
                     [&>button.absolute.right-4.top-4]:hidden
                   "
                 >
+                  <SheetTitle className="sr-only">
+                    Menu de navegação
+                  </SheetTitle>
+
                   <div className="flex items-center justify-between px-5 py-4">
                     <span className="text-base font-semibold">Navegação</span>
 

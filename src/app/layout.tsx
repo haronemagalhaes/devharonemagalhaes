@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { WhatsappFloat } from "@/components/whatsapp-float";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -41,6 +42,7 @@ export default function RootLayout({
         ].join(" ")}
       >
         <main className="flex-1">{children}</main>
+        <WhatsappFloat />
         <Analytics />
       </body>
     </html>

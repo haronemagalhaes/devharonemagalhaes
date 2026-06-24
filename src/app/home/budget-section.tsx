@@ -633,12 +633,12 @@ export function BudgetSection() {
                     </span>
 
                     <span className="min-w-0 flex-1">
-                      <span className="flex items-center gap-2">
+                      <span className="flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2">
                         <span className="text-base md:text-lg font-semibold text-white">
                           {service.name}
                         </span>
                         {service.custom && (
-                          <span className="rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-[11px] text-white/60">
+                          <span className="shrink-0 whitespace-nowrap rounded-full border border-white/15 bg-white/5 px-1.5 py-0.5 text-[10px] leading-none text-white/60">
                             sob consulta
                           </span>
                         )}
