@@ -3,11 +3,88 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* =====================================================================
+   Tokens de marca — monocromático, sem acento.
+   Os nomes shadcn continuam existindo (button/dialog/input dependem deles)
+   mas todos apontam para a paleta abaixo.
+   ===================================================================== */
+:root {
+  --bg: #f6f5f2; /* fundo — off-white quente (papel) */
+  --surface: #ffffff; /* cards, blocos elevados */
+  --surface-2: #eeece6; /* seções alternadas, hover sutil */
+  --ink: #141414; /* títulos e corpo — quase-preto */
+  --ink-soft: #6b6b6b; /* texto secundário, labels */
+  --line: #e3e1dc; /* fios de 1px, bordas */
+  --spark: #1f3a3d; /* reserva (petróleo). NÃO usar por enquanto. */
+
+  --radius: 8px;
+
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --card-foreground: var(--ink);
+  --popover: var(--surface);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--ink);
+  --destructive: #8a1c1c;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--ink);
+  --chart-1: var(--ink);
+  --chart-2: var(--ink-soft);
+  --chart-3: var(--line);
+  --chart-4: var(--surface-2);
+  --chart-5: var(--surface);
+  --sidebar: var(--surface);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--bg);
+  --sidebar-accent: var(--surface-2);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--ink);
+
+  /* Movimento */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --header-h: 76px;
+}
+
+/* Dark: mesmo sistema, invertido, sem cor. Não há toggle ativo — fica
+   pronto caso a classe .dark seja aplicada no <html>. */
+.dark {
+  --bg: #121211;
+  --surface: #1a1a18;
+  --surface-2: #201f1d;
+  --ink: #f4f3ef;
+  --ink-soft: #9a9994;
+  --line: #2a2a28;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-spark: var(--spark);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syne), var(--font-inter), ui-sans-serif, system-ui,
+    sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -43,116 +120,220 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
+/* =====================================================================
+   Base
+   ===================================================================== */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
+  html {
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+
   body {
     @apply bg-background text-foreground;
-  }
-}
-
-/* ====== Suas cores de fundo gerais ====== */
-html,
-body {
-  background: #0b0d10;
-}
-
-/* ====== Estabilidade do layout / scroll ====== */
-@layer base {
-  html {
-    /* Mantém o espaço da scrollbar SEMPRE, evitando “pulo” do layout */
-    scrollbar-gutter: stable;
-  }
-  body {
-    /* Garante a reserva do espaço da barra de rolagem */
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     overflow-y: scroll;
+    overscroll-behavior-y: contain;
+  }
+
+  @media (max-width: 767px) {
+    body {
+      font-size: 16px;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* Foco visível — anel 2px --ink, offset 2px */
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--header-h) + 16px);
   }
 }
 
-/* Quando um modal estiver aberto, bloqueia o scroll e corrige a largura com padding-right */
+/* Modal aberto: trava scroll de fundo e compensa a scrollbar */
 html.modal-open body {
-  overflow: hidden; /* bloqueia a rolagem de fundo */
-  padding-right: calc(100vw - 100%); /* compensação da scrollbar */
+  overflow: hidden;
+  padding-right: calc(100vw - 100%);
 }
 
-/* ====== Comportamento de over-scroll suave no mobile ====== */
-body {
-  overscroll-behavior-y: contain;
-}
-
-/* ====== Safe area (iOS) ====== */
+/* Safe area (iOS) */
 @supports (padding: env(safe-area-inset-bottom)) {
   .pb-safe {
     padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+  }
+}
+
+/* =====================================================================
+   Utilitários do sistema de design
+   ===================================================================== */
+@utility container-studio {
+  width: 100%;
+  max-width: calc(1120px + 2 * 24px);
+  margin-inline: auto;
+  padding-inline: 24px;
+
+  @media (width >= 768px) {
+    max-width: calc(1120px + 2 * 40px);
+    padding-inline: 40px;
+  }
+
+  @media (width >= 1280px) {
+    max-width: calc(1120px + 2 * 64px);
+    padding-inline: 64px;
+  }
+}
+
+@utility section-pad {
+  padding-block: 64px;
+
+  @media (width >= 768px) {
+    padding-block: 112px;
+  }
+
+  @media (width >= 1280px) {
+    padding-block: 140px;
+  }
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+
+  @media (width >= 768px) {
+    font-size: 13px;
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+/* Link de texto com sublinhado que cresce da esquerda */
+@utility link-line {
+  position: relative;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Imagem em duotone P&B */
+@utility img-duotone {
+  filter: grayscale(1) contrast(1.05);
+  transition:
+    filter 0.6s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+}
+
+/* Grão de papel */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* Cursor custom só em ponteiro fino e sem reduced-motion */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html.has-cursor,
+  html.has-cursor a,
+  html.has-cursor button,
+  html.has-cursor [role="button"] {
+    cursor: none;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* =====================================================================
+   prefers-reduced-motion: tudo vira opacity simples de 200ms
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.2s !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    scroll-behavior: auto !important;
+  }
+  .grain,
+  .motion-wipe {
+    display: none;
   }
 }
