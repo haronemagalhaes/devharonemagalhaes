@@ -386,17 +386,6 @@ html.lenis body {
     transform: translateY(-102%);
   }
 }
-/* o -50% vertical fica no wrapper (HeroSeal); aqui só entrada */
-@keyframes hero-arc-in {
-  from {
-    opacity: 0;
-    transform: scale(0.94);
-  }
-  to {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-}
 @keyframes hero-rule-in {
   from {
     transform: scaleX(0);
@@ -433,9 +422,20 @@ html.lenis body {
   animation-delay: var(--d, 0s);
   pointer-events: none;
 }
-.hero-arc {
-  animation: hero-arc-in 1.6s var(--ease-out-expo) both;
+/* Marca d'água HM do hero. Entra com .hero-fade. Oscilação opcional
+   (desligada): descomentar pra um respiro quase imperceptível em rotateY.
+.hero-wm {
+  perspective: 1200px;
 }
+.hero-wm > img {
+  animation: hero-wm-sway 9s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+@keyframes hero-wm-sway {
+  0%, 100% { transform: rotateY(-8deg); }
+  50%      { transform: rotateY(8deg); }
+}
+*/
 .hero-rule {
   transform-origin: left;
   animation: hero-rule-in 1.2s 0.6s var(--ease-out-expo) both;
@@ -443,7 +443,6 @@ html.lenis body {
 @media (prefers-reduced-motion: reduce) {
   .hero-fade,
   .hero-line > span,
-  .hero-arc,
   .hero-rule {
     animation: none;
     opacity: 1;
@@ -451,8 +450,5 @@ html.lenis body {
   }
   .hero-line::after {
     display: none;
-  }
-  .hero-arc {
-    opacity: 0.55;
   }
 }
