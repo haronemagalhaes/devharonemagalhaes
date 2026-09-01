@@ -15,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Harone Magalhães",
-  description: "Portfólio e projetos de Harone Magalhães",
+  title: "Harone Magalhães — Em atualização",
+  description: "Site em atualização. Fale comigo pelo WhatsApp ou Instagram.",
+  robots: { index: false, follow: false },
   themeColor: "#0b0d10",
   icons: {
     icon: "/favicon.png",
