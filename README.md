@@ -22,18 +22,15 @@ npm run lint
 - `src/app/layout.tsx` — fontes, metadata/SEO, JSON-LD, providers de motion.
 - `src/app/page.tsx` — composição da home (ordem das seções).
 - `src/app/home/*` — uma seção por arquivo; `projects.ts` é o índice de trabalho.
-- `src/app/api/contact/route.ts` — recebe o formulário e envia e-mail via Resend.
+- `src/app/home/contact-form.tsx` — formulário "Vamos conversar"; envia direto do client pelo FormSubmit.co (sem backend).
 - `src/app/globals.css` — tokens da marca (`--bg`, `--ink`, `--line`…), utilitários e animações do hero.
 - `src/components/site/*` — lockup, botões, eyebrow, arcos, marcas de canto.
 - `src/components/motion/*` — reveal, rule, count-up, smooth scroll.
 - `src/lib/site.ts` — constantes (contato, CTA, nav, números da faixa de prova).
 
-## Variáveis de ambiente (formulário)
+## Formulário (FormSubmit.co)
 
-| Nome | Uso |
-|---|---|
-| `RESEND_API_KEY` | chave da conta Resend |
-| `CONTACT_FROM` | remetente verificado, ex.: `Site <site@haronedev.com.br>` |
-| `CONTACT_TO` | destino (opcional; padrão = `EMAIL` em `src/lib/site.ts`) |
+Sem variáveis de ambiente: o `onSubmit` faz `POST https://formsubmit.co/ajax/<destino>` com JSON (`_template: table`, `_captcha: false`, honeypot `_honey`).
 
-Sem essas variáveis o formulário valida e oferece o fallback por WhatsApp com a mensagem pré-preenchida.
+- 1º envio real → o FormSubmit manda um e-mail de ativação para o destino; clicar no link (antes disso nada chega e o site mostra o toast de erro).
+- Depois de ativar, trocar o destino em `FORMSUBMIT_ENDPOINT` (`contact-form.tsx`) pelo hash que o FormSubmit fornece, para o e-mail não ficar no JS.

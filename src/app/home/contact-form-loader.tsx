@@ -34,7 +34,7 @@ export function ContactFormLoader() {
   }, []);
 
   return (
-    <div ref={ref} aria-busy={!near} className="min-h-[560px]">
+    <div ref={ref} aria-busy={!near} className="min-h-[480px]">
       {near ? <ContactForm /> : <FormSkeleton />}
     </div>
   );
@@ -55,14 +55,6 @@ function FormSkeleton() {
           <span className="h-12 rounded-[8px] border border-line bg-surface" />
           <span className="h-12 rounded-[8px] border border-line bg-surface" />
           <span className="h-12 rounded-[8px] border border-line bg-surface" />
-        </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <span className="h-4 w-40 rounded-[4px] bg-surface-2" />
-        <div className="flex flex-wrap gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span key={i} className="h-10 w-28 rounded-full border border-line bg-surface" />
-          ))}
         </div>
       </div>
       <span className="mt-2 h-14 w-48 rounded-[8px] bg-surface-2" />
