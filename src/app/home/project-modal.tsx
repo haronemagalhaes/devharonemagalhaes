@@ -6,91 +6,97 @@ import { ExternalLink } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-
-type ModalProject = {
-  id: string;
-  title: string;
-  image: string;
-  category: "Web" | "Automação" | "Dashboard" | "Site Institucional";
-  description: string;
-  link?: string;
-};
+import { getLenis } from "@/components/motion/smooth-scroll";
+import type { Project } from "./projects";
 
 interface ProjectModalProps {
-  project: ModalProject | null;
+  project: Project | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
+  /* Trava o scroll (lenis + fallback) enquanto o modal está aberto */
   useEffect(() => {
     const html = document.documentElement;
+    const lenis = getLenis();
     if (isOpen) {
-      const scrollBarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
-      html.style.overflow = "hidden";
-      html.style.paddingRight = `${scrollBarWidth}px`;
+      lenis?.stop();
+      html.classList.add("modal-open");
     } else {
-      html.style.overflow = "";
-      html.style.paddingRight = "";
+      lenis?.start();
+      html.classList.remove("modal-open");
     }
     return () => {
-      html.style.overflow = "";
-      html.style.paddingRight = "";
+      lenis?.start();
+      html.classList.remove("modal-open");
     };
   }, [isOpen]);
 
   if (!project) return null;
 
+  const tech = project.technologies.filter(Boolean);
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto bg-[#0a0a0f]/95 backdrop-blur-xl border-white/10"
+        data-lenis-prevent
+        className="max-h-[90vh] overflow-y-auto rounded-[8px] border-line bg-surface p-0 sm:max-w-3xl"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <DialogHeader>
-          <DialogTitle className="text-3xl mb-4 text-white">
-            {project.title}
-          </DialogTitle>
-        </DialogHeader>
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-surface-2">
+          <Image
+            src={project.image}
+            alt={`Captura do projeto ${project.title}`}
+            fill
+            sizes="(min-width: 768px) 768px, 100vw"
+            className="object-cover object-top"
+          />
+        </div>
 
-        <div className="space-y-6">
-          <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              priority
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Badge className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs text-white">
-              {project.category}
-            </Badge>
-          </div>
-          <div>
-            <h3 className="text-xl mb-3 text-white">Sobre o Projeto</h3>
-            <p className="text-gray-300 leading-relaxed">
-              {project.description}
+        <div className="p-6 md:p-8">
+          <DialogHeader className="text-left">
+            <p className="eyebrow">
+              {project.sector} · {project.year}
             </p>
-          </div>
+            <DialogTitle className="mt-2 font-display text-[26px] font-bold leading-tight tracking-[-0.02em] text-ink md:text-[30px]">
+              {project.title}
+            </DialogTitle>
+            <DialogDescription className="mt-1 text-[15px] text-ink-soft">
+              {project.work}
+            </DialogDescription>
+          </DialogHeader>
+
+          <p className="mt-5 text-[16px] leading-relaxed text-ink md:text-[17px]">
+            {project.description}
+          </p>
+
+          {tech.length > 0 && (
+            <ul className="mt-5 flex flex-wrap gap-2" aria-label="Tecnologias">
+              {tech.map((t) => (
+                <li
+                  key={t}
+                  className="rounded-full border border-line px-3 py-1 text-[12px] font-medium uppercase tracking-[0.1em] text-ink-soft"
+                >
+                  {t}
+                </li>
+              ))}
+            </ul>
+          )}
 
           {project.link && (
             <a
               href={project.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/20 px-4 py-3 rounded-md font-medium transition-colors"
+              className="mt-7 inline-flex min-h-[44px] items-center gap-2 rounded-[8px] bg-ink px-[22px] py-[14px] text-[15px] font-medium text-bg transition-colors hover:bg-black"
             >
-              <ExternalLink className="w-4 h-4" />
-              Ver Projeto
+              Ver projeto
+              <ExternalLink className="h-4 w-4" aria-hidden />
             </a>
           )}
         </div>
