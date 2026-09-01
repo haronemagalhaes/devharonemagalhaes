@@ -10,12 +10,8 @@ import { TestimonialsSection } from "./home/testimonials-section";
 import { AboutSection } from "./home/about-section";
 import { FaqSection } from "./home/faq-section";
 import { FinalCtaSection } from "./home/final-cta-section";
-import dynamic from "next/dynamic";
-
-/* Formulário (react-hook-form + zod) fica fora do bundle inicial — está abaixo da dobra. */
-const ContactSection = dynamic(() =>
-  import("./home/contact-section").then((mod) => mod.ContactSection),
-);
+/* O formulário (react-hook-form + zod) entra sob demanda — ver contact-form-loader.tsx */
+import { ContactSection } from "./home/contact-section";
 import Footer from "./home/footer";
 
 export default function Home() {
