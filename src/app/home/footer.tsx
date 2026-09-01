@@ -1,169 +1,74 @@
-"use client";
+import { AnchorLink } from "@/components/site/anchor-link";
+import { Lockup } from "@/components/site/lockup";
+import {
+  EMAIL,
+  INSTAGRAM_HANDLE,
+  INSTAGRAM_URL,
+  NAV_LINKS,
+  RESPONSE_TIME,
+  SITE_NAME,
+} from "@/lib/site";
 
-import { motion } from "framer-motion";
-import { Mail, Instagram } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { PaymentMethods } from "@/components/payment-methods";
-import LogoMarca from "@/assets/Logomarca.png";
-
+/** Rodapé-colofão: seco, tipográfico, em colunas. */
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    {
-      icon: Mail,
-      href: "mailto:haronemagalhaesdev@gmail.com",
-      label: "Email",
-    },
-    {
-      icon: Instagram,
-      href: "https://www.instagram.com/haronedev_?igsh=YzVzMG9rM3prb2Zi&utm_source=qr",
-      label: "Instagram",
-    },
-  ];
-
-  const quickLinks = [
-    { label: "Serviços", href: "#servicos" },
-    { label: "Trabalhos", href: "#trabalhos" },
-    { label: "Sobre", href: "#sobre" },
-    { label: "Contato", href: "#contato" },
-  ];
+  const year = new Date().getFullYear();
 
   return (
-    <footer
-      id="contato"
-      className="relative border-t border-white/10 bg-white/5 backdrop-blur-sm"
-      aria-labelledby="footer-title"
-    >
-      <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
-        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-3">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <Image
-                src={LogoMarca}
-                alt="Logomarca Harone"
-                width={36}
-                height={36}
-                className="h-9 w-9 object-contain"
-              />
-
-              <h3 id="footer-title" className="text-2xl text-white">
-                Harone Magalhães
-              </h3>
-            </div>
-
-            <p className="text-sm leading-relaxed text-white/80">
-              Desenvolvedor especializado em criar experiências digitais
-              modernas e funcionais.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <h4 className="mb-4 text-white">Navegação</h4>
-            <ul className="space-y-2">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-white/80 transition-colors duration-200 hover:text-cyan-400"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="mb-4 text-white">Conecte-se</h4>
-
-            <div className="mb-4 flex flex-wrap gap-3">
-              {socialLinks.map(({ icon: Icon, href, label }) => {
-                const isMailto = href.startsWith("mailto:");
-                return (
-                  <Button
-                    key={label}
-                    asChild
-                    type="button"
-                    variant="outline"
-                    className="rounded-xl border-white/10 bg-white/5 px-4 py-2 text-white transition-all duration-200 hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-300"
-                  >
-                    <a
-                      href={href}
-                      target={isMailto ? undefined : "_blank"}
-                      rel={isMailto ? undefined : "noopener noreferrer"}
-                      aria-label={label}
-                    >
-                      <span className="inline-flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
-                        <span>{label}</span>
-                      </span>
-                    </a>
-                  </Button>
-                );
-              })}
-            </div>
-
-            <Button
-              asChild
-              className="mt-4 w-full rounded-xl bg-cyan-500 py-2 font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:bg-cyan-600 hover:shadow-cyan-500/40"
-            >
-              <a
-                href="#whatsapp"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const hour = new Date().getHours();
-                  let saudacao = "Olá";
-
-                  if (hour >= 5 && hour < 12) saudacao = "Bom dia";
-                  else if (hour >= 12 && hour < 18) saudacao = "Boa tarde";
-                  else saudacao = "Boa noite";
-
-                  const mensagem = `${saudacao}! Tudo bem? Tenho interesse em conversar sobre um projeto digital e gostaria de saber como funciona o seu processo de trabalho.`;
-                  const link = `https://wa.me/5579981164388?text=${encodeURIComponent(
-                    mensagem,
-                  )}`;
-
-                  window.open(link, "_blank", "noopener,noreferrer");
-                }}
-                aria-label="Abrir conversa no WhatsApp"
-              >
-                Contato
-              </a>
-            </Button>
-
-            <p className="mt-4 text-sm text-white/80" />
-          </motion.div>
+    <footer className="border-t border-line" aria-label="Rodapé">
+      <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-10 py-14 md:py-16">
+        <div className="col-span-12 flex flex-col gap-4 md:col-span-5">
+          <Lockup compact />
+          <p className="max-w-[36ch] text-[15px] leading-relaxed text-ink-soft">
+            Estúdio de tecnologia e presença digital. Sites, sistemas,
+            automação e tráfego pago.
+          </p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="border-t border-white/10 pt-8"
-        >
-          <PaymentMethods className="mb-6" />
-          <p className="text-center text-sm text-white/70">
-            © {currentYear} Harone. Todos os direitos reservados.
+        <nav className="col-span-6 md:col-span-3" aria-label="Rodapé">
+          <ul className="flex flex-col gap-2 text-[15px]">
+            {NAV_LINKS.map((l) => (
+              <li key={l.id}>
+                <AnchorLink href={`#${l.id}`} className="link-line text-ink">
+                  {l.label}
+                </AnchorLink>
+              </li>
+            ))}
+            <li>
+              <AnchorLink href="#sobre" className="link-line text-ink">
+                Sobre
+              </AnchorLink>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="col-span-6 md:col-span-4">
+          <ul className="flex flex-col gap-2 text-[15px]">
+            <li className="text-ink-soft">Aracaju, Brasil — atendo todo o Brasil</li>
+            <li>
+              <a href={`mailto:${EMAIL}`} className="link-line break-all text-ink">
+                {EMAIL}
+              </a>
+            </li>
+            <li>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-line text-ink"
+              >
+                {INSTAGRAM_HANDLE}
+              </a>
+            </li>
+            <li className="text-ink-soft">{RESPONSE_TIME}</li>
+          </ul>
+        </div>
+
+        <div className="col-span-12 flex flex-col gap-2 border-t border-line pt-6 text-[13px] text-ink-soft sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {SITE_NAME}
           </p>
-        </motion.div>
+          <p>feito em Next.js</p>
+        </div>
       </div>
     </footer>
   );
