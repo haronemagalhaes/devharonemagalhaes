@@ -12,13 +12,14 @@ import { CONTACT_ID, CTA_PRIMARY, CTA_WORK } from "@/lib/site";
  *
  * Quebra (um bloco só):
  *   - lg+ ....... 2 linhas com <br>: "Software e presença digital" /
- *                 "sob medida para a sua empresa". A 2ª mede ≈ 24.8em no Syne
- *                 ExtraBold (tracking -0.03em), então o corpo é
- *                 (100vw − 80px) / 25.2 com teto de 44px — enche os 1120px do
- *                 container. 2 linhas dentro de ~58% da largura seria ~26px.
+ *                 "sob medida para a sua empresa". Syne 700, tracking -0.005em
+ *                 (quase zero — negativo demais esmaga a fonte, que já é larga),
+ *                 line-height 1.12. No 700 a 2ª linha mede ≈ 18.5em, então o
+ *                 corpo é (100vw − 80px) / 20 com teto de 50px: sobram ~190px
+ *                 à direita em vez de encostar na borda.
  *   - < lg ...... sem <br>: quebra natural + `text-wrap: balance` +
  *                 `overflow-wrap: anywhere` (nunca corta). Corpo fluido
- *                 (100vw − 48px) / 13.4 → 4 linhas equilibradas no celular
+ *                 (100vw − 48px) / 13.8 → 4 linhas equilibradas no celular
  *                 (a maior ≈ 13.3em), 3 no tablet. Um clamp em vw "normal"
  *                 (ex. 8.5vw) daria 6–7 linhas com essa fonte larga.
  * A revelação é do bloco inteiro (cortina + translateY), não linha a linha,
@@ -81,7 +82,7 @@ export function HeroSection() {
 
         <h1
           id="hero-title"
-          className="mt-6 max-w-full font-display text-[length:clamp(1.35rem,calc((100vw-48px)/13.4),2.4rem)] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink [overflow-wrap:anywhere] md:mt-8 lg:text-[length:min(44px,calc((100vw-80px)/25.2))]"
+          className="mt-6 max-w-full font-display text-[length:clamp(1.3rem,calc((100vw-48px)/13.8),2.25rem)] font-bold leading-[1.12] tracking-[-0.005em] text-ink [overflow-wrap:anywhere] md:mt-8 lg:max-w-[22em] lg:text-[length:min(50px,calc((100vw-80px)/20))]"
         >
           <span className="hero-line" style={delay(0.25)}>
             <span className="text-balance">

@@ -41,7 +41,7 @@ export function ProofStrip() {
               )}
             >
               {/* dd antes do dt visualmente: número em cima, rótulo embaixo */}
-              <dd className="order-first font-display text-[2.1rem] font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums md:text-[length:clamp(2.4rem,5vw,3.4rem)]">
+              <dd className="order-first font-display text-[2.1rem] font-extrabold leading-none tracking-[-0.01em] text-ink tabular-nums md:text-[length:clamp(2.4rem,5vw,3.4rem)]">
                 <CountUp to={stat.value} duration={COUNT_SECONDS} />
                 {stat.suffix && <span className="text-[0.6em]">{stat.suffix}</span>}
               </dd>

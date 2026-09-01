@@ -32,7 +32,7 @@ export function SectionHeading({
       <Eyebrow index={index}>{eyebrow}</Eyebrow>
       <h2
         id={id}
-        className="font-display text-[26px] font-bold leading-[1.08] tracking-[-0.02em] text-ink sm:text-[30px] md:text-[38px] lg:text-[44px]"
+        className="font-display text-[26px] font-bold leading-[1.15] tracking-[-0.01em] text-ink sm:text-[30px] md:text-[38px] lg:text-[44px]"
       >
         {title}
       </h2>

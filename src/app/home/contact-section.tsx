@@ -17,7 +17,7 @@ export function ContactSection() {
           <Eyebrow index="09">Contato</Eyebrow>
           <h2
             id="contato-title"
-            className="font-display text-[30px] font-bold leading-[1.08] tracking-[-0.02em] text-ink sm:text-[34px] md:text-[44px]"
+            className="font-display text-[30px] font-bold leading-[1.15] tracking-[-0.01em] text-ink sm:text-[34px] md:text-[44px]"
           >
             Vamos conversar
           </h2>

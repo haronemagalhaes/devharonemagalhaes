@@ -31,7 +31,7 @@ export function ProductSection() {
             </Eyebrow>
             <h2
               id="produto-title"
-              className="font-display text-[28px] font-bold leading-[1.08] tracking-[-0.02em] sm:text-[32px] md:text-[40px]"
+              className="font-display text-[28px] font-bold leading-[1.15] tracking-[-0.01em] sm:text-[32px] md:text-[40px]"
             >
               SI-Agenda — minha plataforma de gestão
             </h2>
