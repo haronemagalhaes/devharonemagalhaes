@@ -113,9 +113,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* fio inferior */}
-      <div aria-hidden className="hero-rule absolute inset-x-0 bottom-0 h-px bg-line" />
     </section>
   );
 }

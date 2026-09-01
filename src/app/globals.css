@@ -386,14 +386,6 @@ html.lenis body {
     transform: translateY(-102%);
   }
 }
-@keyframes hero-rule-in {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
 .hero-fade {
   animation: hero-fade-up 0.7s var(--ease-out-expo) both;
   animation-delay: var(--d, 0s);
@@ -436,14 +428,9 @@ html.lenis body {
   50%      { transform: rotateY(8deg); }
 }
 */
-.hero-rule {
-  transform-origin: left;
-  animation: hero-rule-in 1.2s 0.6s var(--ease-out-expo) both;
-}
 @media (prefers-reduced-motion: reduce) {
   .hero-fade,
-  .hero-line > span,
-  .hero-rule {
+  .hero-line > span {
     animation: none;
     opacity: 1;
     transform: none;

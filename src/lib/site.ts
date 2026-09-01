@@ -46,3 +46,9 @@ export const WHATSAPP_DEFAULT_MESSAGE =
 /** Faixa de prova — números reais (atualizar à mão quando mudarem). */
 export const PROJECTS_DELIVERED = 40;
 export const CLIENTS_ACTIVE = 9;
+/**
+ * PENDÊNCIA — Harone confirma: 6 = Saúde, Moda, Jurídico, Comércio,
+ * Serviços, Engenharia. O índice de trabalho (projects.ts) hoje lista 8
+ * setores distintos (+ Indústria, Lazer).
+ */
+export const SECTORS_SERVED = 6;
