@@ -6,9 +6,10 @@ export type Testimonial = {
   quote: string;
   name: string;
   role: string; // papel + segmento, ex: "Dona de clínica odontológica"
-  avatar?: string; // caminho do logo/foto, opcional (sem ele: iniciais)
-  /** logo que não lê em P&B (ex.: dourado sobre azul) fica sempre colorido */
-  keepColor?: boolean;
+  /** foto do cliente (círculo 40px, cor natural). Sem ela: iniciais em Syne.
+   *  Os logos (vitalle/unicortte/mendonca em public/) não leem a 20–40px —
+   *  por isso as três empresas ficam com iniciais, uniforme. */
+  avatar?: string;
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -17,7 +18,6 @@ export const TESTIMONIALS: Testimonial[] = [
       "Serviço muito bom, do site ao sistema interno da clínica. Trabalha com a gente até hoje.",
     name: "Centro Médico Vitalle",
     role: "Clínica médica",
-    avatar: "/vitalle-logo.png",
   },
   {
     quote: "Amei o resultado. O site ficou lindo e representa bem o meu trabalho.",
@@ -29,13 +29,10 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "Superou a expectativa. Gostamos do estilo do trabalho e do resultado.",
     name: "Mendonça Advocacia",
     role: "Escritório de advocacia",
-    avatar: "/mendonca-logo.png",
-    keepColor: true,
   },
   {
     quote: "Ficou impecável. Adoramos o resultado.",
     name: "Armarinho Unicortte",
     role: "Comércio",
-    avatar: "/unicortte-logo.png",
   },
 ];
