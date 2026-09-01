@@ -3,7 +3,7 @@ import { Inter, Syne } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { WhatsappFloat } from "@/components/whatsapp-float";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
-import { Cursor } from "@/components/motion/cursor";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { Grain } from "@/components/motion/grain";
 import {
   CITY,
@@ -125,11 +125,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <SmoothScroll />
-        {children}
-        <WhatsappFloat />
-        <Cursor />
+        <MotionProvider>
+          {children}
+          <WhatsappFloat />
+        </MotionProvider>
         <Grain />
-        <Analytics />
+        {/* Vercel Analytics: o script só existe no deploy da Vercel */}
+        {process.env.VERCEL && <Analytics />}
       </body>
     </html>
   );
