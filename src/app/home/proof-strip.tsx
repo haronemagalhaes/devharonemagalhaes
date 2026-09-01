@@ -7,10 +7,13 @@ import { cn } from "@/lib/utils";
 
 type Stat = { key: string; value: number; suffix?: string; label: string };
 
+/** os três contam de 0 ao valor na mesma duração (terminam juntos); o "+" é fixo */
+const COUNT_SECONDS = 0.9;
+
 const STATS: Stat[] = [
   { key: "projetos", value: PROJECTS_DELIVERED, suffix: "+", label: "projetos entregues" },
-  { key: "empresas", value: CLIENTS_ACTIVE, label: "empresas atendidas hoje" },
-  { key: "setores", value: SECTORS_SERVED, label: "setores diferentes" },
+  { key: "empresas", value: CLIENTS_ACTIVE, suffix: "+", label: "empresas atendidas hoje" },
+  { key: "setores", value: SECTORS_SERVED, suffix: "+", label: "setores diferentes" },
 ];
 
 const LEGEND = "Aracaju/SE — do consultório à obra, atendo todo o Brasil";
@@ -39,7 +42,7 @@ export function ProofStrip() {
             >
               {/* dd antes do dt visualmente: número em cima, rótulo embaixo */}
               <dd className="order-first font-display text-[2.1rem] font-extrabold leading-none tracking-[-0.03em] text-ink tabular-nums md:text-[length:clamp(2.4rem,5vw,3.4rem)]">
-                <CountUp to={stat.value} />
+                <CountUp to={stat.value} duration={COUNT_SECONDS} />
                 {stat.suffix && <span className="text-[0.6em]">{stat.suffix}</span>}
               </dd>
               <dt className="font-sans text-[0.78rem] font-medium uppercase leading-snug tracking-[0.06em] text-ink sm:text-[0.9rem]">
