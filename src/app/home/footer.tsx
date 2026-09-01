@@ -67,7 +67,6 @@ export default function Footer() {
           <p>
             © {year} {SITE_NAME}
           </p>
-          <p>feito em Next.js</p>
         </div>
       </div>
     </footer>
