@@ -35,12 +35,13 @@ function initials(name: string) {
     .join("");
 }
 
-/** fotos preenchem o círculo; logos ficam contidos com um respiro */
+/** fotos preenchem o círculo em cor natural; logos ficam contidos com um
+ *  respiro e em P&B → cor no hover do card (salvo `keepColor`) */
 const isPhoto = (src: string) => /foto|photo|retrato/i.test(src);
 
 function TestimonialCard({ t }: { t: Testimonial }) {
   return (
-    <figure className="flex h-full flex-col gap-5 rounded-[8px] border border-line bg-surface p-7 md:p-8">
+    <figure className="group flex h-full flex-col gap-5 rounded-[8px] border border-line bg-surface p-7 md:p-8">
       <span
         aria-hidden
         className="font-display text-[64px] font-extrabold leading-[0.55] text-ink-soft"
@@ -58,7 +59,12 @@ function TestimonialCard({ t }: { t: Testimonial }) {
               alt={t.name}
               fill
               sizes="40px"
-              className={isPhoto(t.avatar) ? "object-cover" : "object-contain p-1.5"}
+              className={cn(
+                isPhoto(t.avatar) ? "object-cover" : "object-contain p-1.5",
+                !isPhoto(t.avatar) &&
+                  !t.keepColor &&
+                  "opacity-85 grayscale transition-[filter,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100 group-hover:grayscale-0",
+              )}
             />
           ) : (
             <span

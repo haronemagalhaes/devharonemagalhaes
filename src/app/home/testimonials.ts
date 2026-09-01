@@ -1,42 +1,41 @@
-// TODO: trocar as frases pelos depoimentos reais antes do push.
-// Os 4 clientes são reais; as citações abaixo são marcadores — nada aqui é
-// atribuído a alguém como se tivesse sido dito. Harone manda 3–6 frases
-// (citação curta + nome + papel/segmento) e é só preencher.
-//
-// Se o array ficar vazio, a seção "Depoimentos" some da página.
-
+/**
+ * Depoimentos reais (recebidos em 2026-09-01). Para acrescentar, é só
+ * adicionar um item — a seção some sozinha se o array ficar vazio.
+ */
 export type Testimonial = {
   quote: string;
   name: string;
   role: string; // papel + segmento, ex: "Dona de clínica odontológica"
   avatar?: string; // caminho do logo/foto, opcional (sem ele: iniciais)
+  /** logo que não lê em P&B (ex.: dourado sobre azul) fica sempre colorido */
+  keepColor?: boolean;
 };
-
-const PLACEHOLDER = "[Depoimento a confirmar — uma frase curta sobre o resultado.]";
 
 export const TESTIMONIALS: Testimonial[] = [
   {
-    quote: PLACEHOLDER,
-    name: "Naiade Santana",
-    role: "Psicóloga",
-    avatar: "/naiade-foto.png",
-  },
-  {
-    quote: PLACEHOLDER,
+    quote:
+      "Serviço muito bom, do site ao sistema interno da clínica. Trabalha com a gente até hoje.",
     name: "Centro Médico Vitalle",
     role: "Clínica médica",
     avatar: "/vitalle-logo.png",
   },
   {
-    quote: PLACEHOLDER,
-    name: "Armarinho Unicortte",
-    role: "Comércio / cursos",
-    avatar: "/unicortte-logo.png",
+    quote: "Amei o resultado. O site ficou lindo e representa bem o meu trabalho.",
+    name: "Naiade Santana",
+    role: "Psicóloga",
+    avatar: "/naiade-foto.png",
   },
   {
-    quote: PLACEHOLDER,
+    quote: "Superou a expectativa. Gostamos do estilo do trabalho e do resultado.",
     name: "Mendonça Advocacia",
     role: "Escritório de advocacia",
     avatar: "/mendonca-logo.png",
+    keepColor: true,
+  },
+  {
+    quote: "Ficou impecável. Adoramos o resultado.",
+    name: "Armarinho Unicortte",
+    role: "Comércio",
+    avatar: "/unicortte-logo.png",
   },
 ];
