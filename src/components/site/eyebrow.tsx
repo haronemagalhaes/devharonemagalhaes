@@ -1,8 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /**
  * Eyebrow com numeral de índice: `01 — CAPACIDADES`.
@@ -23,17 +24,17 @@ export function Eyebrow({
     target: ref,
     offset: ["start end", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [8, -12]);
+  const y = useTransform(scrollYProgress, [0, 1], [4, -10]);
 
   return (
-    <p ref={ref} className={cn("eyebrow flex items-center gap-3", className)}>
+    <p ref={ref} className={cn("eyebrow relative flex items-center gap-3", className)}>
       {index && (
-        <motion.span
+        <m.span
           style={reduced ? undefined : { y }}
           className="inline-block tabular-nums"
         >
           {index}
-        </motion.span>
+        </m.span>
       )}
       {index && <span aria-hidden>—</span>}
       <span>{children}</span>

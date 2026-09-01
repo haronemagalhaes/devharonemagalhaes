@@ -27,17 +27,22 @@ export function Lockup({
         className="h-[18px] w-auto shrink-0 md:h-[20px]"
         priority
       />
-      <span className="whitespace-nowrap font-display text-[15px] font-bold leading-none tracking-[-0.02em] text-ink md:text-base">
-        {SITE_NAME}
-      </span>
-      {!compact && (
-        <>
-          <span aria-hidden className="h-4 w-px bg-line" />
-          <span className={cn("eyebrow whitespace-nowrap !text-[11px]", descriptorClassName)}>
+      {!compact && <span aria-hidden className="h-6 w-px bg-line" />}
+      <span className="flex flex-col gap-[3px]">
+        <span className="whitespace-nowrap font-display text-[15px] font-bold leading-none tracking-[-0.02em] text-ink md:text-base">
+          {SITE_NAME}
+        </span>
+        {!compact && (
+          <span
+            className={cn(
+              "eyebrow whitespace-nowrap !text-[10px] leading-none",
+              descriptorClassName,
+            )}
+          >
             {SITE_DESCRIPTOR}
           </span>
-        </>
-      )}
+        )}
+      </span>
     </span>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import {
   Sheet,
@@ -24,6 +24,7 @@ import {
   whatsappUrl,
 } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const SCROLL_THRESHOLD = 40;
 
@@ -89,7 +90,7 @@ export default function Header() {
       )}
     >
       {/* Barra de progresso — fina, --ink, sem gradiente */}
-      <motion.div
+      <m.div
         aria-hidden
         style={{ scaleX: reduced ? scrollYProgress : progress }}
         className="absolute inset-x-0 top-0 h-[2px] origin-left bg-ink"
@@ -101,11 +102,7 @@ export default function Header() {
           scrolled ? "h-[60px]" : "h-[76px]",
         )}
       >
-        <AnchorLink
-          href="#top"
-          className="rounded-[4px]"
-          aria-label="Voltar ao início"
-        >
+        <AnchorLink href="#top" className="rounded-[4px]" title="Voltar ao início">
           <span className="hidden xl:inline-flex">
             <Lockup />
           </span>
@@ -114,7 +111,7 @@ export default function Header() {
           </span>
         </AnchorLink>
 
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Principal">
+        <nav className="hidden items-center gap-6 md:flex" aria-label="Principal">
           {NAV_LINKS.map(({ label, id }) => (
             <AnchorLink
               key={id}
@@ -131,7 +128,7 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <span className="hidden whitespace-nowrap text-[13px] text-ink-soft 2xl:inline">
+          <span className="hidden whitespace-nowrap text-[13px] text-ink-soft xl:inline">
             {RESPONSE_TIME}
           </span>
 

@@ -288,20 +288,10 @@ html.modal-open body {
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.03;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
-}
-
-/* Cursor custom só em ponteiro fino e sem reduced-motion */
-@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  html.has-cursor,
-  html.has-cursor a,
-  html.has-cursor button,
-  html.has-cursor [role="button"] {
-    cursor: none;
-  }
 }
 
 /* Lenis */
@@ -335,5 +325,134 @@ html.lenis body {
   .grain,
   .motion-wipe {
     display: none;
+  }
+}
+
+/* Accordion (Radix) */
+@keyframes acc-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+@keyframes acc-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+.acc-content[data-state="open"] {
+  animation: acc-down 0.45s var(--ease-out-expo);
+}
+.acc-content[data-state="closed"] {
+  animation: acc-up 0.35s var(--ease-out-expo);
+}
+
+/* =====================================================================
+   Entrada do hero — em CSS puro pra pintar antes da hidratação (LCP).
+   `--d` = atraso; `.hero-line` é a máscara da revelação por linha.
+   ===================================================================== */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-line-up {
+  from {
+    transform: translateY(45%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes hero-cover-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-102%);
+  }
+}
+@keyframes hero-arc-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.94);
+  }
+  to {
+    opacity: 0.55;
+    transform: translateY(-50%) scale(1);
+  }
+}
+@keyframes hero-rule-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.hero-fade {
+  animation: hero-fade-up 0.7s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+}
+/* Revelação por linha: o texto já é pintado (conta pro LCP) e uma cortina
+   em --bg sobe enquanto a linha termina de subir. */
+.hero-line {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.hero-line > span {
+  display: block;
+  animation: hero-line-up 0.85s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+  will-change: transform;
+}
+.hero-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  animation: hero-cover-up 0.85s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0s);
+  pointer-events: none;
+}
+.hero-arc {
+  animation: hero-arc-in 1.6s var(--ease-out-expo) both;
+}
+.hero-rule {
+  transform-origin: left;
+  animation: hero-rule-in 1.2s 0.6s var(--ease-out-expo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade,
+  .hero-line > span,
+  .hero-arc,
+  .hero-rule {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .hero-line::after {
+    display: none;
+  }
+  .hero-arc {
+    opacity: 0.55;
+    transform: translateY(-50%);
   }
 }

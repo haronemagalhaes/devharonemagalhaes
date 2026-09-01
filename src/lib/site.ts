@@ -42,3 +42,9 @@ export function whatsappUrl(message?: string) {
 
 export const WHATSAPP_DEFAULT_MESSAGE =
   "Olá, Harone! Vim pelo site e quero conversar sobre um projeto.";
+
+/**
+ * Faixa de prova — PENDÊNCIA: Harone define. `null` renderiza "___".
+ */
+export const PROJECTS_DELIVERED: number | null = null;
+export const SINCE_YEAR: number | null = null;

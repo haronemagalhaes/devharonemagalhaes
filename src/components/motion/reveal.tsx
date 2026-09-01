@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type HTMLMotionProps } from "framer-motion";
+import { m, type HTMLMotionProps } from "framer-motion";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { DUR, EASE, VIEWPORT } from "@/lib/motion";
 
 type RevealProps = HTMLMotionProps<"div"> & {
@@ -22,7 +23,7 @@ export function Reveal({
   ...rest
 }: RevealProps) {
   const reduced = useReducedMotion();
-  const Comp = motion[as] as typeof motion.div;
+  const Comp = m[as] as typeof m.div;
 
   return (
     <Comp

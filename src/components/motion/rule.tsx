@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m, } from "framer-motion";
 import { EASE, VIEWPORT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 /** Fio de 1px que entra com scaleX 0→1 (origem à esquerda). */
 export function Rule({
@@ -14,7 +15,7 @@ export function Rule({
 }) {
   const reduced = useReducedMotion();
   return (
-    <motion.div
+    <m.div
       aria-hidden
       className={cn("h-px w-full origin-left bg-line", className)}
       initial={reduced ? { opacity: 0 } : { scaleX: 0 }}

@@ -2,13 +2,12 @@
 
 import { useRef, type ComponentProps, type MouseEvent } from "react";
 import {
-  motion,
+  m,
   useMotionValue,
-  useReducedMotion,
-  useSpring,
-} from "framer-motion";
+  useSpring, } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { scrollToId } from "@/components/motion/smooth-scroll";
 
 type Variant = "primary" | "secondary";
@@ -81,7 +80,7 @@ export function StudioButton(props: Props) {
 
   const content = (
     <>
-      {variant === "primary" && !reduced && (
+      {variant === "primary" && (
         <span
           aria-hidden
           className="motion-wipe pointer-events-none absolute inset-0 translate-y-full bg-black transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-y-0"
@@ -106,7 +105,7 @@ export function StudioButton(props: Props) {
     const { href, onClick, ...anchorRest } = rest as Omit<AnchorProps, keyof BaseProps>;
     const isHash = href.startsWith("#");
     return (
-      <motion.a
+      <m.a
         ref={ref as React.RefObject<HTMLAnchorElement>}
         href={href}
         className={cls}
@@ -120,24 +119,24 @@ export function StudioButton(props: Props) {
             scrollToId(href.slice(1));
           }
         }}
-        {...(anchorRest as Omit<ComponentProps<typeof motion.a>, "ref" | "style">)}
+        {...(anchorRest as Omit<ComponentProps<typeof m.a>, "ref" | "style">)}
       >
         {content}
-      </motion.a>
+      </m.a>
     );
   }
 
   return (
-    <motion.button
+    <m.button
       ref={ref as React.RefObject<HTMLButtonElement>}
       type="button"
       className={cls}
       style={style}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      {...(rest as Omit<ComponentProps<typeof motion.button>, "ref" | "style">)}
+      {...(rest as Omit<ComponentProps<typeof m.button>, "ref" | "style">)}
     >
       {content}
-    </motion.button>
+    </m.button>
   );
 }
