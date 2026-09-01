@@ -46,10 +46,15 @@ export function AboutSection() {
             Quem faz
           </h2>
           <p className="text-[18px] leading-relaxed text-ink md:text-[20px]">
-            Sou o Harone. Programo, desenho e rodo tráfego — e faço questão de
-            tocar cada projeto pessoalmente. Quem planeja com você é quem
-            entrega. Trabalho de Aracaju para empresas do Brasil inteiro, do
-            consultório à obra.
+            Estúdio especializado em site, sistema de gestão, tráfego pago e
+            automação de processos para empresas. Sou o Harone — e conduzo
+            cada projeto pessoalmente, do primeiro rascunho à manutenção.
+            Aquela tarefa repetitiva que consome horas da sua equipe todo dia,
+            eu transformo em rotina automática. Quem combina o escopo com você
+            é quem faz o trabalho.
+          </p>
+          <p className="text-[0.85rem] leading-relaxed text-ink-soft">
+            Harone Magalhães · Aracaju/SE · atende todo o Brasil
           </p>
           <div className="mt-2">
             <StudioButton href={`#${CONTACT_ID}`} arrow>
