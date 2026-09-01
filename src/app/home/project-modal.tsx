@@ -51,7 +51,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
         <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-surface-2">
           <Image
             src={project.image}
-            alt={`Captura do projeto ${project.title}`}
+            alt={project.alt ?? `Captura do projeto ${project.title}`}
             fill
             sizes="(min-width: 768px) 768px, 100vw"
             className="object-cover object-top"

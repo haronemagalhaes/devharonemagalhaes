@@ -8,6 +8,8 @@ export type Project = {
   description: string;
   technologies: string[];
   link?: string;
+  /** alt da captura no modal; sem ele cai em "Captura do projeto {title}" */
+  alt?: string;
 };
 
 /**
@@ -134,5 +136,18 @@ export const PROJECTS: Project[] = [
       "Site da marina de jet skis em Aracaju: vagas secas, segurança 24h e espaço gourmet, com foco em converter visita em contato.",
     technologies: [],
     link: "https://www.marinapiermosqueiro.com.br/",
+  },
+  {
+    id: "psi-naiade",
+    title: "Naiade Santana · Psicóloga",
+    sector: "Saúde",
+    work: "Site institucional com foco em agendamento",
+    year: "2026",
+    image: "/psinaiade.png",
+    alt: "Site da psicóloga Naiade Santana",
+    description:
+      "Site para a psicóloga Naiade Santana, especialista em ABA. Foco em agendamento, locais de atendimento e apresentação do trabalho — layout leve, acolhedor e responsivo.",
+    technologies: [],
+    link: "https://psinaiade.vercel.app/",
   },
 ];
