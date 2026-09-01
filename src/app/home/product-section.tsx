@@ -17,10 +17,10 @@ const FEATURES = [
   "Confirmação por WhatsApp",
 ];
 
-/** Bloco curto de produto — sem preço. */
-export function FacilitSection() {
+/** Bloco curto de produto (SI-Agenda) — sem preço. */
+export function ProductSection() {
   return (
-    <section id="facilitgestao" className="section-pad bg-ink text-bg" aria-labelledby="facilit-title">
+    <section id="si-agenda" className="section-pad bg-ink text-bg" aria-labelledby="produto-title">
       <div className="container-studio">
         <div className="relative grid grid-cols-12 gap-x-6 gap-y-10 border border-bg/15 p-7 md:p-12 lg:p-16">
           <CornerMarks color="var(--bg)" size={16} inset={-1} className="opacity-60" />
@@ -30,10 +30,10 @@ export function FacilitSection() {
               Produto
             </Eyebrow>
             <h2
-              id="facilit-title"
+              id="produto-title"
               className="font-display text-[28px] font-bold leading-[1.08] tracking-[-0.02em] sm:text-[32px] md:text-[40px]"
             >
-              FacilitGestão — minha plataforma de gestão
+              SI-Agenda — minha plataforma de gestão
             </h2>
             <p className="max-w-[560px] text-[17px] leading-relaxed text-bg/75 md:text-lg">
               Agenda, financeiro, estoque, orçamentos, ponto da equipe e tarefas
@@ -47,7 +47,7 @@ export function FacilitSection() {
                 className="!border-bg !text-bg hover:!bg-bg hover:!text-ink"
                 arrow
               >
-                Conhecer o FacilitGestão
+                Conhecer o SI-Agenda
               </StudioButton>
             </div>
           </Reveal>

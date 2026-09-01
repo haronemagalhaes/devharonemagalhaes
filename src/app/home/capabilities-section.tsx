@@ -17,7 +17,7 @@ const ITEMS = [
       <>
         Sistema de gestão sob medida pra sua operação: agenda, financeiro,
         estoque, orçamentos, ordens de serviço, painéis. Ou o{" "}
-        <strong className="font-medium text-ink">FacilitGestão</strong>, minha
+        <strong className="font-medium text-ink">SI-Agenda</strong>, minha
         plataforma pronta pra adaptar ao seu negócio.
       </>
     ),
