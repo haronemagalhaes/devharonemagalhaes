@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, useInView, } from "framer-motion";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
-import { EASE } from "@/lib/motion";
+import { EASE, VIEWPORT } from "@/lib/motion";
 
 type Props = {
   to: number;
@@ -22,7 +22,8 @@ export function CountUp({
   suffix = "",
 }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+  // mesma margem do <Reveal>: o número só começa a contar quando o bloco já está visível
+  const inView = useInView(ref, { once: true, margin: VIEWPORT.margin });
   const reduced = useReducedMotion();
   const [value, setValue] = useState(0);
 
