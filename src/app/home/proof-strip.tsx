@@ -3,30 +3,33 @@
 import { CountUp } from "@/components/motion/count-up";
 import { Reveal } from "@/components/motion/reveal";
 import { Rule } from "@/components/motion/rule";
-import { PROJECTS_DELIVERED, RESPONSE_TIME, SINCE_YEAR } from "@/lib/site";
+import { CLIENTS_ACTIVE, PROJECTS_DELIVERED, RESPONSE_TIME } from "@/lib/site";
 
-/** Tira fina de prova: fios entre itens, números com count-up. */
+const NUM =
+  "font-display text-2xl font-bold tabular-nums tracking-[-0.02em] text-ink";
+
+/**
+ * Tira fina de prova: fios entre itens, números com count-up.
+ * O "+" é sufixo fixo depois do número; com reduced-motion o CountUp mostra
+ * o valor final direto.
+ */
 export function ProofStrip() {
   const items: { key: string; node: React.ReactNode }[] = [
     {
       key: "projetos",
       node: (
         <>
-          <span className="font-display text-2xl font-bold tabular-nums tracking-[-0.02em] text-ink">
-            {PROJECTS_DELIVERED === null ? "___" : <CountUp to={PROJECTS_DELIVERED} />}
-          </span>{" "}
-          projetos entregues
+          <CountUp to={PROJECTS_DELIVERED} suffix="+" className={NUM} /> projetos
+          entregues
         </>
       ),
     },
     {
-      key: "desde",
+      key: "empresas",
       node: (
         <>
-          desde{" "}
-          <span className="font-display text-2xl font-bold tabular-nums tracking-[-0.02em] text-ink">
-            {SINCE_YEAR === null ? "___" : <CountUp to={SINCE_YEAR} duration={1.8} />}
-          </span>
+          <CountUp to={CLIENTS_ACTIVE} duration={1.1} className={NUM} /> empresas
+          atendidas hoje
         </>
       ),
     },

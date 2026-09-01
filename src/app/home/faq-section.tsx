@@ -25,7 +25,7 @@ const FAQ = [
   },
   {
     q: "Quanto custa em média?",
-    a: "Depende do escopo. Há faixas por tipo de projeto na seção de planos; o valor final sai no diagnóstico.",
+    a: "Depende do escopo. Fecho o valor na proposta, por escrito, depois do diagnóstico.",
   },
   {
     q: "Trabalha com contrato?",

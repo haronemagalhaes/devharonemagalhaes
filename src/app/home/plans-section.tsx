@@ -9,20 +9,14 @@ import { CONTACT_ID, CTA_PRIMARY } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /*
- * PENDÊNCIA — valores finais definidos pelo Harone antes de publicar.
- * Faixas de referência de mercado (não publicar sem confirmar):
- *   Essencial ............ R$ 3.500 – 6.000
- *   Presença Completa .... R$ 7.000 – 14.000
- *   Sob medida ........... sob projeto — típico R$ 15.000 a R$ 60.000+
- *   Manutenção ........... R$ 250 – 600/mês (site) · R$ 600 – 1.500/mês (com sistema)
- *   Tráfego avulso ....... setup a partir de R$ ___ + gestão mensal
+ * Sem valores na home, por decisão: todos os formatos saem como "Sob proposta"
+ * e o número fecha no diagnóstico, por escrito. O formulário continua pedindo
+ * a faixa de investimento (privado, só pra triagem).
  */
-const PRICE_PLACEHOLDER = "R$ ___";
+const PRICE_LABEL = "Sob proposta";
 
 type Plan = {
   name: string;
-  price: string;
-  priceNote?: string;
   summary: string;
   items: string[];
   recommended?: boolean;
@@ -31,20 +25,17 @@ type Plan = {
 const PLANS: Plan[] = [
   {
     name: "Essencial",
-    price: `a partir de ${PRICE_PLACEHOLDER}`,
     summary: "Pra empresa que precisa existir direito na internet, rápido.",
     items: [
       "Site institucional ou landing até 5 páginas",
-      "Layout a partir de template próprio",
       "SEO local básico",
       "Formulário de contato + link na bio",
-      "1 rodada de ajustes · ~2 semanas",
-      "Escopo travado",
+      "1 rodada de ajustes",
+      "Entrega em ~2 semanas",
     ],
   },
   {
     name: "Presença Completa",
-    price: `a partir de ${PRICE_PLACEHOLDER}`,
     summary: "Site, texto e anúncio trabalhando juntos pra trazer cliente.",
     recommended: true,
     items: [
@@ -57,8 +48,6 @@ const PLANS: Plan[] = [
   },
   {
     name: "Sob medida",
-    price: "sob projeto",
-    priceNote: `faixa típica a partir de ${PRICE_PLACEHOLDER}`,
     summary: "Sistema ou plataforma feita pra sua operação.",
     items: [
       "Levantamento da operação",
@@ -77,7 +66,7 @@ export function PlansSection() {
           index="03"
           eyebrow="Planos"
           title="Planos"
-          sub="Sempre com número na mesa. O valor final sai no diagnóstico, por escrito."
+          sub="Três formatos. O valor sai no diagnóstico, sempre por escrito."
           id="planos-title"
         />
 
@@ -106,11 +95,8 @@ export function PlansSection() {
 
               <div className="mt-6 border-y border-line py-5">
                 <p className="font-display text-[22px] font-bold tracking-[-0.02em] text-ink">
-                  {plan.price}
+                  {PRICE_LABEL}
                 </p>
-                {plan.priceNote && (
-                  <p className="mt-1 text-[13px] text-ink-soft">{plan.priceNote}</p>
-                )}
               </div>
 
               <ul className="mt-6 flex flex-col gap-3">
@@ -135,26 +121,26 @@ export function PlansSection() {
           ))}
         </ul>
 
-        {/* Manutenção — add-on que vale pros três */}
+        {/* Plano mensal — add-on que vale pros três */}
         <div className="mt-10 md:mt-12">
           <Rule />
           <Reveal className="grid grid-cols-12 gap-x-6 gap-y-2 py-6 md:py-7">
             <p className="eyebrow col-span-12 md:col-span-3">
-              Manutenção · add-on
+              Plano mensal · add-on
             </p>
             <p className="col-span-12 text-[16px] leading-relaxed text-ink md:col-span-6">
-              Hospedagem, backup, ajustes e suporte. O projeto continua tendo
-              dono depois do ar.
+              Hospedagem, manutenção, ajustes e suporte contínuo. O projeto
+              continua tendo dono depois do ar.
             </p>
             <p className="col-span-12 font-display text-[18px] font-bold tracking-[-0.02em] text-ink md:col-span-3 md:text-right">
-              {PRICE_PLACEHOLDER}/mês
+              {PRICE_LABEL}
             </p>
           </Reveal>
           <Rule />
           <Reveal className="pt-6 text-[15px] text-ink-soft">
             <p>
-              Tráfego pago avulso: setup a partir de {PRICE_PLACEHOLDER} + gestão
-              mensal, verba de anúncio à parte.
+              Tráfego pago avulso: setup + gestão mensal, com a verba de anúncio
+              à parte.
             </p>
           </Reveal>
         </div>

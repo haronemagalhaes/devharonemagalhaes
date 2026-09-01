@@ -9,10 +9,10 @@ export const GOALS = [
 
 export const BUDGETS = [
   { value: "ate-5k", label: "Até R$ 5 mil" },
-  { value: "5k-15k", label: "R$ 5 a 15 mil" },
-  { value: "15k-40k", label: "R$ 15 a 40 mil" },
-  { value: "acima-40k", label: "Acima de R$ 40 mil" },
-  { value: "nao-sei", label: "Ainda não sei" },
+  { value: "5k-20k", label: "R$ 5 a 20 mil" },
+  { value: "20k-50k", label: "R$ 20 a 50 mil" },
+  { value: "acima-50k", label: "Acima de R$ 50 mil" },
+  { value: "nao-defini", label: "Ainda não defini" },
 ] as const;
 
 export const contactSchema = z.object({

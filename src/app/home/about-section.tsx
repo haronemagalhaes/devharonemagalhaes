@@ -28,11 +28,11 @@ export function AboutSection() {
           <div className="relative aspect-[4/5] overflow-hidden rounded-[8px] bg-surface-2">
             <Image
               src={Foto}
-              alt="Harone Magalhães, fundador do estúdio, em retrato preto e branco"
+              alt="Harone Magalhães, fundador do estúdio"
               fill
               placeholder="blur"
               sizes="(min-width: 768px) 40vw, 90vw"
-              className="object-cover object-[center_20%] grayscale contrast-[1.05]"
+              className="object-cover object-[center_20%]"
             />
           </div>
         </m.div>

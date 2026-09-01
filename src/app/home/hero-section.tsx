@@ -4,24 +4,27 @@ import { Arc } from "@/components/site/arc";
 import { CONTACT_ID, CTA_PRIMARY, CTA_WORK } from "@/lib/site";
 
 /*
- * H1 escolhido: "Tiro sua empresa do improviso digital"
- * Alternativas:
- *   - "Seu cliente te procura na internet. Ele te encontra?"
- *   - "Site, sistema e tráfego pago — com o dono à frente"
+ * H1: "Software e presença digital sob medida para a sua empresa"
  *
- * Sub alternativa:
- *   - "Monto e integro site, sistema e anúncios pra você parar de depender do
- *      improviso — e de cinco fornecedores diferentes."
- *   - "Uma pessoa só cuidando da parte digital da sua empresa: da página que
- *      vende ao sistema que organiza os bastidores."
+ * // alt: Sites, sistemas e tráfego pago — um estúdio, um responsável
+ * // alt: O digital da sua empresa, do site ao sistema
+ * // versão para anúncio (não usar na home): Tiro sua empresa do improviso digital
+ *
+ * Quebra: cada item de H1_LINES é um bloco. Tamanho fluido calibrado na
+ * largura real do Syne ExtraBold (tracking -0.03em):
+ *   - linha "sob medida para a sua empresa" ≈ 24.8em → 44px enche os 1120px
+ *     do container em 2 linhas (≥ ~1170px de viewport);
+ *   - abaixo disso cada bloco quebra com `text-wrap: balance` em 2 subl.
+ *     (a maior ≈ 13.2em) → 3 linhas no lg/tablet, 4 no mobile, sem órfã.
+ * Se quiser o H1 maior no desktop, o custo é ir pra 3 linhas.
  *
  * As animações de entrada são CSS puro (globals.css → .hero-*) pra pintar
  * antes da hidratação e não segurar o LCP.
  */
-const H1_LINES = ["Tiro sua empresa", "do improviso digital"];
+const H1_LINES = ["Software e presença digital", "sob medida para a sua empresa"];
 
 const SUB =
-  "Crio o site que traz cliente, o sistema que organiza a operação e as campanhas que fazem o telefone tocar — tudo integrado, com você falando direto comigo, não com um atendimento.";
+  "Site, sistema de gestão e tráfego pago — feitos e integrados por um estúdio só, com você falando direto com quem executa.";
 
 const delay = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
 
@@ -51,11 +54,11 @@ export function HeroSection() {
 
         <h1
           id="hero-title"
-          className="mt-7 font-display text-[34px] font-extrabold leading-[1.02] tracking-[-0.03em] text-ink sm:text-[44px] md:mt-8 md:text-[46px] lg:text-[62px] xl:text-[74px]"
+          className="mt-7 font-display text-[length:min(44px,calc((100vw-48px)/13.4))] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink md:mt-8"
         >
           {H1_LINES.map((line, i) => (
             <span key={line} className="hero-line" style={delay(0.25 + i * 0.07)}>
-              <span>{line}</span>
+              <span className="text-balance">{line}</span>
             </span>
           ))}
         </h1>
