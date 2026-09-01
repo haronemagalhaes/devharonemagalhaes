@@ -41,7 +41,7 @@ export function AboutSection() {
           <Eyebrow index="07">Quem faz</Eyebrow>
           <h2
             id="sobre-title"
-            className="font-display text-[28px] font-bold leading-[1.15] tracking-[-0.01em] text-ink sm:text-[32px] md:text-[40px]"
+            className="font-display text-[28px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink sm:text-[32px] md:text-[40px]"
           >
             Quem faz
           </h2>

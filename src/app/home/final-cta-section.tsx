@@ -19,7 +19,7 @@ export function FinalCtaSection() {
         <div className="col-span-12 lg:col-span-8">
           <h2
             id="cta-title"
-            className="max-w-[16ch] font-display text-[32px] font-bold leading-[1.15] tracking-[-0.01em] text-ink sm:text-[40px] md:text-[52px]"
+            className="max-w-[16ch] font-display text-[32px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink sm:text-[40px] md:text-[52px]"
           >
             Sua parte digital resolvida com uma conversa
           </h2>

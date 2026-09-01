@@ -115,8 +115,8 @@ export function WorksSection() {
                           <span className="col-span-9 flex flex-col gap-1 md:col-span-4 md:flex-row md:items-center md:gap-3">
                             <span
                               className={cn(
-                                "font-display text-[18px] leading-tight tracking-[-0.02em] transition-[font-weight] duration-300 md:text-[20px]",
-                                active ? "font-bold" : "font-medium",
+                                "font-display text-[18px] leading-tight tracking-[-0.01em] transition-[font-weight] duration-300 md:text-[20px]",
+                                active ? "font-semibold" : "font-medium",
                               )}
                             >
                               {p.title}

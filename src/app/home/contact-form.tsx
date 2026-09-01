@@ -116,7 +116,7 @@ export function ContactForm() {
             role="status"
             className="rounded-[8px] border border-line bg-surface p-8 md:p-10"
           >
-            <p className="font-display text-[26px] font-bold tracking-[-0.02em] text-ink">
+            <p className="font-display text-[26px] font-semibold tracking-[-0.015em] text-ink">
               Recebido.
             </p>
             <p className="mt-2 text-[17px] text-ink-soft">Respondo em até 1 dia útil.</p>

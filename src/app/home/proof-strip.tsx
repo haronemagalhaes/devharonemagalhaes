@@ -23,8 +23,8 @@ const LEGEND = "Aracaju/SE — do consultório à obra, atendo todo o Brasil";
  * divisores verticais em --line, hairline em cima e embaixo, legenda numa
  * linha. Os números sobem com <CountUp> ao entrar na viewport (o "+" é
  * fixo); com reduced-motion aparecem prontos. Só tipografia + fios.
- * Número em Syne 700, tracking 0, line-height 1 — 800 + tracking negativo
- * esmaga os dígitos. O "+" é um span à parte (0.5em, na base).
+ * Número em Geist 700, tracking -0.02em, line-height 1. O "+" é um span à
+ * parte (0.5em, na base).
  */
 export function ProofStrip() {
   return (
@@ -44,7 +44,7 @@ export function ProofStrip() {
               )}
             >
               {/* dd antes do dt visualmente: número + "+" fixo (fora da contagem) */}
-              <dd className="order-first flex w-[4.4ch] shrink-0 items-baseline font-display text-[2.1rem] font-bold leading-none tracking-normal text-ink tabular-nums sm:w-auto md:text-[length:clamp(2.6rem,4vw,3.4rem)]">
+              <dd className="order-first flex w-[4.4ch] shrink-0 items-baseline font-display text-[2.1rem] font-bold leading-none tracking-[-0.02em] text-ink tabular-nums sm:w-auto md:text-[length:clamp(2.6rem,4vw,3.4rem)]">
                 {/* largura final reservada pelo nº de dígitos → sem pulo de layout enquanto conta */}
                 <span className="inline-block text-right" style={{ minWidth: `${String(stat.value).length}ch` }}>
                   <CountUp to={stat.value} duration={COUNT_SECONDS} />

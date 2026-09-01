@@ -86,7 +86,7 @@ export function PlansSection() {
                   Recomendado
                 </span>
               )}
-              <h3 className="font-display text-[24px] font-bold leading-tight tracking-[-0.02em] text-ink">
+              <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.01em] text-ink">
                 {plan.name}
               </h3>
               <p className="mt-2 text-[15px] leading-snug text-ink-soft">
@@ -94,7 +94,7 @@ export function PlansSection() {
               </p>
 
               <div className="mt-6 border-y border-line py-5">
-                <p className="font-display text-[22px] font-bold tracking-[-0.02em] text-ink">
+                <p className="font-display text-[22px] font-semibold tracking-[-0.01em] text-ink">
                   {PRICE_LABEL}
                 </p>
               </div>
@@ -132,7 +132,7 @@ export function PlansSection() {
               Hospedagem, manutenção, ajustes e suporte contínuo. O projeto
               continua tendo dono depois do ar.
             </p>
-            <p className="col-span-12 font-display text-[18px] font-bold tracking-[-0.02em] text-ink md:col-span-3 md:text-right">
+            <p className="col-span-12 font-display text-[18px] font-semibold tracking-[-0.01em] text-ink md:col-span-3 md:text-right">
               {PRICE_LABEL}
             </p>
           </Reveal>

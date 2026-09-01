@@ -12,11 +12,10 @@ import { CONTACT_ID, CTA_PRIMARY, CTA_WORK } from "@/lib/site";
  *
  * Quebra (um bloco só):
  *   - lg+ ....... 2 linhas com <br>: "Software e presença digital" /
- *                 "sob medida para a sua empresa". Syne 700, tracking -0.005em
- *                 (quase zero — negativo demais esmaga a fonte, que já é larga),
- *                 line-height 1.12. No 700 a 2ª linha mede ≈ 18.5em, então o
- *                 corpo é (100vw − 80px) / 20 com teto de 50px: sobram ~190px
- *                 à direita em vez de encostar na borda.
+ *                 "sob medida para a sua empresa". Geist 600, tracking
+ *                 -0.015em, line-height 1.2. A 2ª linha mede ≈ 14.6em, então
+ *                 o corpo é (100vw − 80px) / 15.6 com teto de 60px: sobram
+ *                 ~240px à direita em vez de encostar na borda.
  *   - < lg ...... sem <br>: quebra natural + `text-wrap: balance` +
  *                 `overflow-wrap: anywhere` (nunca corta). Corpo fluido
  *                 (100vw − 48px) / 13.8 → 4 linhas equilibradas no celular
@@ -82,7 +81,7 @@ export function HeroSection() {
 
         <h1
           id="hero-title"
-          className="mt-6 max-w-full font-display text-[length:clamp(1.3rem,calc((100vw-48px)/13.8),2.25rem)] font-bold leading-[1.12] tracking-[-0.005em] text-ink [overflow-wrap:anywhere] md:mt-8 lg:max-w-[22em] lg:text-[length:min(50px,calc((100vw-80px)/20))]"
+          className="mt-6 max-w-full font-display text-[length:clamp(1.6rem,calc((100vw-48px)/9.9),2.6rem)] font-semibold leading-[1.2] tracking-[-0.015em] text-ink [overflow-wrap:anywhere] md:mt-8 lg:text-[length:min(60px,calc((100vw-80px)/15.6))]"
         >
           <span className="hero-line" style={delay(0.25)}>
             <span className="text-balance">

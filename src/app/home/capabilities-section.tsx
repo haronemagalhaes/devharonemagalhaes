@@ -59,7 +59,7 @@ export function CapabilitiesSection() {
                 <span className="eyebrow col-span-12 tabular-nums transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1 md:col-span-1">
                   {item.n}
                 </span>
-                <h3 className="col-span-12 font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-ink md:col-span-4 md:text-[26px]">
+                <h3 className="col-span-12 font-display text-[22px] font-semibold leading-[1.15] tracking-[-0.01em] text-ink md:col-span-4 md:text-[26px]">
                   {item.title}
                 </h3>
                 <p className="col-span-12 text-[17px] leading-relaxed text-ink-soft md:col-span-7 md:text-lg">

@@ -29,7 +29,7 @@ export function Lockup({
       />
       {!compact && <span aria-hidden className="h-6 w-px bg-line" />}
       <span className="flex flex-col gap-[3px]">
-        <span className="whitespace-nowrap font-display text-[15px] font-bold leading-none tracking-[-0.02em] text-ink md:text-base">
+        <span className="whitespace-nowrap font-display text-[15px] font-semibold leading-none tracking-[-0.01em] text-ink md:text-base">
           {SITE_NAME}
         </span>
         {!compact && (

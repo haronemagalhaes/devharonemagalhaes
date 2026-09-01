@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Syne } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { WhatsappFloat } from "@/components/whatsapp-float";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
@@ -17,10 +17,10 @@ import {
 } from "@/lib/site";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -118,7 +118,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${syne.variable} ${inter.variable} h-full`}>
+    <html lang="pt-BR" className={`${geist.variable} ${inter.variable} h-full`}>
       <body className="flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground antialiased">
         <script
           type="application/ld+json"

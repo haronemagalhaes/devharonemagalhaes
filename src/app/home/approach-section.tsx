@@ -47,10 +47,10 @@ export function ApproachSection() {
             <li key={step.n} className="flex flex-col">
               <Rule delay={i * 0.08} />
               <Reveal delay={0.08 + i * 0.08} className="flex flex-1 flex-col gap-4 py-7 md:py-8">
-                <span className="font-display text-[44px] font-extrabold leading-none tracking-[-0.01em] text-ink/15 md:text-[56px]">
+                <span className="font-display text-[44px] font-bold leading-none tracking-[-0.02em] text-ink/15 md:text-[56px]">
                   {step.n}
                 </span>
-                <h3 className="mt-4 font-display text-[22px] font-bold leading-tight tracking-[-0.02em] text-ink">
+                <h3 className="mt-4 font-display text-[22px] font-semibold leading-[1.15] tracking-[-0.01em] text-ink">
                   {step.title}
                 </h3>
                 <p className="text-[16px] leading-relaxed text-ink-soft md:text-[17px]">

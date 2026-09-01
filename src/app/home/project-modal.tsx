@@ -63,7 +63,7 @@ export function ProjectModal({ project, isOpen, onClose }: ProjectModalProps) {
             <p className="eyebrow">
               {project.sector} · {project.year}
             </p>
-            <DialogTitle className="mt-2 font-display text-[26px] font-bold leading-[1.15] tracking-[-0.01em] text-ink md:text-[30px]">
+            <DialogTitle className="mt-2 font-display text-[26px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink md:text-[30px]">
               {project.title}
             </DialogTitle>
             <DialogDescription className="mt-1 text-[15px] text-ink-soft">

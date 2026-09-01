@@ -185,7 +185,7 @@ export default function Header() {
                         <button
                           type="button"
                           onClick={() => onNav(id)}
-                          className="flex w-full items-center justify-between py-4 text-left font-display text-2xl font-bold tracking-[-0.02em]"
+                          className="flex w-full items-center justify-between py-4 text-left font-display text-2xl font-semibold tracking-[-0.01em]"
                           aria-current={active === id ? "true" : undefined}
                         >
                           {label}
