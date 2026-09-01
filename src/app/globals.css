@@ -386,14 +386,15 @@ html.lenis body {
     transform: translateY(-102%);
   }
 }
+/* o -50% vertical fica no wrapper (HeroSeal); aqui só entrada */
 @keyframes hero-arc-in {
   from {
     opacity: 0;
-    transform: translateY(-50%) scale(0.94);
+    transform: scale(0.94);
   }
   to {
     opacity: 0.55;
-    transform: translateY(-50%) scale(1);
+    transform: scale(1);
   }
 }
 @keyframes hero-rule-in {
@@ -453,6 +454,5 @@ html.lenis body {
   }
   .hero-arc {
     opacity: 0.55;
-    transform: translateY(-50%);
   }
 }

@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { StudioButton } from "@/components/site/studio-button";
-import { Arc } from "@/components/site/arc";
+import { HeroSeal } from "@/components/motion/hero-seal";
 import { CONTACT_ID, CTA_PRIMARY, CTA_WORK } from "@/lib/site";
 
 /*
@@ -10,18 +10,24 @@ import { CONTACT_ID, CTA_PRIMARY, CTA_WORK } from "@/lib/site";
  * // alt: O digital da sua empresa, do site ao sistema
  * // versão para anúncio (não usar na home): Tiro sua empresa do improviso digital
  *
- * Quebra: cada item de H1_LINES é um bloco. Tamanho fluido calibrado na
- * largura real do Syne ExtraBold (tracking -0.03em):
- *   - linha "sob medida para a sua empresa" ≈ 24.8em → 44px enche os 1120px
- *     do container em 2 linhas (≥ ~1170px de viewport);
- *   - abaixo disso cada bloco quebra com `text-wrap: balance` em 2 subl.
- *     (a maior ≈ 13.2em) → 3 linhas no lg/tablet, 4 no mobile, sem órfã.
- * Se quiser o H1 maior no desktop, o custo é ir pra 3 linhas.
+ * Quebra: cada item de H1_LINES é um bloco com revelação própria.
+ *   - lg+: 3 linhas — "Software e presença digital" / "sob medida" /
+ *     "para a sua empresa" (o <br> do 2º bloco só existe em lg+).
+ *     Corpo clamp(2.6rem, 4vw, 3.3rem): a 1ª linha mede ≈ 20.9em no Syne
+ *     ExtraBold, então 3.3rem (52.8px) é o teto que cabe nos 1120px.
+ *   - < lg: 2 blocos que quebram com `text-wrap: balance` → 4 linhas no
+ *     mobile, 3 no tablet largo; corpo fluido (100vw − 48px) / 14.2.
  *
  * As animações de entrada são CSS puro (globals.css → .hero-*) pra pintar
  * antes da hidratação e não segurar o LCP.
  */
-const H1_LINES = ["Software e presença digital", "sob medida para a sua empresa"];
+const H1_LINES = [
+  <>Software e presença digital</>,
+  <>
+    sob medida
+    <br className="hidden lg:inline" /> para a sua empresa
+  </>,
+];
 
 const SUB =
   "Site, sistema de gestão e tráfego pago — feitos e integrados por um estúdio só, com você falando direto com quem executa.";
@@ -32,16 +38,11 @@ export function HeroSection() {
   return (
     <section
       id="top"
-      className="relative flex min-h-[calc(100svh-var(--header-h))] items-center overflow-hidden pt-[var(--header-h)]"
+      className="relative flex min-h-[calc(100svh-var(--header-h))] items-center overflow-hidden pt-[var(--header-h)] lg:min-h-[calc(88svh-var(--header-h))]"
       aria-labelledby="hero-title"
     >
-      {/* Arco concêntrico ao fundo — --line, sem preenchimento */}
-      <div
-        aria-hidden
-        className="hero-arc pointer-events-none absolute -right-[22vw] top-1/2 w-[78vw] md:-right-[14vw] md:w-[58vw] lg:-right-[10vw] lg:w-[52vw]"
-      >
-        <Arc rings={6} className="h-auto w-full" />
-      </div>
+      {/* Arcos concêntricos ao fundo + selo HM (lg+) — --line, sem preenchimento */}
+      <HeroSeal className="-right-[22vw] w-[78vw] md:-right-[14vw] md:w-[58vw] lg:-right-[10vw] lg:w-[52vw]" />
 
       <div className="container-studio relative z-10 w-full py-16 md:py-24">
         <p
@@ -54,10 +55,10 @@ export function HeroSection() {
 
         <h1
           id="hero-title"
-          className="mt-7 font-display text-[length:min(44px,calc((100vw-48px)/13.4))] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink md:mt-8"
+          className="mt-6 font-display text-[length:min(44px,calc((100vw-48px)/14.2))] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink md:mt-8 lg:text-[length:clamp(2.6rem,4vw,3.3rem)]"
         >
           {H1_LINES.map((line, i) => (
-            <span key={line} className="hero-line" style={delay(0.25 + i * 0.07)}>
+            <span key={i} className="hero-line" style={delay(0.25 + i * 0.07)}>
               <span className="text-balance">{line}</span>
             </span>
           ))}
