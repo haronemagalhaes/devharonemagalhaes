@@ -6,7 +6,7 @@ import { ApproachSection } from "./home/approach-section";
 import { PlansSection } from "./home/plans-section";
 import { WorksSection } from "./home/works-section";
 import { FacilitSection } from "./home/facilit-section";
-import { ClientsSection } from "./home/clients-section";
+import { TestimonialsSection } from "./home/testimonials-section";
 import { AboutSection } from "./home/about-section";
 import { FaqSection } from "./home/faq-section";
 import { FinalCtaSection } from "./home/final-cta-section";
@@ -26,7 +26,7 @@ export default function Home() {
         <PlansSection />
         <WorksSection />
         <FacilitSection />
-        <ClientsSection />
+        <TestimonialsSection />
         <AboutSection />
         <FaqSection />
         <FinalCtaSection />
