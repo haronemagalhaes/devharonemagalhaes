@@ -28,7 +28,8 @@ export function ContactSection() {
           <dl className="mt-4 flex flex-col gap-3 text-[15px]">
             <div className="flex gap-3">
               <dt className="w-24 shrink-0 text-ink-soft">E-mail</dt>
-              <dd>
+              {/* e-mail longo: quebra em vez de alargar a página em telas ≤ 360px */}
+              <dd className="min-w-0 [overflow-wrap:anywhere]">
                 <a href={`mailto:${EMAIL}`} className="link-line text-ink">
                   {EMAIL}
                 </a>
