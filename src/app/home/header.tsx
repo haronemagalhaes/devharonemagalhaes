@@ -127,13 +127,19 @@ export default function Header() {
           ))}
         </nav>
 
+        {/* lado direito: só o CTA (outline, encolhe junto com a barra) + menu mobile.
+            "Resposta em até 1 dia útil" saiu daqui — segue no menu mobile e no rodapé. */}
         <div className="flex items-center gap-4">
-          <span className="hidden whitespace-nowrap text-[13px] text-ink-soft xl:inline">
-            {RESPONSE_TIME}
-          </span>
-
           <span className="hidden md:inline-flex">
-            <StudioButton href={`#${CONTACT_ID}`} size="md">
+            <StudioButton
+              href={`#${CONTACT_ID}`}
+              variant="outline"
+              size="sm"
+              className={cn(
+                "transition-[height,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                scrolled && "h-[34px]",
+              )}
+            >
               {CTA_PRIMARY}
             </StudioButton>
           </span>

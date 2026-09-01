@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { scrollToId } from "@/components/motion/smooth-scroll";
 
-type Variant = "primary" | "secondary";
-type Size = "md" | "lg";
+type Variant = "primary" | "secondary" | "outline";
+type Size = "sm" | "md" | "lg";
 
 type BaseProps = {
   variant?: Variant;
@@ -37,15 +37,21 @@ const variants: Record<Variant, string> = {
   primary: "bg-ink text-bg",
   secondary:
     "border border-ink bg-transparent text-ink hover:bg-surface-2 transition-[background-color,border-color] duration-300",
+  /** contorno leve (header): o preenchido vira o estado de hover */
+  outline:
+    "border border-ink bg-transparent text-ink hover:bg-ink hover:text-bg transition-[background-color,color] duration-300",
 };
 
 const sizes: Record<Size, string> = {
+  /** header: altura fixa (38px; 34px com o header encolhido), corpo da nav */
+  sm: "h-[38px] min-h-0 px-[18px] py-0 text-[14px]",
   md: "px-[22px] py-[14px] text-[15px]",
   lg: "px-7 py-4 text-base",
 };
 
 /**
- * Botão do sistema: primário (fill-wipe + magnético) e secundário (contorno).
+ * Botão do sistema: primário (fill-wipe + magnético), secundário (contorno,
+ * hover em --surface-2) e outline (contorno que preenche no hover — header).
  * Se `href` começa com "#", faz scroll suave com offset do header.
  */
 export function StudioButton(props: Props) {
