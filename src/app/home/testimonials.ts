@@ -6,10 +6,11 @@ export type Testimonial = {
   quote: string;
   name: string;
   role: string; // papel + segmento, ex: "Dona de clínica odontológica"
-  /** foto do cliente (círculo 40px, cor natural). Sem ela: iniciais em Syne.
-   *  Os logos (vitalle/unicortte/mendonca em public/) não leem a 20–40px —
-   *  por isso as três empresas ficam com iniciais, uniforme. */
+  /** foto do cliente → círculo 40px, object-cover, cor natural */
   avatar?: string;
+  /** logo do cliente, cor natural: "inline" (sem moldura, 24px de altura,
+   *  PNG recortado ao bbox) ou "tile" (fundo opaco → quadrado 32px, radius 8) */
+  logo?: { src: string; style: "inline" | "tile" };
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -18,6 +19,7 @@ export const TESTIMONIALS: Testimonial[] = [
       "Serviço muito bom, do site ao sistema interno da clínica. Trabalha com a gente até hoje.",
     name: "Centro Médico Vitalle",
     role: "Clínica médica",
+    logo: { src: "/vitalle-logo.png", style: "inline" },
   },
   {
     quote: "Amei o resultado. O site ficou lindo e representa bem o meu trabalho.",
@@ -29,10 +31,12 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "Superou a expectativa. Gostamos do estilo do trabalho e do resultado.",
     name: "Mendonça Advocacia",
     role: "Escritório de advocacia",
+    logo: { src: "/mendonca-logo.png", style: "tile" },
   },
   {
     quote: "Ficou impecável. Adoramos o resultado.",
     name: "Armarinho Unicortte",
     role: "Comércio",
+    logo: { src: "/unicortte-logo.png", style: "inline" },
   },
 ];
