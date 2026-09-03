@@ -185,7 +185,7 @@ export function TestimonialsSection() {
     <section id="depoimentos" className="section-pad" aria-labelledby="depoimentos-title">
       <div className="container-studio">
         <SectionHeading
-          index="06"
+          index="07"
           eyebrow="Depoimentos"
           title="O que dizem os clientes"
           id="depoimentos-title"

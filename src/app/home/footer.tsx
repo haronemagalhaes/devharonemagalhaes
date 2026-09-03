@@ -1,6 +1,7 @@
 import { AnchorLink } from "@/components/site/anchor-link";
 import { Lockup } from "@/components/site/lockup";
 import {
+  BASE_LINE,
   CONTACT_ID,
   EMAIL,
   INSTAGRAM_HANDLE,
@@ -54,7 +55,7 @@ export default function Footer() {
           </nav>
 
           <ul className="flex flex-col gap-2.5 text-[15px] text-ink-soft" aria-label="Contato">
-            <li>Aracaju/SE · atende todo o Brasil</li>
+            <li>{BASE_LINE}</li>
             <li>
               {/* quebra só depois do "@" (wbr) — nunca no meio de "gmail" */}
               <a

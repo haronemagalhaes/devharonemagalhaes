@@ -36,7 +36,7 @@ export function ApproachSection() {
     >
       <div className="container-studio">
         <SectionHeading
-          index="02"
+          index="03"
           eyebrow="Abordagem"
           title="Como a gente trabalha"
           id="abordagem-title"

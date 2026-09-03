@@ -26,7 +26,7 @@ export function ProductSection() {
           <CornerMarks color="var(--bg)" size={16} inset={-1} className="opacity-60" />
 
           <Reveal className="col-span-12 flex flex-col gap-5 lg:col-span-7">
-            <Eyebrow index="05" className="!text-bg/60">
+            <Eyebrow index="06" className="!text-bg/60">
               Produto
             </Eyebrow>
             <h2

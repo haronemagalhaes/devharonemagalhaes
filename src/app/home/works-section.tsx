@@ -57,7 +57,7 @@ export function WorksSection() {
       >
         <div className="container-studio">
           <SectionHeading
-            index="04"
+            index="05"
             eyebrow="Trabalho"
             title="Trabalho selecionado"
             sub="Setores diferentes, mesma régua."

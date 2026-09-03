@@ -12,6 +12,10 @@ export const INSTAGRAM_URL = "https://www.instagram.com/haronedev_";
 
 export const CITY = "Aracaju";
 export const STATE = "SE";
+/** Sinal de alcance — eyebrow do hero. A cidade fica fora do destaque. */
+export const REACH = "Atendo todo o Brasil";
+/** Origem, não limite — rodapé e contato. */
+export const BASE_LINE = `${CITY}/${STATE} · atende todo o Brasil`;
 export const RESPONSE_TIME = "Resposta em até 1 dia útil";
 
 /**

@@ -2,19 +2,20 @@
 
 import { Reveal } from "@/components/motion/reveal";
 import { Eyebrow } from "@/components/site/eyebrow";
-import { CONTACT_ID, EMAIL, RESPONSE_TIME, whatsappUrl } from "@/lib/site";
+import { CITY, CONTACT_ID, EMAIL, RESPONSE_TIME, STATE, whatsappUrl } from "@/lib/site";
 import { ContactFormLoader } from "./contact-form-loader";
 
 /**
  * Seção "Vamos conversar": título, texto e contatos renderizados no servidor;
  * o formulário em si (react-hook-form + zod) entra sob demanda.
+ * A cidade aparece aqui como origem ("Base"), não como limite — saiu do hero.
  */
 export function ContactSection() {
   return (
     <section id={CONTACT_ID} className="section-pad" aria-labelledby="contato-title">
       <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-12">
         <Reveal className="col-span-12 flex flex-col gap-5 lg:col-span-5">
-          <Eyebrow index="09">Contato</Eyebrow>
+          <Eyebrow index="10">Contato</Eyebrow>
           <h2
             id="contato-title"
             className="font-display text-[30px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink sm:text-[34px] md:text-[44px]"
@@ -46,6 +47,12 @@ export function ContactSection() {
                 >
                   +55 79 98116-4388
                 </a>
+              </dd>
+            </div>
+            <div className="flex gap-3">
+              <dt className="w-24 shrink-0 text-ink-soft">Base</dt>
+              <dd className="text-ink">
+                {CITY}/{STATE} · atendo todo o Brasil, online
               </dd>
             </div>
             <div className="flex gap-3">

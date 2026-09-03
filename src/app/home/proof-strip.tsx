@@ -16,10 +16,11 @@ const STATS: Stat[] = [
   { key: "setores", value: SECTORS_SERVED, suffix: "+", label: "setores diferentes" },
 ];
 
-const LEGEND = "Aracaju/SE — do consultório à obra, atendo todo o Brasil";
+/** Dois tempos da promessa: consultório = frente, obra = trás. Cidade só no rodapé/contato. */
+const LEGEND = "Do consultório à obra. Atendo todo o Brasil.";
 
 /**
- * Bloco de estatística: 3 números grandes (Syne 800) com rótulo embaixo,
+ * Bloco de estatística: 3 números grandes (Geist 700) com rótulo embaixo,
  * divisores verticais em --line, hairline em cima e embaixo, legenda numa
  * linha. Os números sobem com <CountUp> ao entrar na viewport (o "+" é
  * fixo); com reduced-motion aparecem prontos. Só tipografia + fios.
