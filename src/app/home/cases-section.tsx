@@ -1,6 +1,8 @@
 "use client";
 
 import { Reveal } from "@/components/motion/reveal";
+import { CardSticky, ContainerScroll } from "@/components/ui/cards-stack";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { Rule } from "@/components/motion/rule";
 import { SectionHeading } from "@/components/site/section-heading";
 import { CornerMarks } from "@/components/site/corner-marks";
@@ -14,10 +16,12 @@ import { isPlaceholder, publishedCases, stripPlaceholders, type Case, type Metri
  *   o que mudou (corpo, ink, medium) > o que eu fiz (corpo, ink) >
  *   como estava (corpo, ink-soft).
  *
- * Degradação:
+ * Degradação (a pilha precisa de 3 cards pra existir):
  *   - 0 cases publicados → a seção não renderiza
- *   - 1 case → só o bloco de destaque, sem grade vazia
- *   - 2+ → destaque + grade (2 col md, 3 col lg)
+ *   - 1 ou 2 → cards no fluxo normal, sem sticky (hoje é o caso: 1)
+ *   - 3+ → pilha: cada card gruda 14px abaixo do anterior e o seguinte
+ *     sobe por cima; o gap entre eles (56vh) é o scroll de leitura de cada
+ *     um. Sem sticky no mobile (< md) e com reduced-motion.
  * Trechos "[preencher: …]" são removidos do texto; campo que fica vazio some
  * do card; métrica com placeholder tira o case do ar (cases.ts).
  */
@@ -139,11 +143,15 @@ function Story({ c, compact }: { c: Case; compact?: boolean }) {
   );
 }
 
-function FeaturedCase({ c }: { c: Case }) {
+function FeaturedCase({ c, solid }: { c: Case; solid?: boolean }) {
   return (
     <Reveal
       as="article"
-      className="relative grid grid-cols-12 gap-x-6 gap-y-10 border border-line p-7 md:p-12 lg:p-16"
+      // na pilha o fundo precisa ser opaco: sem isso o card de baixo aparece através
+      className={cn(
+        "relative grid grid-cols-12 gap-x-6 gap-y-10 border border-line p-7 md:p-12 lg:p-16",
+        solid && "rounded-[8px] bg-bg shadow-[0_24px_60px_-32px_color-mix(in_oklch,var(--ink)_35%,transparent)]",
+      )}
       aria-label={`Resultado: ${c.empresa}`}
     >
       <CornerMarks size={16} inset={-1} />
@@ -176,12 +184,28 @@ function CaseCard({ c, delay }: { c: Case; delay: number }) {
   );
 }
 
+/**
+ * Espaço de rolagem entre cards da pilha: é o quanto se lê de um card
+ * antes do próximo cobrir. 56vh ≈ 500px a 900 de altura — um card inteiro
+ * na tela mais uma pausa. O demo cravava min-h-[400vh] pra qualquer
+ * quantidade; aqui a altura vem do fluxo, então é proporcional ao número
+ * de cases: N cards ≈ N × (altura do card + 56vh).
+ */
+const STACK_GAP = "56vh";
+/** o primeiro card gruda abaixo do header; cada seguinte 14px mais baixo */
+const STACK_TOP = 96;
+const STACK_STEP = 14;
+
 export function CasesSection() {
+  const reduced = useReducedMotion();
   const cases = publishedCases();
   if (cases.length === 0) return null;
 
   const featured = cases.find((c) => c.destaque) ?? cases[0];
   const rest = cases.filter((c) => c.id !== featured.id);
+  /* a pilha só existe com 3+ cards; abaixo disso, o layout de sempre */
+  const stacked = cases.length >= 3;
+  const ordered = [featured, ...rest];
 
   return (
     <section id="resultados" className="section-pad" aria-labelledby="resultados-title">
@@ -194,18 +218,41 @@ export function CasesSection() {
           id="resultados-title"
         />
 
-        <div className="mt-14 md:mt-20">
-          <FeaturedCase c={featured} />
-        </div>
-
-        {rest.length > 0 && (
-          <ul className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 md:mt-20 md:grid-cols-2 lg:grid-cols-3">
-            {rest.map((c, i) => (
-              <li key={c.id}>
-                <CaseCard c={c} delay={Math.min(i * 0.08, 0.3)} />
-              </li>
+        {stacked ? (
+          /* ordem no DOM = ordem de leitura; o sticky só muda onde cada um para */
+          <ContainerScroll
+            className="mt-14 flex flex-col md:mt-20"
+            style={{ gap: reduced ? "3rem" : STACK_GAP }}
+          >
+            {ordered.map((c, i) => (
+              <CardSticky
+                key={c.id}
+                index={i}
+                incrementY={STACK_STEP}
+                topBase={STACK_TOP}
+                /* sem sticky no mobile e com reduced-motion: lista normal */
+                className={reduced ? "!static" : "!static md:!sticky"}
+              >
+                <FeaturedCase c={c} solid />
+              </CardSticky>
             ))}
-          </ul>
+          </ContainerScroll>
+        ) : (
+          <>
+            <div className="mt-14 md:mt-20">
+              <FeaturedCase c={featured} />
+            </div>
+
+            {rest.length > 0 && (
+              <ul className="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 md:mt-20 md:grid-cols-2 lg:grid-cols-3">
+                {rest.map((c, i) => (
+                  <li key={c.id}>
+                    <CaseCard c={c} delay={Math.min(i * 0.08, 0.3)} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         )}
       </div>
     </section>
