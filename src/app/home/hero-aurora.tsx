@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { StudioButton } from "@/components/site/studio-button";
-import { CONTACT_ID, CTA_PRIMARY, REACH, SITE_DESCRIPTOR } from "@/lib/site";
+import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
 
 /*
  * Hero empilhado (branch hero-aurora). Alterna com o hero atual em page.tsx
@@ -15,14 +15,15 @@ import { CONTACT_ID, CTA_PRIMARY, REACH, SITE_DESCRIPTOR } from "@/lib/site";
  *            rodapé, sem o texto gigante).
  *   capa 2 — a resposta: `relative z-10`, fundo de tinta 100% opaco. Sobe
  *            por cima da capa 1 conforme o usuário rola. Limpa: sem grid,
- *            sem aurora — é a diferenciação entre as duas.
+ *            sem aurora — é a diferenciação entre as duas. Esquerda: "O que
+ *            eu faço" + h2 + CTA; direita: chamada de sistemas (h3).
  *   O wrapper `relative` limita o sticky: quando ele termina, a capa 1 sai
  *   de cena junto (sticky não escapa do pai), então nada fica preso.
  *
- * Mobile: capa 2 com altura pelo conteúdo (mín. 80svh) em vez de 100svh —
- * duas telas cheias antes da faixa de prova é rolo demais. O empilhamento
- * continua funcionando com a capa 2 mais baixa: a capa 1 vai sendo coberta
- * de baixo pra cima e some quando o wrapper acaba.
+ * Altura da capa 2: pelo conteúdo (mín. 72svh no desktop) em vez de 100svh
+ * — o terço inferior ficava vazio. O empilhamento continua funcionando com
+ * a capa 2 mais baixa: a capa 1 vai sendo coberta de baixo pra cima e some
+ * quando o wrapper acaba.
  *
  * Headings: um único <h1> (capa 1). A capa 2 usa <h2>.
  *
@@ -42,13 +43,20 @@ import { CONTACT_ID, CTA_PRIMARY, REACH, SITE_DESCRIPTOR } from "@/lib/site";
 const SUB =
   "Construo a estrutura digital que faz o cliente achar, confiar e comprar — site, tráfego pago, sistema e automação de rotina. Quem fecha o escopo com você é quem executa.";
 
-/** Capa 2 — as quatro frentes, em ordem de prioridade. */
-const FRONTS = [
-  { n: "01", title: "Sistemas" },
-  { n: "02", title: "Automação de tarefas" },
-  { n: "03", title: "Site e Landing Page" },
-  { n: "04", title: "Tráfego pago" },
-];
+/*
+ * Capa 2, lado direito — chamada de sistemas e automação. A capa 1 fala só
+ * da frente (ser encontrado, vender); a metade de sistema e automação, que
+ * é a prioridade nº 1 de serviço, entra aqui. A lista das quatro frentes
+ * saiu: duplicava a seção Capacidades, logo abaixo.
+ * Escolha: a versão universal (sintoma que qualquer equipe reconhece) em
+ * vez do caso "4 → 1", que já é o destaque de Resultados e depende de um
+ * número ainda não confirmado.
+ */
+const SYSTEMS = {
+  eyebrow: "Sistemas e automação",
+  title: "Se a sua equipe digita a mesma coisa duas vezes, eu resolvo.",
+  text: "Planilha e sistema solto viram um painel só — agenda, financeiro, orçamento, ordem de serviço no mesmo lugar. E a tarefa repetitiva que consome horas todo dia vira rotina automática.",
+};
 
 const delay = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
 
@@ -69,8 +77,8 @@ export function HeroAurora() {
             className="hero-fade eyebrow max-w-full !text-[11px] !tracking-[0.12em] leading-relaxed md:!text-[12px] md:!tracking-[0.14em]"
             style={delay(0.05)}
           >
+            {/* só a prateleira: o alcance ("Atendo todo o Brasil") fica na faixa de prova, logo abaixo */}
             {SITE_DESCRIPTOR}
-            <span className="hidden sm:inline"> · {REACH}</span>
           </p>
 
           <h1
@@ -105,11 +113,13 @@ export function HeroAurora() {
       {/* ---------- capa 2 — a resposta ---------- */}
       <section
         id="resposta"
-        className="relative z-10 flex min-h-[80svh] items-center bg-ink text-bg md:min-h-[100svh]"
+        className="relative z-10 flex items-center bg-ink text-bg md:min-h-[72svh]"
         aria-labelledby="resposta-title"
       >
-        {/* pt maior no mobile: o header fixo (60px rolado) cobriria o eyebrow quando a capa 2 chega ao topo */}
-        <div className="container-studio grid w-full grid-cols-12 gap-x-6 gap-y-10 pb-14 pt-24 md:gap-y-12 md:py-28">
+        {/* pt maior no mobile: o header fixo (60px rolado) cobriria o eyebrow quando a capa 2 chega ao topo.
+            Sem 100svh: a capa não precisa ser mais alta que o conteúdo pra cobrir a capa 1 — o terço
+            inferior vazio era espaço morto. Colunas alinhadas pelo centro. */}
+        <div className="container-studio grid w-full grid-cols-12 items-center gap-x-6 gap-y-12 pb-16 pt-24 md:gap-y-12 md:py-24">
           <div className="col-span-12 flex flex-col gap-6 lg:col-span-6">
             <p className="eyebrow !text-bg/70">O que eu faço</p>
             <h2
@@ -131,19 +141,15 @@ export function HeroAurora() {
             </div>
           </div>
 
-          <ol className="col-span-12 lg:col-span-6 lg:col-start-7 lg:self-center" aria-label="Frentes de trabalho">
-            {FRONTS.map((f) => (
-              <li
-                key={f.n}
-                className="flex items-baseline gap-5 border-t border-bg/15 py-4 last:border-b md:gap-8 md:py-6"
-              >
-                <span className="eyebrow !text-bg/70 tabular-nums">{f.n}</span>
-                <strong className="font-display text-[24px] font-semibold leading-tight tracking-[-0.015em] md:text-[30px]">
-                  {f.title}
-                </strong>
-              </li>
-            ))}
-          </ol>
+          <div className="col-span-12 flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
+            <p className="eyebrow !text-bg/70">{SYSTEMS.eyebrow}</p>
+            <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.015em] text-balance sm:text-[26px] md:text-[30px]">
+              {SYSTEMS.title}
+            </h3>
+            <p className="max-w-[34rem] text-[16px] leading-relaxed text-bg/75 [text-wrap:pretty] md:text-[18px]">
+              {SYSTEMS.text}
+            </p>
+          </div>
         </div>
       </section>
     </div>
