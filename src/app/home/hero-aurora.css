@@ -1,0 +1,134 @@
+/* =====================================================================
+   Hero "aurora" (branch hero-aurora) — só o que esta seção usa.
+   Adaptado do CinematicFooter (21st.dev): ficaram aurora, grid com
+   máscara e brilho do título (a glass pill saiu: o CTA principal é sólido). Saíram o wrapper com clip-path,
+   o <footer fixed>, créditos, selo, App Store, marquee, heartbeat
+   (--destructive), o texto gigante de fundo e o @import da Plus Jakarta
+   Sans — a fonte é a do projeto (Geist). Zero cor: tudo em --foreground /
+   --background. Só a capa 1 usa isto; a capa 2 é tinta chapada.
+   ===================================================================== */
+
+@keyframes hero-breathe {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Aurora: tinta em opacidade baixa, centrada no H1 (top 45%) e com raio
+   efetivo menor que a distância até o sub (some a 52% do raio × 1.1 de
+   escala): o cinza do sub precisa de 4,5:1 e, com o grain do site, já
+   nasce a 4,59:1 sobre o papel — não aguenta véu nenhum. Atmosfera, não
+   protagonista. */
+.hero-aurora {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: min(130vw, 1600px);
+  height: clamp(220px, 24vw, 340px);
+  border-radius: 9999px;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 32%,
+    transparent 52%
+  );
+  animation: hero-breathe 8s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+/* Grid a 2,5% (era 4%): com realce, vinheta e grão ele vira mais uma camada,
+   não a única. Fade vertical E um vazio elíptico atrás do bloco de texto
+   (mask-composite: intersect) — nenhuma linha passa por baixo do sub.
+   No mobile o texto ocupa a largura toda, então o vazio vira uma faixa
+   horizontal inteira (grid só acima e abaixo do bloco). */
+.hero-bg-grid {
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--foreground) 2.5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 2.5%, transparent) 1px, transparent 1px);
+  mask-image:
+    linear-gradient(to bottom, transparent, black 25%, black 75%, transparent),
+    radial-gradient(ellipse 42% 46% at 50% 54%, transparent 62%, black 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, black 25%, black 75%, transparent),
+    radial-gradient(ellipse 42% 46% at 50% 54%, transparent 62%, black 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+@media (max-width: 767px) {
+  .hero-bg-grid {
+    mask-image: linear-gradient(to bottom, transparent, black 12%, black 22%, transparent 27%, transparent 80%, black 86%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 22%, transparent 27%, transparent 80%, black 86%, black 92%, transparent);
+    mask-composite: add;
+    -webkit-mask-composite: source-over;
+  }
+}
+
+/* Brilho metálico do título. O stop de baixo NÃO vai a 40% como no
+   original: o glifo ficaria cinza-claro na base e reprovaria o AA. 72% de
+   tinta sobre papel ≈ 6,8:1. SEM `filter: drop-shadow`: com
+   background-clip: text o Chrome rasteriza a caixa do gradiente antes do
+   recorte e a sombra vira um retângulo claro e borrado atrás da linha. */
+.hero-text-glow {
+  background: linear-gradient(
+    180deg,
+    var(--foreground) 0%,
+    color-mix(in oklch, var(--foreground) 72%, var(--background)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* =====================================================================
+   Textura — o mesmo sistema das artes do Instagram: realce + vinheta +
+   grão. Valores derivados dos tokens (--surface, --ink, --bg), nunca hex
+   solto. Ordem no DOM (de trás pra frente): grid → realce → aurora →
+   vinheta → grão → conteúdo.
+   ===================================================================== */
+
+/* a) Realce: clarão suave no canto superior esquerdo. --surface é o tom de
+   papel mais claro do projeto (#fff no claro, #1a1a18 no escuro). */
+.hero-spot {
+  background: radial-gradient(ellipse 80% 60% at 30% 24%, var(--surface) 0%, transparent 58%);
+}
+
+/* b) Vinheta: tinta a 6% nas bordas, morrendo em transparência total no
+   centro — o texto fica na zona sem véu. */
+.hero-vignette {
+  background: radial-gradient(
+    ellipse 120% 120% at 50% 44%,
+    transparent 54%,
+    color-mix(in oklch, var(--ink) 6%, transparent) 100%
+  );
+}
+
+/* c) Grão: feTurbulence fractalNoise 0.8 / 2 oitavas / stitch, tonalizado
+   pra tinta pelo feColorMatrix (RGB = 0 → preto no claro; RGB = 1 → branco
+   no escuro, onde a tinta é clara). Data-URI não lê var(), por isso dois
+   SVGs. soft-light obrigatório: multiply fica cinza barrento. */
+.hero-grain {
+  opacity: 0.45;
+  mix-blend-mode: soft-light;
+  background-size: 240px 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.dark .hero-grain {
+  opacity: 0.6;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* Movimento reduzido: aurora parada (fica visível, sem respirar). O botão
+   magnético e o hover-scale checam o mesmo media query no JS. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
