@@ -15,8 +15,9 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  *            rodapé, sem o texto gigante).
  *   capa 2 — a resposta: `relative z-10`, fundo de tinta 100% opaco. Sobe
  *            por cima da capa 1 conforme o usuário rola. Limpa: sem grid,
- *            sem aurora — é a diferenciação entre as duas. Esquerda: "O que
- *            eu faço" + h2 + CTA; direita: chamada de sistemas (h3).
+ *            sem aurora — é a diferenciação entre as duas. Headline grande
+ *            de sistemas (h2) + apoio; "Construo o caminho até você." (h3)
+ *            pequeno, junto do CTA.
  *   O wrapper `relative` limita o sticky: quando ele termina, a capa 1 sai
  *   de cena junto (sticky não escapa do pai), então nada fica preso.
  *
@@ -25,7 +26,7 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  * a capa 2 mais baixa: a capa 1 vai sendo coberta de baixo pra cima e some
  * quando o wrapper acaba.
  *
- * Headings: um único <h1> (capa 1). A capa 2 usa <h2>.
+ * Headings: um único <h1> (capa 1). A capa 2 usa <h2> (sistemas) e <h3>.
  *
  * Contraste — capa 1: a aurora fica centrada no H1 e some antes do sub; o
  * grid tem um vazio atrás do bloco de texto. O sub NÃO usa --ink-soft: o
@@ -44,18 +45,36 @@ const SUB =
   "Construo a estrutura digital que faz o cliente achar, confiar e comprar — site, tráfego pago, sistema e automação de rotina. Quem fecha o escopo com você é quem executa.";
 
 /*
- * Capa 2, lado direito — chamada de sistemas e automação. A capa 1 fala só
- * da frente (ser encontrado, vender); a metade de sistema e automação, que
- * é a prioridade nº 1 de serviço, entra aqui. A lista das quatro frentes
- * saiu: duplicava a seção Capacidades, logo abaixo.
- * Escolha: a versão universal (sintoma que qualquer equipe reconhece) em
- * vez do caso "4 → 1", que já é o destaque de Resultados e depende de um
- * número ainda não confirmado.
+ * Capa 2 — hierarquia invertida (2026-09-03): a chamada de sistemas e
+ * automação é o elemento GRANDE (h2, largura toda); "Construo o caminho
+ * até você." virou apoio (h3 pequeno, ao lado do CTA). Sistemas é a
+ * prioridade nº 1 de serviço e a capa 1 fala só da frente.
+ *
+ * Headline A ("O que sua equipe faz em 3 horas, o sistema faz sozinho."):
+ * universal, número exato do caso real (≈ 3 h/dia varrendo 75 sites de
+ * licitação) e completa sem depender do sub. B ("75 sites por dia. Hoje,
+ * zero.") e D ("3 horas por dia. Ou nenhuma.") aguentam corpo gigante mas
+ * são crípticas sem o apoio; C não tem número e cai pra 24px no mobile.
+ *
+ * Medição (Geist 600, -0.025em, lh 1.05): L1 "O que sua equipe faz em 3
+ * horas," 15.62em · L2 "o sistema faz sozinho." 10.51em. Uma frase por
+ * bloco:
+ *   - < lg ...... L1 em 2 linhas + L2 em 1 = 3 linhas; corpo =
+ *                 (100vw − 48px) / 10.7 (L2 manda), teto 48px →
+ *                 320: 25px · 360: 29px · 375: 31px · 390: 32px · 430: 36px.
+ *                 Sem os blocos, o balance dava "faz em 3 horas, o /
+ *                 sistema faz sozinho." com o "o" órfão.
+ *   - lg+ ....... 2 linhas: corpo = (100vw − 80px) / 15.9, teto 68px →
+ *                 1024: 59px · 1280+: 68px (o H1 da capa 1 tem 64px; a
+ *                 capa 2 precisa dominar a própria capa, não a página).
  */
 const SYSTEMS = {
-  eyebrow: "Sistemas e automação",
-  title: "Se a sua equipe digita a mesma coisa duas vezes, eu resolvo.",
-  text: "Planilha e sistema solto viram um painel só — agenda, financeiro, orçamento, ordem de serviço no mesmo lugar. E a tarefa repetitiva que consome horas todo dia vira rotina automática.",
+  eyebrow: "Sistemas sob medida e automação de tarefas",
+  line1: "O que sua equipe faz em 3 horas,",
+  line2: "o sistema faz sozinho.",
+  // dois casos reais, sem contar a história; primeira pessoa no fecho
+  apoio:
+    "Buscar licitação em 75 sites, todo dia. Montar relatório fotográfico no Word. Duas tarefas que eu automatizei: a lista chega pronta e o relatório sai pronto do sistema.",
 };
 
 const delay = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
@@ -116,39 +135,41 @@ export function HeroAurora() {
         className="relative z-10 flex items-center bg-ink text-bg md:min-h-[72svh]"
         aria-labelledby="resposta-title"
       >
-        {/* pt maior no mobile: o header fixo (60px rolado) cobriria o eyebrow quando a capa 2 chega ao topo.
-            Sem 100svh: a capa não precisa ser mais alta que o conteúdo pra cobrir a capa 1 — o terço
-            inferior vazio era espaço morto. Colunas alinhadas pelo centro. */}
-        <div className="container-studio grid w-full grid-cols-12 items-center gap-x-6 gap-y-12 pb-16 pt-24 md:gap-y-12 md:py-24">
-          <div className="col-span-12 flex flex-col gap-6 lg:col-span-6">
-            <p className="eyebrow !text-bg/70">O que eu faço</p>
-            <h2
-              id="resposta-title"
-              className="max-w-[12ch] font-display text-[34px] font-semibold leading-[1.08] tracking-[-0.025em] text-balance sm:text-[40px] md:text-[52px] lg:text-[60px]"
-            >
-              Construo o caminho até você.
-            </h2>
-            {/* < 640px sai: header e capa 1 já têm CTA, e cada 60px conta antes da faixa de prova */}
-            <div className="mt-2 hidden sm:block">
-              <StudioButton
-                href="#abordagem"
-                variant="secondary"
-                className="!border-bg !text-bg hover:!bg-bg hover:!text-ink"
-                arrow
-              >
-                Ver como eu trabalho
-              </StudioButton>
-            </div>
-          </div>
+        {/* pt maior no mobile: o header fixo (60px rolado) cobriria o eyebrow quando a capa 2 chega ao topo */}
+        <div className="container-studio w-full pb-16 pt-24 md:py-24">
+          <p className="eyebrow !text-bg/70">{SYSTEMS.eyebrow}</p>
 
-          <div className="col-span-12 flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
-            <p className="eyebrow !text-bg/70">{SYSTEMS.eyebrow}</p>
-            <h3 className="font-display text-[24px] font-semibold leading-[1.15] tracking-[-0.015em] text-balance sm:text-[26px] md:text-[30px]">
-              {SYSTEMS.title}
-            </h3>
-            <p className="max-w-[34rem] text-[16px] leading-relaxed text-bg/75 [text-wrap:pretty] md:text-[18px]">
-              {SYSTEMS.text}
+          <h2
+            id="resposta-title"
+            className="mt-5 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/10.7),3rem)] font-semibold leading-[1.05] tracking-[-0.025em] md:mt-7 lg:text-[length:min(68px,calc((100vw-80px)/15.9))]"
+          >
+            <span className="block text-balance">{SYSTEMS.line1}</span>
+            <span className="block">{SYSTEMS.line2}</span>
+          </h2>
+
+          <div className="mt-8 grid grid-cols-12 items-end gap-x-6 gap-y-10 md:mt-12">
+            <p className="capa2-apoio col-span-12 max-w-[40rem] text-[17px] leading-relaxed text-bg/75 [text-wrap:pretty] lg:col-span-7 md:text-[19px]">
+              {SYSTEMS.apoio}
             </p>
+
+            {/* apoio: a resposta à pergunta da capa 1, agora pequena, junto do CTA */}
+            <div className="col-span-12 flex flex-col gap-4 lg:col-span-4 lg:col-start-9 lg:border-l lg:border-bg/15 lg:pl-8">
+              <p className="eyebrow !text-bg/70">O que eu faço</p>
+              <h3 className="font-display text-[22px] font-semibold leading-[1.15] tracking-[-0.015em] md:text-[26px]">
+                Construo o caminho até você.
+              </h3>
+              {/* < 640px sai: header e capa 1 já têm CTA */}
+              <div className="mt-1 hidden sm:block">
+                <StudioButton
+                  href="#abordagem"
+                  variant="secondary"
+                  className="!border-bg !text-bg hover:!bg-bg hover:!text-ink"
+                  arrow
+                >
+                  Ver como eu trabalho
+                </StudioButton>
+              </div>
+            </div>
           </div>
         </div>
       </section>
