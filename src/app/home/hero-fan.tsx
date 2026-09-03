@@ -21,10 +21,10 @@ import Monograma from "@/assets/monograma.png";
  *                       "Quem faz"), retrato 4:5 sem corte relevante
  *   3 (direita, +6°)   print provisório — TODO: trocar (hoje psinaiade.png)
  *
- * Tamanho pela ALTURA da viewport (clamp 96px · 17svh · 196px): é o que
- * faz a capa 1 caber em 100svh no desktop com o sticky — 900px de altura
- * dá cartões de 153px, 768px dá 131px (a 20svh estourava 42px em 768).
- * Largura de tela não manda.
+ * Tamanho pela ALTURA da viewport: 14svh no mobile, 17svh ≥ md, entre 72
+ * e 196px. É o que faz a capa 1 caber em 100svh com o sticky — 900px de
+ * altura dá cartões de 153px, 768px dá 131px, 667px dá 93px. Abaixo de
+ * 600px de altura o leque some (regra no hero). Largura não manda.
  *
  * Identidade: raio 8px como os outros cards, contorno em --line (nada de
  * preto/branco cru), sombra derivada de --ink. Decorativo: aria-hidden.
@@ -40,7 +40,7 @@ const CARDS: Card[] = [
 ];
 
 const CARD =
-  "relative aspect-[4/5] w-[clamp(96px,17svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)]";
+  "relative aspect-[4/5] w-[clamp(72px,14svh,196px)] md:w-[clamp(96px,17svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)]";
 
 function CardContent({ kind }: { kind: Card["kind"] }) {
   if (kind === "logo") {

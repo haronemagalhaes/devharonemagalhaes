@@ -11,14 +11,16 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  * (const HERO).
  *
  * Duas capas, CSS puro (sem gsap/ScrollTrigger/framer-motion):
- *   capa 1 — a pergunta: mín. 100svh. Papel, grid + aurora + textura e o
- *            leque de 3 cartões (Hero10) abaixo do CTA. Sticky só ≥ md: no
- *            desktop o leque escala pela altura da viewport (20svh) e a
- *            capa cabe em 100svh, então `sticky top-0` funciona sem JS;
- *            no mobile nenhuma altura comum cabe com o leque, então a capa
- *            rola normal e a capa 2 vem em seguida (sem cobrir). Decisão
- *            2026-09-03 = "opção 2"; alternativas: top negativo via JS
- *            (sticky-fit, removido) ou sem sticky em lugar nenhum.
+ *   capa 1 — a pergunta: `sticky top-0` em TODOS os tamanhos, mín. 100svh.
+ *            Papel, grid + aurora + textura e o leque (Hero10) abaixo do
+ *            CTA. Pra grudar direito a capa tem que caber na viewport, e o
+ *            leque é o primeiro a encolher: 14svh no mobile, 17svh ≥ md,
+ *            e some em telas com menos de 600px de altura (320×568). Com
+ *            isso a capa cabe em 375×667, 360×740, 390×844, 430×932 e nos
+ *            desktops de 768/800/900 — medido. Diagnóstico de 2026-09-03:
+ *            overflow-x do body e Lenis NÃO afetam o sticky (testado com
+ *            clip e com o Lenis destruído); o que quebrava era a capa em
+ *            `relative` abaixo de md, decisão anterior desfeita aqui.
  *   capa 2 — a resposta: `relative z-10`, fundo de tinta 100% opaco. Sobe
  *            por cima da capa 1 conforme o usuário rola. Limpa: sem grid,
  *            sem aurora — é a diferenciação entre as duas. Headline grande
@@ -98,7 +100,7 @@ export function HeroAurora() {
       {/* ---------- capa 1 — a pergunta ---------- */}
       <section
         id="top"
-        className="relative z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)] md:sticky md:top-0"
+        className="sticky top-0 z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)]"
         aria-labelledby="hero-title"
       >
         {/* textura (de trás pra frente): grid → realce → aurora → vinheta → grão */}
@@ -108,7 +110,7 @@ export function HeroAurora() {
         <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
         <div aria-hidden className="hero-grain pointer-events-none absolute inset-0" />
 
-        <div className="container-studio relative z-10 flex w-full flex-col items-center py-10 text-center">
+        <div className="container-studio relative z-10 flex w-full flex-col items-center pb-6 pt-8 text-center md:py-10">
           <p
             className="hero-fade eyebrow max-w-full !text-[11px] !tracking-[0.12em] leading-relaxed md:!text-[12px] md:!tracking-[0.14em]"
             style={delay(0.05)}
@@ -146,7 +148,7 @@ export function HeroAurora() {
           </div>
 
           {/* leque de 3 cartões (Hero10): monograma · foto · print provisório */}
-          <HeroFan className="mt-8 md:mt-10" />
+          <HeroFan className="mt-6 md:mt-10 [@media(max-height:599px)]:hidden" />
         </div>
       </section>
 
