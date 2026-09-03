@@ -31,7 +31,6 @@ const PLANS: Plan[] = [
       "SEO local básico",
       "Formulário de contato + link na bio",
       "1 rodada de ajustes",
-      "Entrega em ~2 semanas",
     ],
   },
   {
@@ -63,7 +62,7 @@ export function PlansSection() {
     <section id="planos" className="section-pad" aria-labelledby="planos-title">
       <div className="container-studio">
         <SectionHeading
-          index="03"
+          index="04"
           eyebrow="Planos"
           title="Planos"
           sub="Três formatos. O valor sai no diagnóstico, sempre por escrito."

@@ -38,7 +38,7 @@ export function AboutSection() {
         </m.div>
 
         <Reveal className="col-span-12 flex flex-col gap-6 md:col-span-6 md:col-start-7">
-          <Eyebrow index="07">Quem faz</Eyebrow>
+          <Eyebrow index="08">Quem faz</Eyebrow>
           <h2
             id="sobre-title"
             className="font-display text-[28px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink sm:text-[32px] md:text-[40px]"
@@ -46,9 +46,9 @@ export function AboutSection() {
             Quem faz
           </h2>
           <p className="text-[18px] leading-relaxed text-ink md:text-[20px]">
-            Sou o Harone Magalhães. Toco um estúdio especializado em site,
-            sistema de gestão, tráfego pago e automação de processos para
-            empresas — e conduzo cada projeto pessoalmente, do primeiro
+            Sou o Harone Magalhães. Cuido da parte digital da sua empresa de
+            ponta a ponta — do site que traz cliente ao sistema que organiza
+            os bastidores — e acompanho cada projeto pessoalmente, do primeiro
             rascunho à manutenção. Aquela tarefa repetitiva que consome horas
             da sua equipe todo dia, eu transformo em rotina automática. Quem
             combina o escopo com você é quem faz o trabalho.

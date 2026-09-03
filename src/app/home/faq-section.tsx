@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/site/section-heading";
 const FAQ = [
   {
     q: "Quanto tempo leva?",
-    a: "Site simples em ~2 semanas; sistema sob medida depende do escopo — fecho prazo na proposta.",
+    a: "Depende do escopo do projeto. Fecho o prazo com você na proposta, por escrito, antes de começar — e ele é cumprido.",
   },
   {
     q: "Como funciona o pagamento?",
@@ -38,7 +38,7 @@ export function FaqSection() {
     <section id="faq" className="section-pad" aria-labelledby="faq-title">
       <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-10">
         <div className="col-span-12 lg:col-span-4">
-          <SectionHeading index="08" eyebrow="FAQ" title="Perguntas frequentes" id="faq-title" />
+          <SectionHeading index="09" eyebrow="FAQ" title="Perguntas frequentes" id="faq-title" />
         </div>
 
         <Reveal className="col-span-12 lg:col-span-8">
@@ -48,7 +48,7 @@ export function FaqSection() {
               <Accordion.Item key={i} value={`faq-${i}`} className="border-b border-line">
                 <Accordion.Header asChild>
                   <h3 className="m-0">
-                    <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-5 text-left font-display text-[18px] font-bold leading-snug tracking-[-0.01em] text-ink md:py-6 md:text-[20px]">
+                    <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-5 text-left font-display text-[18px] font-semibold leading-snug tracking-[-0.01em] text-ink md:py-6 md:text-[20px]">
                       {item.q}
                       <Plus
                         aria-hidden
