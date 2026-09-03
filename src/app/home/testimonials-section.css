@@ -1,0 +1,19 @@
+/* Barra de progresso da aba ativa (depoimentos). Reinicia por `key`;
+   pausa via animation-play-state; some com reduced-motion. */
+@keyframes depo-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.depo-progress {
+  transform-origin: left;
+  animation: depo-progress var(--depo-ms, 7000ms) linear forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .depo-progress {
+    display: none;
+  }
+}

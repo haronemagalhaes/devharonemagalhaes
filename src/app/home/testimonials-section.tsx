@@ -1,197 +1,257 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import "./testimonials-section.css";
+import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { AnimatePresence, m } from "framer-motion";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/site/section-heading";
+import { EASE } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
-import { TESTIMONIALS, type Testimonial } from "./testimonials";
+import { TESTIMONIALS } from "./testimonials";
 
 /*
- * Depoimentos em carrossel (embla-carousel-react).
- *   - loop, align start, swipe; autoplay via setInterval + scrollNext() a
- *     cada 4s (ref) — pausa em pointerenter/focusin, retoma em
- *     pointerleave/focusout
- *   - o carrossel sangra só até a calha do container (24/40px) e é ali que
- *     fica o fade da máscara: o(s) card(s) encaixado(s) ficam 100% visíveis
- *   - prefers-reduced-motion: faixa nativa com scroll-snap, sem autoplay
- *   - TESTIMONIALS vazio → a seção não renderiza
+ * Depoimentos em abas verticais — formato do VerticalTabs (21st.dev), sem
+ * as dependências dele: `motion` → framer-motion (já no projeto), ícones do
+ * hugeicons → lucide-react (já no projeto), clsx/tailwind-merge já
+ * sustentam o `cn`. Zero instalação.
+ *
+ * Hierarquia invertida em relação ao original (que era pra serviços): a
+ * CITAÇÃO é o protagonista da aba expandida (corpo grande, tinta); o nome
+ * do cliente é o título pequeno; o painel à direita mostra o print do
+ * projeto entregue. A seção conta o que a pessoa disse e o que foi feito.
+ *
+ * Acessibilidade (o original não tinha):
+ *   - semântica de abas completa: tablist vertical / tab com aria-selected,
+ *     aria-controls, foco rodante (só a ativa no Tab) e setas ↑↓ ←→ Home End
+ *   - autoplay com botão pausar/retomar visível e por teclado (WCAG 2.2.2);
+ *     pausa também com ponteiro em cima e foco dentro; só roda com a seção
+ *     na viewport (IntersectionObserver)
+ *   - prefers-reduced-motion: sem autoplay, sem barra, troca instantânea
+ *
+ * Identidade: raio 8px como os outros cards, fios em --line, barra e
+ * estados em tinta/cinza, sem gradiente sobre a imagem (o `from-black/20`
+ * do original servia pra texto sobre a foto, que aqui não existe).
  */
-const AUTOPLAY_MS = 4000;
-
-/**
- * calha = padding-inline do container-studio (24px < md, 40px ≥ md). No
- * desktop cabem exatamente 3 cards, então o fade fica só na calha; no mobile
- * o próximo card "espia" ~30px e o fade cobre a espiada inteira (64px).
- */
-const GUTTER_MASK =
-  "[mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-64px),transparent)] md:[mask-image:linear-gradient(to_right,transparent,black_40px,black_calc(100%-40px),transparent)]";
-const GUTTER = cn("-mx-6 px-6 md:-mx-10 md:px-10", GUTTER_MASK);
-/** na faixa nativa o padding-esquerdo desconta o gap do slide (pl-4/pl-5) */
-const GUTTER_STRIP = cn(
-  "-mx-6 pl-2 pr-6 md:-mx-10 md:pl-5 md:pr-10 [scroll-padding-inline:8px] md:[scroll-padding-inline:20px]",
-  GUTTER_MASK,
-);
-/** slide = card + gap (16px < md, 20px ≥ md): ~1,1 card no mobile, 3 inteiros no desktop */
-const SLIDE = "min-w-0 flex-[0_0_calc(82vw+16px)] pl-4 md:flex-[0_0_calc(100%/3)] md:pl-5";
-
-/** Foto → círculo 40px · logo inline → 24px sem moldura · logo tile → 32px radius 8. */
-function Mark({ t }: { t: Testimonial }) {
-  if (t.avatar) {
-    return (
-      <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-surface-2">
-        <Image src={t.avatar} alt={t.name} fill sizes="40px" className="object-cover" />
-      </span>
-    );
-  }
-  if (t.logo?.style === "tile") {
-    return (
-      <span className="relative h-8 w-8 shrink-0 overflow-hidden rounded-[8px] bg-surface-2">
-        <Image src={t.logo.src} alt={t.name} fill sizes="32px" className="object-cover" />
-      </span>
-    );
-  }
-  if (t.logo) {
-    return (
-      <Image
-        src={t.logo.src}
-        alt={t.name}
-        width={96}
-        height={24}
-        sizes="96px"
-        className="h-6 w-auto max-w-[96px] shrink-0 object-contain"
-      />
-    );
-  }
-  return null;
-}
-
-function TestimonialCard({ t }: { t: Testimonial }) {
-  return (
-    <figure className="flex h-full flex-col rounded-[8px] border border-line bg-surface p-6">
-      <span aria-hidden className="mb-5 block h-px w-[14px] bg-line" />
-      <blockquote className="line-clamp-3 text-[1rem] leading-[1.5] text-ink md:text-[1.05rem]">
-        <p>{t.quote}</p>
-      </blockquote>
-      <figcaption className="mt-auto flex items-center gap-3 pt-6">
-        <Mark t={t} />
-        <span className="flex min-w-0 flex-col">
-          <span className="text-[0.9rem] font-medium leading-snug text-ink">{t.name}</span>
-          <span className="text-[0.8rem] leading-snug text-ink-soft">{t.role}</span>
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
-
-function Arrows({ onPrev, onNext }: { onPrev: () => void; onNext: () => void }) {
-  const btn =
-    "flex h-10 w-10 items-center justify-center rounded-full border border-ink text-ink transition-colors duration-300 hover:bg-ink hover:text-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
-  return (
-    <div className="hidden items-center gap-2 md:flex">
-      <button type="button" onClick={onPrev} className={btn} aria-label="Depoimento anterior">
-        <ArrowLeft className="h-4 w-4" aria-hidden />
-      </button>
-      <button type="button" onClick={onNext} className={btn} aria-label="Próximo depoimento">
-        <ArrowRight className="h-4 w-4" aria-hidden />
-      </button>
-    </div>
-  );
-}
-
-/** Versão embla: loop + autoplay (setInterval numa ref; pausa/retoma por ponteiro e foco). */
-function AutoCarousel({ items }: { items: Testimonial[] }) {
-  const [viewportRef, embla] = useEmblaCarousel({ loop: true, align: "start", duration: 32 });
-  const timer = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const stop = useCallback(() => {
-    if (timer.current) clearInterval(timer.current);
-    timer.current = null;
-  }, []);
-  const start = useCallback(() => {
-    if (!embla) return;
-    stop();
-    timer.current = setInterval(() => embla.scrollNext(), AUTOPLAY_MS);
-  }, [embla, stop]);
-
-  useEffect(() => {
-    start();
-    return stop;
-  }, [start, stop]);
-
-  const prev = useCallback(() => embla?.scrollPrev(), [embla]);
-  const next = useCallback(() => embla?.scrollNext(), [embla]);
-
-  return (
-    <div onPointerEnter={stop} onPointerLeave={start} onFocus={stop} onBlur={start}>
-      <div className="mb-6 flex justify-end md:mb-8">
-        <Arrows onPrev={prev} onNext={next} />
-      </div>
-      {/* a calha recorta e esmaece; o viewport do embla fica visível dentro dela */}
-      <div className={cn("overflow-hidden", GUTTER)}>
-        <div ref={viewportRef}>
-          <ul className="flex items-stretch touch-pan-y -ml-4 md:-ml-5" aria-live="off">
-            {items.map((t, i) => (
-              <li key={`${t.name}-${i}`} className={SLIDE}>
-                <TestimonialCard t={t} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Versão reduced-motion: faixa nativa com scroll-snap, sem autoplay. */
-function SnapStrip({ items }: { items: Testimonial[] }) {
-  const ref = useRef<HTMLUListElement>(null);
-  const by = (dir: 1 | -1) => {
-    const el = ref.current;
-    if (!el) return;
-    const card = el.querySelector("li");
-    el.scrollBy({ left: dir * (card?.getBoundingClientRect().width ?? 360), behavior: "auto" });
-  };
-  return (
-    <div>
-      <div className="mb-6 flex justify-end md:mb-8">
-        <Arrows onPrev={() => by(-1)} onNext={() => by(1)} />
-      </div>
-      <ul
-        ref={ref}
-        className={cn(
-          "flex snap-x snap-mandatory items-stretch overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-          GUTTER_STRIP,
-        )}
-      >
-        {items.map((t, i) => (
-          <li key={`${t.name}-${i}`} className={cn(SLIDE, "snap-start")}>
-            <TestimonialCard t={t} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+const INTERVAL_MS = 7000;
 
 export function TestimonialsSection() {
+  const items = TESTIMONIALS;
+  const n = items.length;
   const reduced = useReducedMotion();
-  if (TESTIMONIALS.length === 0) return null;
+  const uid = useId();
+
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false); // controle do usuário
+  const [held, setHeld] = useState(false); // ponteiro em cima / foco dentro
+  const [inView, setInView] = useState(false);
+  const [cycle, setCycle] = useState(0); // reinicia a barra e o timer
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const running = n > 1 && inView && !paused && !held && !reduced;
+
+  const go = useCallback(
+    (i: number, focus = false) => {
+      const next = ((i % n) + n) % n;
+      setActive(next);
+      setCycle((c) => c + 1);
+      if (focus) tabRefs.current[next]?.focus();
+    },
+    [n],
+  );
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!running) return;
+    const t = setTimeout(() => go(active + 1), INTERVAL_MS);
+    return () => clearTimeout(t);
+  }, [running, active, cycle, go]);
+
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const map: Record<string, number | undefined> = {
+      ArrowDown: active + 1,
+      ArrowRight: active + 1,
+      ArrowUp: active - 1,
+      ArrowLeft: active - 1,
+      Home: 0,
+      End: n - 1,
+    };
+    const target = map[e.key];
+    if (target === undefined) return;
+    e.preventDefault();
+    go(target, true);
+  };
+
+  if (n === 0) return null;
+
+  const current = items[active];
+  const tabId = (i: number) => `${uid}-tab-${i}`;
+  const panelId = `${uid}-panel`;
+  const dur = reduced ? 0 : 0.45;
 
   return (
     <section id="depoimentos" className="section-pad" aria-labelledby="depoimentos-title">
       <div className="container-studio">
-        <SectionHeading
-          index="07"
-          eyebrow="Depoimentos"
-          title="O que dizem os clientes"
-          id="depoimentos-title"
-        />
+        <SectionHeading index="07" eyebrow="Depoimentos" title="O que dizem os clientes" id="depoimentos-title" />
+
         <Reveal className="mt-10 md:mt-14">
-          {reduced ? <SnapStrip items={TESTIMONIALS} /> : <AutoCarousel items={TESTIMONIALS} />}
+          <div
+            ref={rootRef}
+            className="grid grid-cols-12 gap-x-6 gap-y-8"
+            onPointerEnter={() => setHeld(true)}
+            onPointerLeave={() => setHeld(false)}
+            onFocusCapture={() => setHeld(true)}
+            onBlurCapture={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHeld(false);
+            }}
+          >
+            {/* ---------- abas (esquerda) ---------- */}
+            <div className="col-span-12 lg:col-span-5">
+              <div role="tablist" aria-orientation="vertical" aria-label="Depoimentos" onKeyDown={onKeyDown}>
+                {items.map((t, i) => {
+                  const selected = i === active;
+                  return (
+                    <div key={t.id} className="relative border-t border-line last:border-b">
+                      <button
+                        ref={(el) => {
+                          tabRefs.current[i] = el;
+                        }}
+                        type="button"
+                        role="tab"
+                        id={tabId(i)}
+                        aria-selected={selected}
+                        aria-controls={panelId}
+                        tabIndex={selected ? 0 : -1}
+                        onClick={() => go(i)}
+                        className={cn(
+                          "group flex w-full items-baseline gap-4 py-5 text-left transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink md:gap-6",
+                          selected ? "text-ink" : "text-ink/70 hover:text-ink",
+                        )}
+                      >
+                        <span className="eyebrow w-9 shrink-0 tabular-nums">/{String(i + 1).padStart(2, "0")}</span>
+                        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                          <span className="font-display text-[18px] font-semibold leading-tight tracking-[-0.01em] md:text-[20px]">
+                            {t.cliente}
+                          </span>
+                          <span className="text-[13px] leading-snug text-ink-soft">{t.empresa}</span>
+                        </span>
+                      </button>
+
+                      {/* citação: protagonista da aba aberta */}
+                      <AnimatePresence initial={false}>
+                        {selected && (
+                          <m.div
+                            key="quote"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: dur, ease: EASE }}
+                            className="overflow-hidden"
+                          >
+                            <blockquote className="pb-6 pl-[calc(2.25rem+1rem)] md:pl-[calc(2.25rem+1.5rem)]">
+                              <p className="text-balance text-[18px] leading-[1.45] text-ink md:text-[22px]">
+                                “{t.citacao}”
+                              </p>
+                            </blockquote>
+                          </m.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* barra de progresso do autoplay */}
+                      {selected && running && (
+                        <span
+                          key={`bar-${cycle}`}
+                          aria-hidden
+                          className="depo-progress absolute bottom-[-1px] left-0 h-[2px] w-full bg-ink"
+                          style={{ ["--depo-ms" as string]: `${INTERVAL_MS}ms` }}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* controles: anterior · pausar/retomar · próximo — visíveis, por teclado */}
+              <div className="mt-5 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => go(active - 1, true)}
+                  aria-label="Depoimento anterior"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-ink text-ink transition-colors duration-300 hover:bg-ink hover:text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                >
+                  <ChevronLeft className="h-4 w-4" aria-hidden />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPaused((p) => !p)}
+                  aria-pressed={paused}
+                  aria-label={paused ? "Retomar a troca automática" : "Pausar a troca automática"}
+                  disabled={reduced || n < 2}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-ink text-ink transition-colors duration-300 hover:bg-ink hover:text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink"
+                >
+                  {paused ? <Play className="h-4 w-4" aria-hidden /> : <Pause className="h-4 w-4" aria-hidden />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => go(active + 1, true)}
+                  aria-label="Próximo depoimento"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-ink text-ink transition-colors duration-300 hover:bg-ink hover:text-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                >
+                  <ChevronRight className="h-4 w-4" aria-hidden />
+                </button>
+                <span className="ml-2 text-[13px] text-ink-soft" aria-live="polite">
+                  {String(active + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+
+            {/* ---------- painel (direita): print do projeto ---------- */}
+            <div
+              role="tabpanel"
+              id={panelId}
+              aria-labelledby={tabId(active)}
+              className="order-first col-span-12 lg:order-none lg:col-span-7"
+            >
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[8px] border border-line bg-surface-2">
+                <AnimatePresence mode="wait" initial={false}>
+                  <m.div
+                    key={current.id}
+                    initial={{ opacity: 0, x: reduced ? 0 : 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: reduced ? 0 : -24 }}
+                    transition={{ duration: dur, ease: EASE }}
+                    className="absolute inset-0"
+                  >
+                    {current.imagem ? (
+                      <Image
+                        src={current.imagem}
+                        alt={current.alt ?? `Projeto entregue para ${current.cliente}`}
+                        fill
+                        sizes="(min-width: 1024px) 640px, 100vw"
+                        className="object-cover object-top"
+                      />
+                    ) : (
+                      // sem print: fundo neutro da paleta, nunca placeholder colorido
+                      <div className="flex h-full items-center justify-center bg-surface-2 text-[13px] text-ink-soft">
+                        {current.cliente}
+                      </div>
+                    )}
+                  </m.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
         </Reveal>
       </div>
     </section>
