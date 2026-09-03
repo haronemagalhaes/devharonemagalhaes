@@ -1,0 +1,152 @@
+/* =====================================================================
+   Hero "aurora" (branch hero-aurora) — só o que esta seção usa.
+   Adaptado do CinematicFooter (21st.dev): ficaram aurora, grid com
+   máscara, texto gigante, brilho do título e glass pill. Saíram o wrapper
+   com clip-path, o <footer fixed>, créditos, selo, App Store, marquee,
+   heartbeat (--destructive) e o @import da Plus Jakarta Sans — a fonte é a
+   do projeto (Geist). Zero cor: tudo em --foreground / --background.
+   ===================================================================== */
+
+@keyframes hero-breathe {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Aurora: tinta em opacidade baixa, centrada no H1 (top 45%) e com raio
+   efetivo menor que a distância até o sub (some a 52% do raio × 1.1 de
+   escala): o cinza do sub precisa de 4,5:1 e, com o grain do site, já
+   nasce a 4,59:1 sobre o papel — não aguenta véu nenhum. Atmosfera, não
+   protagonista. */
+.hero-aurora {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: min(130vw, 1600px);
+  height: clamp(220px, 24vw, 340px);
+  border-radius: 9999px;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 0%,
+    color-mix(in oklch, var(--foreground) 3%, transparent) 32%,
+    transparent 52%
+  );
+  animation: hero-breathe 8s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+/* Grid: fade vertical E um vazio elíptico atrás do bloco de texto
+   (mask-composite: intersect) — nenhuma linha passa por baixo do sub.
+   No mobile o texto ocupa a largura toda, então o vazio vira uma faixa
+   horizontal inteira (grid só acima e abaixo do bloco). */
+.hero-bg-grid {
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--foreground) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 4%, transparent) 1px, transparent 1px);
+  mask-image:
+    linear-gradient(to bottom, transparent, black 25%, black 75%, transparent),
+    radial-gradient(ellipse 42% 46% at 50% 54%, transparent 62%, black 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, black 25%, black 75%, transparent),
+    radial-gradient(ellipse 42% 46% at 50% 54%, transparent 62%, black 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+@media (max-width: 767px) {
+  .hero-bg-grid {
+    mask-image: linear-gradient(to bottom, transparent, black 12%, black 22%, transparent 27%, transparent 80%, black 86%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 22%, transparent 27%, transparent 80%, black 86%, black 92%, transparent);
+    mask-composite: add;
+    -webkit-mask-composite: source-over;
+  }
+}
+
+/* Texto gigante: 26vw do original estoura ("HARONEDEV" mede ≈ 6em em
+   Geist 700 caixa alta com -0.05em → só cabe até ~16vw). 15vw cabe em
+   qualquer largura; no mobile vira 56px a 375px. Fica colado no rodapé da
+   seção, atrás do CTA. */
+.hero-giant-text {
+  font-size: 15vw;
+  line-height: 0.75;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklch, var(--foreground) 7%, transparent);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--foreground) 10%, transparent) 0%, transparent 65%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Brilho metálico do título. O stop de baixo NÃO vai a 40% como no
+   original: o glifo ficaria cinza-claro na base e reprovaria o AA. 72% de
+   tinta sobre papel ≈ 6,8:1. */
+.hero-text-glow {
+  background: linear-gradient(
+    180deg,
+    var(--foreground) 0%,
+    color-mix(in oklch, var(--foreground) 72%, var(--background)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px color-mix(in oklch, var(--foreground) 15%, transparent));
+}
+
+.hero-glass-pill {
+  --pill-bg-1: color-mix(in oklch, var(--foreground) 3%, transparent);
+  --pill-bg-2: color-mix(in oklch, var(--foreground) 1%, transparent);
+  --pill-shadow: color-mix(in oklch, var(--background) 50%, transparent);
+  --pill-highlight: color-mix(in oklch, var(--foreground) 10%, transparent);
+  --pill-inset-shadow: color-mix(in oklch, var(--background) 80%, transparent);
+  --pill-border: color-mix(in oklch, var(--foreground) 12%, transparent);
+  --pill-bg-1-hover: color-mix(in oklch, var(--foreground) 8%, transparent);
+  --pill-bg-2-hover: color-mix(in oklch, var(--foreground) 2%, transparent);
+  --pill-border-hover: color-mix(in oklch, var(--foreground) 24%, transparent);
+  --pill-shadow-hover: color-mix(in oklch, var(--background) 70%, transparent);
+  --pill-highlight-hover: color-mix(in oklch, var(--foreground) 20%, transparent);
+
+  background: linear-gradient(145deg, var(--pill-bg-1) 0%, var(--pill-bg-2) 100%);
+  box-shadow:
+    0 10px 30px -10px var(--pill-shadow),
+    inset 0 1px 1px var(--pill-highlight),
+    inset 0 -1px 2px var(--pill-inset-shadow);
+  border: 1px solid var(--pill-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition:
+    background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-glass-pill:hover {
+  background: linear-gradient(145deg, var(--pill-bg-1-hover) 0%, var(--pill-bg-2-hover) 100%);
+  border-color: var(--pill-border-hover);
+  box-shadow:
+    0 20px 40px -10px var(--pill-shadow-hover),
+    inset 0 1px 1px var(--pill-highlight-hover);
+}
+
+/* Movimento reduzido: aurora parada (fica visível, sem respirar). O botão
+   magnético e o hover-scale checam o mesmo media query no JS. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
+/* Touch: blur mais barato (o fundo atrás do botão é quase chapado, a
+   diferença visual é nula). */
+@media (hover: none) {
+  .hero-glass-pill {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
