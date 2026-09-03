@@ -5,6 +5,7 @@ import { m } from "framer-motion";
 import { EASE } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import Foto from "@/assets/eu.jpeg";
+import Monograma from "@/assets/monograma.png";
 
 /*
  * Leque de três cartões abaixo do CTA da capa 1 — formato do Hero10
@@ -12,9 +13,10 @@ import Foto from "@/assets/eu.jpeg";
  * projeto), `react-wrap-balancer` → `text-balance` nativo, Slot/CVA já vêm
  * com o Button do shadcn, e o `Cta` que faltava é o MagneticButton do hero.
  *
- *   1 (esquerda, −6°)  monograma HM (public/favicon.png, o único com fundo
- *                       transparente) — object-contain, respiro de 24%,
- *                       fundo de papel; no escuro é invertido
+ *   1 (esquerda, −6°)  monograma HM puro (src/assets/monograma.png; o
+ *                       favicon traz o nome junto) — object-contain, respiro
+ *                       de 22%, fundo de papel, blend pra sumir com o fundo
+ *                       branco do PNG; no escuro invertido + screen
  *   2 (centro, 0°)     foto do Harone (src/assets/eu.jpeg, a mesma do
  *                       "Quem faz"), retrato 4:5 sem corte relevante
  *   3 (direita, +6°)   print provisório — TODO: trocar (hoje psinaiade.png)
@@ -38,15 +40,14 @@ const CARD =
 function CardContent({ kind }: { kind: Card["kind"] }) {
   if (kind === "logo") {
     return (
-      // public/favicon.png é o único HM com fundo transparente (monograma.png é
-      // branco opaco); no escuro inverte pra tinta clara
-      <div className="flex h-full w-full items-center justify-center bg-bg p-[24%]">
+      // monograma.png é o HM puro (o favicon traz o nome junto), mas tem fundo
+      // branco opaco: multiply faz o branco sumir no papel; no escuro inverte
+      // (HM branco, fundo preto) e screen faz o preto sumir
+      <div className="flex h-full w-full items-center justify-center bg-bg p-[22%]">
         <Image
-          src="/favicon.png"
+          src={Monograma}
           alt=""
-          width={500}
-          height={500}
-          className="h-auto w-full object-contain dark:invert"
+          className="h-auto w-full object-contain mix-blend-multiply dark:invert dark:mix-blend-screen"
           sizes="200px"
         />
       </div>
