@@ -1,5 +1,4 @@
 import Header from "./home/header";
-import { HeroSection } from "./home/hero-section";
 import { HeroAurora } from "./home/hero-aurora";
 import { ProofStrip } from "./home/proof-strip";
 import { CapabilitiesSection } from "./home/capabilities-section";
@@ -16,12 +15,6 @@ import { FinalCtaSection } from "./home/final-cta-section";
 import { ContactSection } from "./home/contact-section";
 import Footer from "./home/footer";
 
-/**
- * Hero em teste (branch hero-aurora): "classic" = hero atual (hero-section.tsx),
- * "aurora" = grid + aurora + texto gigante (hero-aurora.tsx). Troque aqui.
- */
-const HERO: "classic" | "aurora" = "aurora";
-
 /* Ordem: promessa (hero) → números → o que eu faço → prova (Resultados) →
    como trabalho → planos → trabalho → produto → depoimentos → quem faz →
    FAQ → CTA → contato. Os índices dos eyebrows seguem essa ordem (01–10). */
@@ -30,7 +23,7 @@ export default function Home() {
     <>
       <Header />
       <main>
-        {HERO === "aurora" ? <HeroAurora /> : <HeroSection />}
+        <HeroAurora />
         <ProofStrip />
         <CapabilitiesSection />
         <CasesSection />

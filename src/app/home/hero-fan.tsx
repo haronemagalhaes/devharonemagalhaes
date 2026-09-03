@@ -21,6 +21,11 @@ import Monograma from "@/assets/monograma.png";
  *                       "Quem faz"), retrato 4:5 sem corte relevante
  *   3 (direita, +6°)   print provisório — TODO: trocar (hoje psinaiade.png)
  *
+ * Tamanho pela ALTURA da viewport (clamp 96px · 17svh · 196px): é o que
+ * faz a capa 1 caber em 100svh no desktop com o sticky — 900px de altura
+ * dá cartões de 153px, 768px dá 131px (a 20svh estourava 42px em 768).
+ * Largura de tela não manda.
+ *
  * Identidade: raio 8px como os outros cards, contorno em --line (nada de
  * preto/branco cru), sombra derivada de --ink. Decorativo: aria-hidden.
  * Entrada: whileInView once com stagger — dispara no carregamento porque a
@@ -35,7 +40,7 @@ const CARDS: Card[] = [
 ];
 
 const CARD =
-  "relative aspect-[4/5] w-[104px] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)] sm:w-[140px] md:w-[172px] lg:w-[196px]";
+  "relative aspect-[4/5] w-[clamp(96px,17svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)]";
 
 function CardContent({ kind }: { kind: Card["kind"] }) {
   if (kind === "logo") {

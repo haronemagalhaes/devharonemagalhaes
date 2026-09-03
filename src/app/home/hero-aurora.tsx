@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
 import { MagneticButton } from "@/components/site/magnetic-button";
 import { HeroFan } from "./hero-fan";
-import { StickyFit } from "@/components/site/sticky-fit";
 import { StudioButton } from "@/components/site/studio-button";
 import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
 
@@ -12,15 +11,14 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  * (const HERO).
  *
  * Duas capas, CSS puro (sem gsap/ScrollTrigger/framer-motion):
- *   capa 1 — a pergunta: `sticky`, z-0, mín. 100svh. Papel, grid + aurora +
- *            textura, e o leque de 3 cartões (Hero10) abaixo do CTA. Com o
- *            leque a capa passa de 100svh na maioria das telas (975px no
- *            desktop, 716px a 375×667), então o `top` do sticky vira
- *            100svh − altura (StickyFit): ela rola até o rodapé encostar
- *            no fim da viewport e só então gruda, com a capa 2 subindo por
- *            cima. Em tela alta (capa ≤ viewport) é o top-0 de antes.
- *            PROVISÓRIO — o Harone decide entre isso, encolher o leque ou
- *            abrir mão do sticky.
+ *   capa 1 — a pergunta: mín. 100svh. Papel, grid + aurora + textura e o
+ *            leque de 3 cartões (Hero10) abaixo do CTA. Sticky só ≥ md: no
+ *            desktop o leque escala pela altura da viewport (20svh) e a
+ *            capa cabe em 100svh, então `sticky top-0` funciona sem JS;
+ *            no mobile nenhuma altura comum cabe com o leque, então a capa
+ *            rola normal e a capa 2 vem em seguida (sem cobrir). Decisão
+ *            2026-09-03 = "opção 2"; alternativas: top negativo via JS
+ *            (sticky-fit, removido) ou sem sticky em lugar nenhum.
  *   capa 2 — a resposta: `relative z-10`, fundo de tinta 100% opaco. Sobe
  *            por cima da capa 1 conforme o usuário rola. Limpa: sem grid,
  *            sem aurora — é a diferenciação entre as duas. Headline grande
@@ -100,11 +98,9 @@ export function HeroAurora() {
       {/* ---------- capa 1 — a pergunta ---------- */}
       <section
         id="top"
-        className="sticky top-0 z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)]"
+        className="relative z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)] md:sticky md:top-0"
         aria-labelledby="hero-title"
       >
-        {/* capa mais alta que a viewport: top = 100svh − altura (ver sticky-fit.tsx) */}
-        <StickyFit targetId="top" />
         {/* textura (de trás pra frente): grid → realce → aurora → vinheta → grão */}
         <div aria-hidden className="hero-bg-grid pointer-events-none absolute inset-0" />
         <div aria-hidden className="hero-spot pointer-events-none absolute inset-0" />
@@ -112,7 +108,7 @@ export function HeroAurora() {
         <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
         <div aria-hidden className="hero-grain pointer-events-none absolute inset-0" />
 
-        <div className="container-studio relative z-10 flex w-full flex-col items-center py-12 text-center md:py-24">
+        <div className="container-studio relative z-10 flex w-full flex-col items-center py-10 text-center">
           <p
             className="hero-fade eyebrow max-w-full !text-[11px] !tracking-[0.12em] leading-relaxed md:!text-[12px] md:!tracking-[0.14em]"
             style={delay(0.05)}
@@ -150,7 +146,7 @@ export function HeroAurora() {
           </div>
 
           {/* leque de 3 cartões (Hero10): monograma · foto · print provisório */}
-          <HeroFan className="mt-10 md:mt-14" />
+          <HeroFan className="mt-8 md:mt-10" />
         </div>
       </section>
 

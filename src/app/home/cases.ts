@@ -75,7 +75,7 @@ export const CASES: Case[] = [
     servico: "Sistema de gestão sob demanda",
     periodo: "[preencher: ano ou duração]",
     comoEstava:
-      "A clínica rodava a operação em quatro sistemas separados, um pra cada coisa. Nada conversava entre si, o mesmo dado era digitado mais de uma vez e qualquer visão do todo só saía juntando informação na mão. [preencher: confirmar número exato de sistemas] [preencher: quais eram]",
+      "A clínica rodava a operação em quatro sistemas separados, um pra cada coisa. Nada conversava entre si, a mesma coisa era digitada mais de uma vez e qualquer visão do todo só saía juntando informação na mão. [preencher: confirmar número exato de sistemas] [preencher: quais eram]",
     oQueEuFiz:
       "Desenvolvi um sistema único que absorveu as funções de todas elas, no mesmo lugar, com um painel só. A clínica parou de usar as ferramentas antigas. [preencher: módulos que ficaram no mesmo lugar]",
     oQueMudou:

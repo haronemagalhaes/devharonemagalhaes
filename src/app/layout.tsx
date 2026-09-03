@@ -105,7 +105,7 @@ const jsonLd = {
       knowsAbout: [
         "Sites e landing pages",
         "Sistemas e plataformas sob medida",
-        "Automação de processos",
+        "Automação de tarefas",
         "Tráfego pago (Google Ads e Meta Ads)",
       ],
     },

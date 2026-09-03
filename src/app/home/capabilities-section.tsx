@@ -11,30 +11,17 @@ type Group = { label: string; items: Item[] };
  * Duas metades da promessa do H1: cada rótulo de grupo é um dos dois arcos.
  * Só o título, sem frase de apoio — os cards já explicam. Os rótulos são o
  * que dá peso estrutural à segunda metade; sem eles a promessa vira
- * retórica. A numeração 01–04 é contínua. Ordem frente → trás, igual ao sub.
+ * retórica. A numeração 01–04 é contínua. Ordem trás → frente (decisão
+ * final de 2026-09-03): sistemas e automação primeiro, que é a prioridade
+ * nº 1 de venda; depois site e tráfego.
  */
 const GROUPS: Group[] = [
-  {
-    label: "Traz mais cliente",
-    items: [
-      {
-        n: "01",
-        title: "Sites & Landing Pages",
-        text: "Site institucional, landing de campanha, página de captação e link na bio. Rápido de carregar, fácil de achar no Google e feito pra transformar visita em contato.",
-      },
-      {
-        n: "02",
-        title: "Tráfego Pago",
-        text: "Campanha no Google e no Meta ligada a uma página feita pra converter. Você acompanha quanto entrou, quanto custou e o que virou cliente.",
-      },
-    ],
-  },
   {
     label: "Sai da planilha",
     items: [
       {
-        n: "03",
-        title: "Sistemas & Plataformas",
+        n: "01",
+        title: "Sistemas",
         text: (
           <>
             Sistema de gestão feito pra sua operação, no lugar da planilha:
@@ -46,9 +33,24 @@ const GROUPS: Group[] = [
         ),
       },
       {
-        n: "04",
-        title: "Automação",
+        n: "02",
+        title: "Automação de tarefas",
         text: "Confirmação e lembrete por WhatsApp, integração entre as ferramentas que você já usa, relatório que chega pronto. O trabalho repetitivo sai da sua mão.",
+      },
+    ],
+  },
+  {
+    label: "Traz mais cliente",
+    items: [
+      {
+        n: "03",
+        title: "Site e Landing Page",
+        text: "Site institucional, landing de campanha, página de captação e link na bio. Rápido de carregar, fácil de achar no Google e feito pra transformar visita em contato.",
+      },
+      {
+        n: "04",
+        title: "Tráfego pago",
+        text: "Campanha no Google e no Meta ligada a uma página feita pra converter. Você acompanha quanto entrou, quanto custou e o que virou cliente.",
       },
     ],
   },
