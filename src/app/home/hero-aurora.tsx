@@ -28,6 +28,12 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  *
  * Headings: um único <h1> (capa 1). A capa 2 usa <h2> (sistemas) e <h3>.
  *
+ * Textura (capa 1): realce + vinheta + grão, o mesmo sistema das artes do
+ * Instagram, derivado dos tokens (hero-aurora.css). O grid ficou a 2,5%
+ * como camada de apoio. A animação de entrada é a CSS do site (.hero-fade,
+ * escalonada por --d; some com prefers-reduced-motion) — não precisou de
+ * framer-motion.
+ *
  * Contraste — capa 1: a aurora fica centrada no H1 e some antes do sub; o
  * grid tem um vazio atrás do bloco de texto. O sub NÃO usa --ink-soft: o
  * cinza médio sobre o papel mede 4,63:1 nominal e, com o grain do site,
@@ -72,9 +78,10 @@ const SYSTEMS = {
   eyebrow: "Sistemas sob medida e automação de tarefas",
   line1: "O que sua equipe faz em 3 horas,",
   line2: "o sistema faz sozinho.",
-  // dois casos reais, sem contar a história; primeira pessoa no fecho
+  // três casos reais, sem contar a história; ordem: licitação → financeiro → relatório
+  // TODO: confirmar o que foi entregue no caso do financeiro — "vive num painel" é provisório
   apoio:
-    "Buscar licitação em 75 sites, todo dia. Montar relatório fotográfico no Word. Duas tarefas que eu automatizei: a lista chega pronta e o relatório sai pronto do sistema.",
+    "Buscar licitação em 75 sites, todo dia. Controlar o financeiro na planilha. Montar relatório fotográfico no Word. Três tarefas que eu tirei da mão de alguém: a lista chega pronta, o financeiro vive num painel e o relatório sai do sistema.",
 };
 
 const delay = (s: number) => ({ "--d": `${s}s` }) as CSSProperties;
@@ -88,8 +95,12 @@ export function HeroAurora() {
         className="sticky top-0 z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)]"
         aria-labelledby="hero-title"
       >
+        {/* textura (de trás pra frente): grid → realce → aurora → vinheta → grão */}
         <div aria-hidden className="hero-bg-grid pointer-events-none absolute inset-0" />
+        <div aria-hidden className="hero-spot pointer-events-none absolute inset-0" />
         <div aria-hidden className="hero-aurora pointer-events-none" />
+        <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
+        <div aria-hidden className="hero-grain pointer-events-none absolute inset-0" />
 
         <div className="container-studio relative z-10 flex w-full flex-col items-center py-12 text-center md:py-24">
           <p
@@ -117,10 +128,11 @@ export function HeroAurora() {
             {SUB}
           </p>
 
+          {/* CTA sólido: é a ação mais importante da página e precisa ganhar do fundo — o vidro sumia no papel */}
           <div className="hero-fade mt-8 w-full sm:w-auto md:mt-10 [perspective:600px]" style={delay(0.6)}>
             <MagneticButton
               href={`#${CONTACT_ID}`}
-              className="hero-glass-pill inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-full px-8 py-4 text-base font-medium text-ink sm:w-auto"
+              className="inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-full bg-ink px-8 py-4 text-base font-medium text-bg shadow-[0_12px_32px_-12px_color-mix(in_oklch,var(--ink)_45%,transparent)] transition-colors duration-300 hover:bg-ink/90 sm:w-auto"
             >
               {CTA_PRIMARY}
               <ArrowRight className="h-4 w-4" aria-hidden />
