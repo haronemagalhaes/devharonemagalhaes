@@ -26,7 +26,7 @@ import Foto from "@/assets/eu.jpeg";
  * reconhecida como sistema. `contain` está fora: barra branca em volta
  * ficaria pior que o recorte.
  *
- * Tamanho pela ALTURA da viewport: 14svh no mobile, 17svh ≥ md, entre 72
+ * Tamanho pela ALTURA da viewport: 14svh no mobile, 16svh ≥ md (era 17: o line-height 1.15 do H1 fez a capa passar 6px em 1024×768), entre 72
  * e 196px. É o que faz a capa 1 caber em 100svh com o sticky — 900px de
  * altura dá cartões de 153px, 768px dá 131px, 667px dá 93px. Abaixo de
  * 600px de altura o leque some (regra no hero). Largura não manda.
@@ -46,7 +46,7 @@ const CARDS: Card[] = [
 ];
 
 const CARD =
-  "relative aspect-[4/5] w-[clamp(72px,14svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)] md:w-[clamp(96px,17svh,196px)]";
+  "relative aspect-[4/5] w-[clamp(72px,14svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)] md:w-[clamp(96px,16svh,196px)]";
 
 const SIZES = "(min-width: 1024px) 196px, (min-width: 640px) 140px, 104px";
 

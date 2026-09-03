@@ -51,7 +51,13 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  * tinta (16:1); eyebrow e numerais a 70% de papel (≈ 8:1 no claro, ≈ 6:1
  * no escuro — a 60% o escuro dava 4,49).
  *
- * H1 — medido no Chrome (Geist 600, -0.025em, lh 1.08): mobile 3 linhas,
+ * H1 — line-height 1.15 (era 1.08): a 1.08 as três linhas do mobile
+ * colidiam em 91 colunas (folga 0 entre o "q" de "que" e a linha
+ * seguinte); no desktop, com duas linhas, havia 24px e não aparecia.
+ * O gradiente (.hero-text-glow) fica só na 2ª linha, que não tem
+ * descendente — se o texto mudar, conferir de novo.
+ *
+ * H1 — medido no Chrome (Geist 600, -0.025em): mobile 3 linhas,
  * (100vw − 48px) / 11 teto 46px → 30px a 375px; desktop 2 linhas,
  * min(64px, (100vw − 80px) / 14.8).
  */
@@ -70,7 +76,15 @@ const SUB =
  * zero.") e D ("3 horas por dia. Ou nenhuma.") aguentam corpo gigante mas
  * são crípticas sem o apoio; C não tem número e cai pra 24px no mobile.
  *
- * Medição (Geist 600, -0.025em, lh 1.05): L1 "O que sua equipe faz em 3
+ * line-height 1.15 (era 1.05): medido em pixel, com 1.05 os descendentes
+ * ("q" de "que", "p" de "equipe") ficavam a 12px da linha de baixo e no
+ * pior caso (gqpjy sobre ÁÉÍbdfhkl) colidiam em 45 colunas; 1.10 ainda
+ * colidia em 49. 1.15 é o primeiro sem colisão (5px de folga no pior
+ * caso, 19px no texto real). Regra da marca: Geist 600–700, tracking
+ * entre 0 e -0.03em, line-height ≥ 1.05 e nunca abaixo de 1.15 quando há
+ * duas linhas com descendente.
+ *
+ * Medição (Geist 600, -0.025em): L1 "O que sua equipe faz em 3
  * horas," 15.62em · L2 "o sistema faz sozinho." 10.51em. Uma frase por
  * bloco:
  *   - < lg ...... L1 em 2 linhas + L2 em 1 = 3 linhas; corpo =
@@ -121,7 +135,7 @@ export function HeroAurora() {
 
           <h1
             id="hero-title"
-            className="hero-fade mt-6 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/11),2.875rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-ink md:mt-8 lg:text-[length:min(64px,calc((100vw-80px)/14.8))]"
+            className="hero-fade mt-6 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/11),2.875rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-ink md:mt-8 lg:text-[length:min(64px,calc((100vw-80px)/14.8))]"
             style={delay(0.2)}
           >
             {/* a pergunta é o clímax: cinza na primeira linha, tinta com brilho na segunda */}
@@ -164,7 +178,7 @@ export function HeroAurora() {
 
           <h2
             id="resposta-title"
-            className="mt-5 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/10.7),3rem)] font-semibold leading-[1.05] tracking-[-0.025em] md:mt-7 lg:text-[length:min(68px,calc((100vw-80px)/15.9))]"
+            className="mt-5 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/10.7),3rem)] font-semibold leading-[1.15] tracking-[-0.025em] md:mt-7 lg:text-[length:min(68px,calc((100vw-80px)/15.9))]"
           >
             <span className="block text-balance">{SYSTEMS.line1}</span>
             <span className="block">{SYSTEMS.line2}</span>
