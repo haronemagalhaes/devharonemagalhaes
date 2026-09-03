@@ -1,10 +1,11 @@
 /* =====================================================================
    Hero "aurora" (branch hero-aurora) — só o que esta seção usa.
    Adaptado do CinematicFooter (21st.dev): ficaram aurora, grid com
-   máscara, texto gigante, brilho do título e glass pill. Saíram o wrapper
-   com clip-path, o <footer fixed>, créditos, selo, App Store, marquee,
-   heartbeat (--destructive) e o @import da Plus Jakarta Sans — a fonte é a
-   do projeto (Geist). Zero cor: tudo em --foreground / --background.
+   máscara, brilho do título e glass pill. Saíram o wrapper com clip-path,
+   o <footer fixed>, créditos, selo, App Store, marquee, heartbeat
+   (--destructive), o texto gigante de fundo e o @import da Plus Jakarta
+   Sans — a fonte é a do projeto (Geist). Zero cor: tudo em --foreground /
+   --background. Só a capa 1 usa isto; a capa 2 é tinta chapada.
    ===================================================================== */
 
 @keyframes hero-breathe {
@@ -65,23 +66,6 @@
     mask-composite: add;
     -webkit-mask-composite: source-over;
   }
-}
-
-/* Texto gigante: 26vw do original estoura ("HARONEDEV" mede ≈ 6em em
-   Geist 700 caixa alta com -0.05em → só cabe até ~16vw). 15vw cabe em
-   qualquer largura; no mobile vira 56px a 375px. Fica colado no rodapé da
-   seção, atrás do CTA. */
-.hero-giant-text {
-  font-size: 15vw;
-  line-height: 0.75;
-  font-weight: 700;
-  letter-spacing: -0.05em;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1px color-mix(in oklch, var(--foreground) 7%, transparent);
-  background: linear-gradient(180deg, color-mix(in oklch, var(--foreground) 10%, transparent) 0%, transparent 65%);
-  -webkit-background-clip: text;
-  background-clip: text;
 }
 
 /* Brilho metálico do título. O stop de baixo NÃO vai a 40% como no
