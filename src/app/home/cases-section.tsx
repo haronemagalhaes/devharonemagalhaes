@@ -26,7 +26,7 @@ import { isPlaceholder, publishedCases, stripPlaceholders, type Case, type Metri
 function metricSize(valor: string, variant: "destaque" | "card") {
   const n = valor.replace(/\s/g, "").length;
   if (variant === "destaque") {
-    if (n <= 4) return "text-[length:clamp(96px,13vw,160px)] tracking-[-0.035em]";
+    if (n <= 4) return "text-[length:clamp(96px,11vw,144px)] tracking-[-0.035em]";
     if (n <= 12) return "text-[length:clamp(44px,6vw,72px)] tracking-[-0.03em]";
     return "text-[length:clamp(30px,3.6vw,44px)] tracking-[-0.02em]";
   }
@@ -41,6 +41,8 @@ function BigMetric({ m, variant }: { m: Metric; variant: "destaque" | "card" }) 
       <span
         className={cn(
           "block font-display font-bold leading-[0.95] text-ink tabular-nums [text-wrap:balance]",
+          // número curto nunca quebra ("4 → 1" em uma linha só)
+          m.valor.replace(/\s/g, "").length <= 4 && "whitespace-nowrap",
           metricSize(m.valor, variant),
         )}
       >
