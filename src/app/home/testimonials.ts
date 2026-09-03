@@ -3,9 +3,14 @@
  * adicionar um item — a seção some sozinha se o array ficar vazio, e com
  * menos de 3 as abas perdem graça (avisar antes de cortar).
  *
- * `imagem` = print do projeto entregue pra aquele cliente, o mesmo do
- * índice de trabalho em /public. Nada de stock; sem print, deixe "" e o
- * painel mostra um fundo neutro da paleta.
+ * `marca` = quem falou, no círculo à direita:
+ *   - tipo "logo": PNG com fundo transparente → object-contain com respiro
+ *   - tipo "tile": logo quadrada com fundo opaco próprio → preenche o
+ *     círculo (os cantos cortados são só o fundo da própria arte)
+ *   - tipo "foto": retrato → object-cover
+ *   Sem `marca`, o círculo mostra as iniciais do cliente em Geist.
+ * Logos ficam na cor natural de cada cliente; a interface em volta é
+ * monocromática. Nada foi recortado de print nem baixado.
  */
 export type Testimonial = {
   id: string;
@@ -14,9 +19,9 @@ export type Testimonial = {
   /** papel ou segmento, ex.: "Clínica médica" */
   empresa: string;
   citacao: string;
-  /** caminho em /public; "" = fundo neutro */
-  imagem: string;
-  alt?: string;
+  /** avaliação em estrelas (1–5) */
+  estrelas: 1 | 2 | 3 | 4 | 5;
+  marca?: { src: string; tipo: "logo" | "tile" | "foto"; alt?: string };
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -26,31 +31,39 @@ export const TESTIMONIALS: Testimonial[] = [
     empresa: "Clínica médica",
     citacao:
       "Serviço muito bom, do site ao sistema interno da clínica. Trabalha com a gente até hoje.",
-    imagem: "/Vitalle.png",
-    alt: "Página de presença digital do Centro Médico Vitalle",
+    estrelas: 5,
+    marca: { src: "/vitalle-logo.png", tipo: "logo", alt: "Logomarca do Centro Médico Vitalle" },
   },
   {
+    // TODO: logo da Naiade Santana — hoje o círculo usa a foto dela (public/naiade-foto.png),
+    // a mesma do carrossel antigo. Se houver logomarca, trocar por { tipo: "logo" }.
     id: "naiade",
     cliente: "Naiade Santana",
     empresa: "Psicóloga",
     citacao: "Amei o resultado. O site ficou lindo e representa bem o meu trabalho.",
-    imagem: "/psinaiade.png",
-    alt: "Site da psicóloga Naiade Santana",
+    estrelas: 5,
+    marca: { src: "/naiade-foto.png", tipo: "foto", alt: "Foto de Naiade Santana" },
   },
   {
     id: "mendonca",
     cliente: "Mendonça Advocacia",
     empresa: "Escritório de advocacia",
     citacao: "Superou a expectativa. Gostamos do estilo do trabalho e do resultado.",
-    imagem: "/mendonca.png",
-    alt: "Site do escritório Mendonça Advocacia",
+    estrelas: 5,
+    marca: { src: "/mendonca-logo.png", tipo: "tile", alt: "Logomarca da Mendonça Advocacia" },
   },
   {
     id: "unicortte",
     cliente: "Armarinho Unicortte",
     empresa: "Comércio",
     citacao: "Ficou impecável. Adoramos o resultado.",
-    imagem: "/unicortte.jpeg",
-    alt: "Site do Armarinho Unicortte",
+    estrelas: 5,
+    marca: { src: "/unicortte-logo.png", tipo: "logo", alt: "Logomarca do Armarinho Unicortte" },
   },
 ];
+
+/** Iniciais pro círculo sem marca: "Centro Médico Vitalle" → "CV". */
+export function iniciais(nome: string): string {
+  const p = nome.split(/\s+/).filter((w) => w.length > 2 || /^[A-Z]/.test(w));
+  return ((p[0]?.[0] ?? "") + (p[p.length - 1]?.[0] ?? "")).toUpperCase();
+}

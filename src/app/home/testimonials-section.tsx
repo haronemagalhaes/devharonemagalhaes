@@ -4,13 +4,13 @@ import "./testimonials-section.css";
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import Image from "next/image";
 import { AnimatePresence, m } from "framer-motion";
-import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play, Star } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHeading } from "@/components/site/section-heading";
 import { EASE } from "@/lib/motion";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { cn } from "@/lib/utils";
-import { TESTIMONIALS } from "./testimonials";
+import { TESTIMONIALS, iniciais } from "./testimonials";
 
 /*
  * Depoimentos em abas verticais — formato do VerticalTabs (21st.dev), sem
@@ -20,8 +20,11 @@ import { TESTIMONIALS } from "./testimonials";
  *
  * Hierarquia invertida em relação ao original (que era pra serviços): a
  * CITAÇÃO é o protagonista da aba expandida (corpo grande, tinta); o nome
- * do cliente é o título pequeno; o painel à direita mostra o print do
- * projeto entregue. A seção conta o que a pessoa disse e o que foi feito.
+ * do cliente é o título pequeno; abaixo dele, as estrelas (tinta, nunca
+ * dourado; container role="img" "5 de 5 estrelas" com os ícones
+ * aria-hidden). À direita, um círculo com a marca de quem falou — logo em
+ * object-contain com respiro, foto em cover, ou as iniciais em Geist.
+ * Grid 8/4 (era 5/7): o print retangular saiu e a citação ganhou medida.
  *
  * Acessibilidade (o original não tinha):
  *   - semântica de abas completa: tablist vertical / tab com aria-selected,
@@ -31,9 +34,8 @@ import { TESTIMONIALS } from "./testimonials";
  *     na viewport (IntersectionObserver)
  *   - prefers-reduced-motion: sem autoplay, sem barra, troca instantânea
  *
- * Identidade: raio 8px como os outros cards, fios em --line, barra e
- * estados em tinta/cinza, sem gradiente sobre a imagem (o `from-black/20`
- * do original servia pra texto sobre a foto, que aqui não existe).
+ * Identidade: fios em --line, barra, estrelas e estados em tinta/cinza;
+ * círculo em --surface com borda --line. Logos na cor natural do cliente.
  */
 const INTERVAL_MS = 7000;
 
@@ -117,7 +119,7 @@ export function TestimonialsSection() {
             }}
           >
             {/* ---------- abas (esquerda) ---------- */}
-            <div className="col-span-12 lg:col-span-5">
+            <div className="col-span-12 lg:col-span-8">
               <div role="tablist" aria-orientation="vertical" aria-label="Depoimentos" onKeyDown={onKeyDown}>
                 {items.map((t, i) => {
                   const selected = i === active;
@@ -159,6 +161,23 @@ export function TestimonialsSection() {
                             transition={{ duration: dur, ease: EASE }}
                             className="overflow-hidden"
                           >
+                            <div className="pl-[calc(2.25rem+1rem)] md:pl-[calc(2.25rem+1.5rem)]">
+                              {/* selo de confiança, discreto: 5 estrelas de tinta, uma imagem só pro leitor de tela */}
+                              <div
+                                role="img"
+                                aria-label={`${t.estrelas} de 5 estrelas`}
+                                className="mb-3 flex items-center gap-1 text-ink"
+                              >
+                                {Array.from({ length: 5 }, (_, k) => (
+                                  <Star
+                                    key={k}
+                                    aria-hidden
+                                    className={cn("h-3.5 w-3.5", k < t.estrelas ? "fill-ink" : "fill-transparent")}
+                                    strokeWidth={1.5}
+                                  />
+                                ))}
+                              </div>
+                            </div>
                             <blockquote className="pb-6 pl-[calc(2.25rem+1rem)] md:pl-[calc(2.25rem+1.5rem)]">
                               <p className="text-balance text-[18px] leading-[1.45] text-ink md:text-[22px]">
                                 “{t.citacao}”
@@ -216,35 +235,51 @@ export function TestimonialsSection() {
               </div>
             </div>
 
-            {/* ---------- painel (direita): print do projeto ---------- */}
+            {/* ---------- painel (direita): quem falou, num círculo ---------- */}
             <div
               role="tabpanel"
               id={panelId}
               aria-labelledby={tabId(active)}
-              className="order-first col-span-12 lg:order-none lg:col-span-7"
+              className="order-first col-span-12 flex justify-center lg:order-none lg:col-span-4 lg:self-center lg:justify-end"
             >
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[8px] border border-line bg-surface-2">
+              <div className="relative h-32 w-32 overflow-hidden rounded-full border border-line bg-surface md:h-44 md:w-44 lg:h-52 lg:w-52">
                 <AnimatePresence mode="wait" initial={false}>
                   <m.div
                     key={current.id}
-                    initial={{ opacity: 0, x: reduced ? 0 : 24 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: reduced ? 0 : -24 }}
+                    initial={{ opacity: 0, scale: reduced ? 1 : 0.94 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: reduced ? 1 : 0.94 }}
                     transition={{ duration: dur, ease: EASE }}
                     className="absolute inset-0"
                   >
-                    {current.imagem ? (
+                    {current.marca?.tipo === "logo" ? (
+                      // logo horizontal em círculo: contain + respiro de 20%, nunca cover
+                      <div className="flex h-full w-full items-center justify-center p-[20%]">
+                        <Image
+                          src={current.marca.src}
+                          alt={current.marca.alt ?? `Logomarca de ${current.cliente}`}
+                          fill
+                          sizes="208px"
+                          className="object-contain p-[20%]"
+                        />
+                      </div>
+                    ) : current.marca ? (
+                      // "tile" (logo quadrada com fundo próprio) ou "foto": preenche o círculo
                       <Image
-                        src={current.imagem}
-                        alt={current.alt ?? `Projeto entregue para ${current.cliente}`}
+                        src={current.marca.src}
+                        alt={current.marca.alt ?? current.cliente}
                         fill
-                        sizes="(min-width: 1024px) 640px, 100vw"
-                        className="object-cover object-top"
+                        sizes="208px"
+                        className="object-cover"
                       />
                     ) : (
-                      // sem print: fundo neutro da paleta, nunca placeholder colorido
-                      <div className="flex h-full items-center justify-center bg-surface-2 text-[13px] text-ink-soft">
-                        {current.cliente}
+                      // sem marca: iniciais em Geist sobre --surface
+                      <div
+                        className="flex h-full w-full items-center justify-center font-display text-[32px] font-semibold tracking-[-0.02em] text-ink md:text-[44px]"
+                        aria-label={current.cliente}
+                        role="img"
+                      >
+                        {iniciais(current.cliente)}
                       </div>
                     )}
                   </m.div>
