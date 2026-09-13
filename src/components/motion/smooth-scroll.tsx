@@ -36,7 +36,12 @@ export function scrollToId(id: string) {
   if (!el) return;
   const offset = -headerOffset();
   if (lenis) {
-    lenis.scrollTo(el, { offset, duration: 1.2 });
+    /* o Lenis já desconta o scroll-margin-top do alvo (globals.css:
+       `[id] { scroll-margin-top: … }`); somar o offset inteiro por cima
+       descontava o header duas vezes (~92px a mais). Passa só a diferença,
+       e o total fica = altura real do header + 16. */
+    const margin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    lenis.scrollTo(el, { offset: offset + margin, duration: 1.2 });
   } else {
     const y = el.getBoundingClientRect().top + window.scrollY + offset;
     window.scrollTo({ top: y, behavior: prefersReducedMotion() ? "auto" : "smooth" });

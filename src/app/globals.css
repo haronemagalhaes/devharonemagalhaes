@@ -56,8 +56,8 @@
   --header-h: 76px;
 }
 
-/* Dark: mesmo sistema, invertido, sem cor. Não há toggle ativo — fica
-   pronto caso a classe .dark seja aplicada no <html>. */
+/* Dark: mesmo sistema, invertido, sem cor. A classe é carimbada no <html>
+   pelo next-themes (ver components/theme-provider.tsx). */
 .dark {
   --bg: #121211;
   --surface: #1a1a18;
@@ -65,6 +65,11 @@
   --ink: #f4f3ef;
   --ink-soft: #9a9994;
   --line: #2a2a28;
+
+  /* o vermelho de erro do tema claro dá 2,0:1 sobre #121211 — ilegível.
+     Este dá 5,9:1 e continua sendo o mesmo vermelho terroso, sem virar
+     cor de destaque. */
+  --destructive: #f08a84;
 }
 
 @theme inline {
@@ -131,7 +136,12 @@
   html {
     scrollbar-gutter: stable;
     -webkit-text-size-adjust: 100%;
+    /* segue o tema: controla scrollbars, campos nativos e o form control UA */
     color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
@@ -328,6 +338,50 @@ html.lenis body {
   }
 }
 
+/* =====================================================================
+   BOTÃO PRIMÁRIO — a cortina de hover no TEMA ESCURO
+
+   O QUE ESTAVA ERRADO. O hover do StudioButton primário é uma cortina que
+   sobe (`.motion-wipe`), e a cor dela era `bg-black` — preto absoluto,
+   fora do sistema de tokens. No claro isso funciona por acidente feliz: o
+   botão já é `--ink` (#141414), então a cortina só aprofunda um pouco.
+
+   No ESCURO o mesmo token vira o oposto: `--ink` é #f4f3ef, o botão é
+   claro com texto escuro (`--bg`). A cortina preta cobria esse botão claro
+   com preto puro — o botão sumia contra a página escura e o texto, que é
+   quase preto, apagava junto. Contraste no hover ia a praticamente 1:1.
+
+   A CORREÇÃO. No escuro a cortina deixa de ser preta e passa a ser o
+   próprio papel do botão um passo mais escuro. O botão continua claro, o
+   texto e a seta continuam na mesma cor — muda só a profundidade.
+
+     hover / focus-visible   Δ8–12 de luma abaixo do normal
+     active                  Δ14–18
+
+   Só o escuro muda: a regra do claro (`bg-black` na utilitária) fica onde
+   estava e não é tocada.
+
+   FOCUS-VISIBLE E ACTIVE sobem a cortina também, coisa que antes só o
+   hover fazia — e só no escuro, pra não alterar o claro. Teclado e toque
+   passam a ter o mesmo retorno visual que o mouse. O anel de foco continua
+   sendo o indicador principal; isto é reforço.
+   ===================================================================== */
+
+.dark .motion-wipe {
+  /* medido: Δ11 de luma abaixo do normal (244 → 233), dentro dos 8–12 */
+  background: color-mix(in oklch, var(--ink) 96%, #000);
+}
+
+.dark .group:focus-visible .motion-wipe,
+.dark .group:active .motion-wipe {
+  translate: 0 0;
+}
+
+.dark .group:active .motion-wipe {
+  /* medido: Δ17 (244 → 227), dentro dos 14–18 */
+  background: color-mix(in oklch, var(--ink) 94%, #000);
+}
+
 /* Accordion (Radix) */
 @keyframes acc-down {
   from {
@@ -437,5 +491,35 @@ html.lenis body {
   }
   .hero-line::after {
     display: none;
+  }
+}
+
+/* =====================================================================
+   INTERRUPTOR DE TEMA — o pino é a exceção ao corte de transições
+
+   O ThemeProvider usa `disableTransitionOnChange`, e o que isso faz é
+   injetar `* { transition: none !important }` por um quadro na hora da
+   troca. É o que impede a página inteira de fazer um fade de 300ms feio a
+   cada clique — mas pega o pino junto, e aí o interruptor SALTA de um lado
+   pro outro em vez de deslizar (medido: 3px → 27px no primeiro quadro).
+
+   Aqui a transição volta com `!important` de especificidade maior: `*` é
+   (0,0,0) e uma classe é (0,1,0), então esta regra ganha do corte global
+   sem precisar mexer no provider — o resto da página continua trocando de
+   cor sem fade.
+
+   Só `translate` (que é a propriedade que o Tailwind v4 usa para
+   `translate-x-*`), nada de `all`: transicionar cor aqui traria de volta
+   exatamente o fade que o provider quer evitar.
+   ===================================================================== */
+.theme-switch-knob {
+  transition: translate 300ms var(--ease-out-expo) !important;
+}
+
+/* Vem depois, mesma especificidade: com movimento reduzido o pino troca de
+   lado direto, sem deslizar. */
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-knob {
+    transition: none !important;
   }
 }

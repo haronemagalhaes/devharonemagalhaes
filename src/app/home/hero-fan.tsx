@@ -1,109 +1,91 @@
-"use client";
-
 import Image from "next/image";
-import { m } from "framer-motion";
-import { EASE } from "@/lib/motion";
-import { useReducedMotion } from "@/lib/use-reduced-motion";
-import Foto from "@/assets/eu.jpeg";
+import Print2 from "@/assets/IMG_7352.jpeg";
 
 /*
- * Leque de três cartões abaixo do CTA da capa 1 — formato do Hero10
- * (21st.dev), sem as dependências dele: `motion` → framer-motion (já no
- * projeto), `react-wrap-balancer` → `text-balance` nativo, Slot/CVA já vêm
- * com o Button do shadcn, e o `Cta` que faltava é o MagneticButton do hero.
+ * Leque de cartões abaixo do CTA da capa 1 — formato do Hero10 (21st.dev),
+ * sem as dependências dele.
  *
- *   1 (esquerda, −6°)  print do sistema de gestão da clínica
- *   2 (centro, 0°)     foto do Harone (src/assets/eu.jpeg, a mesma do
- *                      "Quem faz"), retrato 4:5 sem corte relevante
- *   3 (direita, +6°)   print do sistema de busca de licitações — é o caso
+ *   1 (esquerda, −6°)  print do sistema de gestão da clínica (desktop)
+ *   2 (centro, 0°)     print do sistema de licitações (telefone) — é o caso
  *                      que a capa 2 cita ("Buscar licitação em 75 sites")
+ *   3 (direita, +6°)   print do sistema de passeios (telefone)
  *
- * Recorte: os cartões são retrato (4:5 = 0,8) e os prints são paisagem
- * larga (1,96 e 2,27), então `object-cover` centralizado deixaria só uma
- * tira do meio do dashboard. Com `object-position: left top` aparece o
- * canto superior esquerdo — menu lateral e cabeçalho no primeiro, abas e
- * cartões de contagem no segundo —, que é o que faz a imagem ser
- * reconhecida como sistema. `contain` está fora: barra branca em volta
- * ficaria pior que o recorte.
+ * SEM framer-motion (2026-09-03). A entrada virou keyframe CSS
+ * (`fan-in`, escalonada por --d) pelo mesmo motivo do resto do hero, e por
+ * um motivo novo: a passagem pra capa 2 é uma animação guiada por scroll
+ * que precisa mandar em `transform`. Se o framer também escrevesse
+ * transform inline, uma das duas perderia. Camadas separadas:
+ *   .fan-card      → entrada (opacity + translate + rotate)
+ *   .fan-card-box  → passagem (scale + fade), guiada pelo scroll
+ * Uma animação por elemento, nenhuma briga por propriedade.
  *
- * Tamanho pela ALTURA da viewport: 14svh no mobile, 16svh ≥ md (era 17: o line-height 1.15 do H1 fez a capa passar 6px em 1024×768), entre 72
- * e 196px. É o que faz a capa 1 caber em 100svh com o sticky — 900px de
- * altura dá cartões de 153px, 768px dá 131px, 667px dá 93px. Abaixo de
- * 600px de altura o leque some (regra no hero). Largura não manda.
+ * MOBILE (2026-09-04) — os TRÊS cartões, grandes, sangrando pelas bordas.
+ * Duas tentativas anteriores erraram em direções opostas: três cartões
+ * encolhidos pra caber lado a lado (93px de cartão = texto de interface a
+ * ~3,6px, ilegível) e depois um cartão só, legível mas sem leque — e é o
+ * leque que diz "são vários sistemas, não um".
  *
- * Identidade: raio 8px como os outros cards, contorno em --line (nada de
- * preto/branco cru), sombra derivada de --ink. Os prints ficam em cor —
- * é trabalho real, a cor é parte da prova. Decorativo: aria-hidden.
- * Entrada: whileInView once com stagger — dispara no carregamento porque a
- * capa 1 já nasce visível; com reduced-motion renderiza no estado final.
+ * A saída foi tirar da largura da tela o poder de decidir o tamanho do
+ * cartão: abaixo de `md` o leque é uma janela de 100vw com overflow
+ * escondido, e o trio mede ~135vw dentro dela, então as pontas são cortadas
+ * pela borda da TELA. A altura que entra na conta dos 100svh é a da janela,
+ * não a do cartão. Toda a regra mora em `.hero-fan` no CSS.
+ *
+ * Recorte: os cartões são retrato (4:5). O print de gestão é paisagem
+ * larga (1,96) e usa `object-position: left top` pra mostrar menu lateral e
+ * cabeçalho; os dois prints de telefone são retrato (0,49) e o `cover` já
+ * entrega a largura inteira, cortando só o rodapé.
+ *
+ * Identidade: raio 8px como os outros cards, contorno em --line, sombra
+ * derivada de --ink. Os prints ficam em cor — é trabalho real, a cor é
+ * parte da prova. Decorativo: aria-hidden.
  */
-type Card = { kind: "gestao" | "photo" | "licitacoes"; rotate: number; y: number };
+/*
+ * Rotação, deslocamento e atraso de entrada NÃO vêm mais daqui por `style`.
+ * Estilo inline ganha de folha de estilo, então o `--rot: -6deg` inline
+ * anulava silenciosamente qualquer `--rot` que uma media query tentasse
+ * aplicar — era por isso que a variante de mobile "com rotação maior" nunca
+ * girou de verdade. Agora as três variáveis moram no CSS, keyed por
+ * `data-card`, e o mobile pode sobrescrevê-las.
+ */
+type Kind = "gestao" | "licitacoes" | "passeios";
 
-const CARDS: Card[] = [
-  { kind: "gestao", rotate: -6, y: 14 },
-  { kind: "photo", rotate: 0, y: 0 },
-  { kind: "licitacoes", rotate: 6, y: 14 },
-];
+const CARDS: Kind[] = ["gestao", "licitacoes", "passeios"];
 
-const CARD =
-  "relative aspect-[4/5] w-[clamp(72px,14svh,196px)] shrink-0 overflow-hidden rounded-[8px] bg-surface ring-1 ring-line shadow-[0_24px_48px_-28px_color-mix(in_oklch,var(--ink)_45%,transparent)] md:w-[clamp(96px,16svh,196px)]";
+/* no mobile o cartão vai a min(58vw, 260px) — o navegador precisa pedir a
+   largura de verdade, senão baixa um arquivo pequeno pra um cartão grande */
+const SIZES = "(min-width: 1024px) 196px, (min-width: 768px) 140px, min(58vw, 260px)";
 
-const SIZES = "(min-width: 1024px) 196px, (min-width: 640px) 140px, 104px";
-
-function CardContent({ kind }: { kind: Card["kind"] }) {
-  if (kind === "photo") {
+function CardContent({ kind }: { kind: Kind }) {
+  if (kind === "licitacoes") {
     return (
-      <Image
-        src={Foto}
-        alt=""
-        fill
-        placeholder="blur"
-        sizes={SIZES}
-        className="object-cover object-[center_20%]"
-      />
+      <Image src={Print2} alt="" fill placeholder="blur" sizes={SIZES} className="fan-img object-cover object-top" />
     );
   }
-  const src = kind === "gestao" ? "/sistema-gestao.png" : "/sistema-licitacoes.png";
-  return <Image src={src} alt="" fill sizes={SIZES} className="object-cover object-left-top" />;
+  if (kind === "gestao") {
+    return (
+      <Image src="/sistema-gestao.png" alt="" fill sizes={SIZES} className="fan-img object-cover object-left-top" />
+    );
+  }
+  return <Image src="/IMG_7349.jpeg" alt="" fill sizes={SIZES} className="fan-img object-cover object-top" />;
 }
 
+/*
+ * O interruptor `data-fan` (variantes a/b/c) saiu junto: existia pra
+ * comparar "um cartão", "três cortados" e "sem leque" em screenshot, e a
+ * decisão está tomada. Variante que não vai voltar é CSS morto — o
+ * histórico do porquê fica no comentário do topo e no git.
+ */
 export function HeroFan({ className }: { className?: string }) {
-  const reduced = useReducedMotion();
-  const wrap = "flex items-end justify-center -space-x-5 md:-space-x-7";
-
-  if (reduced) {
-    return (
-      <div aria-hidden className={`${wrap} ${className ?? ""}`}>
-        {CARDS.map((c) => (
-          <div key={c.kind} className={CARD} style={{ transform: `translateY(${c.y}px) rotate(${c.rotate}deg)` }}>
-            <CardContent kind={c.kind} />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <m.div
-      aria-hidden
-      className={`${wrap} ${className ?? ""}`}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true }}
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.75 } } }}
-    >
-      {CARDS.map((c) => (
-        <m.div
-          key={c.kind}
-          className={CARD}
-          variants={{
-            hidden: { opacity: 0, y: c.y + 28, rotate: 0 },
-            show: { opacity: 1, y: c.y, rotate: c.rotate, transition: { duration: 0.7, ease: EASE } },
-          }}
-        >
-          <CardContent kind={c.kind} />
-        </m.div>
+    <div aria-hidden className={`hero-fan ${className ?? ""}`}>
+      {CARDS.map((kind) => (
+        <div key={kind} className="fan-card" data-card={kind}>
+          <div className="fan-card-box">
+            <CardContent kind={kind} />
+          </div>
+        </div>
       ))}
-    </m.div>
+    </div>
   );
 }

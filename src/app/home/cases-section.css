@@ -1,0 +1,23 @@
+/* Barra de progresso do chip ativo (Resultados). A troca de case sai do
+   `animationend` — barra e troca nunca dessincronizam; pausa via
+   animation-play-state. Some com reduced-motion: o CSS global zera
+   animation-duration e o animationend dispararia em loop. */
+@keyframes case-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.case-progress {
+  transform-origin: left;
+  animation-name: case-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-progress {
+    display: none;
+  }
+}

@@ -108,7 +108,7 @@ export function WorksSection() {
                               alt=""
                               fill
                               sizes="120px"
-                              className="img-duotone object-cover object-top"
+                              className="object-cover object-top"
                             />
                           </span>
 
@@ -160,7 +160,7 @@ export function WorksSection() {
                     {hoveredProject && (
                       <m.div
                         key={hoveredProject.id}
-                        className="absolute left-0 top-0 z-10 overflow-hidden rounded-[8px] border border-line bg-surface shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]"
+                        className="absolute left-0 top-0 z-10 overflow-hidden rounded-[8px] border border-line bg-surface shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)] dark:border-ink/15 dark:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.75)]"
                         style={{
                           x: sx,
                           y: sy,

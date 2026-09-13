@@ -24,7 +24,7 @@ export function FinalCtaSection() {
             Sua parte digital resolvida com uma conversa
           </h2>
           <p className="mt-5 max-w-[480px] text-[18px] leading-relaxed text-ink-soft md:text-[20px]">
-            Me conta o que está travando. Respondo em até 1 dia útil.
+            Me conta o que está travando.
           </p>
         </div>
         <div className="col-span-12 flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:ml-auto lg:w-[280px] lg:flex-col lg:items-stretch lg:justify-end">

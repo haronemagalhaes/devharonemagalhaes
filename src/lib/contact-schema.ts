@@ -1,24 +1,32 @@
 import { z } from "zod";
 
 export const GOALS = [
-  { value: "ser-achado", label: "Ser achado na internet" },
-  { value: "organizar-operacao", label: "Organizar a operação num sistema" },
-  { value: "automatizar", label: "Automatizar tarefas" },
-  { value: "anuncios", label: "Anúncios que tragam cliente" },
+  { value: "google", label: "Aparecer no Google" },
+  { value: "site", label: "Site ou landing page" },
+  { value: "sistema", label: "Sistema pra organizar a operação" },
+  { value: "automatizar", label: "Automatizar tarefa manual" },
 ] as const;
 
+/*
+ * Mensagens de erro dizem o que fazer, não que está errado:
+ * "Digite um WhatsApp com DDD", nunca "Campo inválido".
+ */
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Me diz seu nome."),
+  name: z.string().trim().min(2, "Digite seu nome — só o primeiro já serve."),
   whatsapp: z
     .string()
     .trim()
-    .min(10, "Coloca o número com DDD.")
-    .max(20, "Número muito longo.")
-    .regex(/^[\d\s()+-]+$/, "Só números, por favor."),
-  business: z.string().trim().min(2, "Que tipo de negócio é o seu?").max(120),
+    .min(10, "Digite um WhatsApp com DDD — ex.: (79) 9 9999-9999.")
+    .max(20, "Confira o número: está com dígitos demais.")
+    .regex(/^[\d\s()+-]+$/, "Use só números, espaços, parênteses ou hífen."),
+  business: z
+    .string()
+    .trim()
+    .min(2, "Diga o tipo do seu negócio — ex.: clínica, loja, escritório.")
+    .max(120, "Resuma em poucas palavras o tipo do negócio."),
   goals: z
     .array(z.enum(GOALS.map((g) => g.value) as [string, ...string[]]))
-    .min(1, "Marca pelo menos uma opção."),
+    .min(1, "Marque pelo menos uma das opções acima."),
   /** honeypot (nome que o FormSubmit reconhece) — humano deixa vazio */
   _honey: z.string().optional(),
 });

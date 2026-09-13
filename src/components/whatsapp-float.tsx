@@ -69,14 +69,17 @@ export function WhatsappFloat() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="group fixed bottom-5 right-5 z-40 md:bottom-6 md:right-6"
+          /* + --scroll-lock-gap: com o menu mobile aberto a barra de rolagem
+             some e a viewport cresce; o header devolve essa largura (ver a
+             trava em header.tsx) e o botão acompanha, pra não andar pro lado */
+          className="group fixed bottom-5 right-[calc(1.25rem+var(--scroll-lock-gap,0px))] z-40 md:bottom-6 md:right-[calc(1.5rem+var(--scroll-lock-gap,0px))]"
         >
           <a
             href={whatsappUrl(WHATSAPP_DEFAULT_MESSAGE)}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Chamar no WhatsApp"
-            className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] transition-colors duration-300 hover:bg-ink hover:text-bg"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-[0_10px_30px_-12px_rgba(0,0,0,0.3)] dark:border-ink/25 dark:shadow-[0_10px_30px_-12px_rgba(0,0,0,0.8)] transition-colors duration-300 hover:bg-ink hover:text-bg"
           >
             <WhatsappIcon className="h-5 w-5" />
           </a>

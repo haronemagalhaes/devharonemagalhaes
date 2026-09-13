@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>STORY_CHECKLIST — Checklist</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="stories.css">
+<!-- STORY_CHECKLIST · Checklist. Regras: STORIES.md.  -->
+<style>
+  .trk { padding-left: .24em; }              /* compensa o letter-spacing no centro */
+  .one > span { display: block; white-space: nowrap; }  /* quebra de linha é decisão */
+  .h1 { margin-left: -.035em; }             /* letra grande tem mais respiro lateral */
+  .sub { text-wrap: balance; }
+
+  .cks { border-top: 1px solid var(--ln); }
+  .ck { display: grid; grid-template-columns: 44px 1fr; column-gap: 32px; align-items: center;
+        padding: 30px 0; border-bottom: 1px solid var(--ln); }
+  .ck span { font-weight: 600; font-size: 38px; line-height: 1.18; letter-spacing: -.02em; }
+  .box { width: 44px; height: 44px; border: 2px solid var(--fg); border-radius: 4px; }
+</style>
+</head>
+<body class="">
+<div class="spot"></div>
+
+<div class="grain"></div>
+<div class="stage">
+  <div class="crumb "><span>haronedev_</span><span>Teste rápido · Site</span></div>
+  
+  <div class="mid">
+    <p class="label">Marque o que seu site já faz</p>
+    <h1 class="h1 one gap-s"><span>Seu site está</span><span class="dim">pronto pra vender?</span></h1>
+    <div class="cks gap-l"><div class="ck"><i class="box"></i><span>Abre rápido no celular</span></div><div class="ck"><i class="box"></i><span>Aparece quando buscam seu serviço no Google</span></div><div class="ck"><i class="box"></i><span>WhatsApp a um toque</span></div><div class="ck"><i class="box"></i><span>Endereço e horário atualizados</span></div><div class="ck"><i class="box"></i><span>Você sabe quantas pessoas entraram no mês</span></div></div>
+    <p class="sub gap-m">Faltou algum? O diagnóstico é gratuito.</p>
+  </div>
+  <div class="rule "></div>
+  <div class="foot "><span>quem fecha o escopo é quem executa</span><span>haronedev.com.br</span></div>
+</div>
+</body>
+</html>

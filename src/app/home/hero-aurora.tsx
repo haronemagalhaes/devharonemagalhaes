@@ -1,10 +1,10 @@
 import "./hero-aurora.css";
 import type { CSSProperties } from "react";
-import { ArrowRight } from "lucide-react";
-import { MagneticButton } from "@/components/site/magnetic-button";
-import { HeroFan } from "./hero-fan";
+import Image from "next/image";
+import Monograma from "@/assets/monograma-Photoroom.png";
+import { StartProjectCta } from "@/components/site/start-project-cta";
 import { StudioButton } from "@/components/site/studio-button";
-import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
+import { SITE_DESCRIPTOR } from "@/lib/site";
 
 /*
  * Hero empilhado (branch hero-aurora). Alterna com o hero atual em page.tsx
@@ -14,13 +14,31 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  *   capa 1 — a pergunta: `sticky top-0` em TODOS os tamanhos, mín. 100svh.
  *            Papel, grid + aurora + textura e o leque (Hero10) abaixo do
  *            CTA. Pra grudar direito a capa tem que caber na viewport, e o
- *            leque é o primeiro a encolher: 14svh no mobile, 17svh ≥ md,
- *            e some em telas com menos de 600px de altura (320×568). Com
- *            isso a capa cabe em 375×667, 360×740, 390×844, 430×932 e nos
- *            desktops de 768/800/900 — medido. Diagnóstico de 2026-09-03:
- *            overflow-x do body e Lenis NÃO afetam o sticky (testado com
- *            clip e com o Lenis destruído); o que quebrava era a capa em
- *            `relative` abaixo de md, decisão anterior desfeita aqui.
+ *            leque é o primeiro a ceder: 16svh ≥ md; abaixo de md sobra um
+ *            cartão só, e em tela de menos de 701px de altura ele nem
+ *            entra — as regras moram todas em `.hero-fan`, no CSS.
+ *            Diagnóstico de 2026-09-03: overflow-x do body e Lenis NÃO
+ *            afetam o sticky (testado com clip e com o Lenis destruído);
+ *            o que quebrava era a capa em `relative` abaixo de md,
+ *            decisão anterior desfeita aqui.
+ *
+ *            Medido no build de produção (Chromium 149) — a capa 1 cabe em
+ *            100svh e o documento não passa da largura da tela em
+ *            320×568, 360×740, 375×667, 390×844, 430×932, 768×1024,
+ *            1024×768, 1280×900 e 1440×900. Antes desta revisão ela
+ *            estourava em 375×667 (728px) e em 320×568 (593px).
+ *
+ *            Ritmo do mobile: padding do container a 0/8px (era 32/24, e
+ *            depois 8/16) e margens 16/16/24/20 no lugar de 24/24/32/24.
+ *            A rodada de 2026-09-04 apertou de novo — 36px no total — pra
+ *            comprar a altura do leque de três cartões, e essa é a ORDEM
+ *            que vale: espaçamento cede antes do leque, o CTA não sai da
+ *            dobra e o H1 não diminui.
+ *            Como a capa é `items-center`, esse padding só entra em jogo
+ *            quando o conteúdo é MAIOR que a viewport — cortar dele não
+ *            tira respiro de tela nenhuma e é o que comprou a altura do
+ *            cartão. O piso do H1 caiu de 2.25rem pra 2rem, que é o que
+ *            faz 320px caber.
  *   capa 2 — a resposta: `relative z-10`, fundo de tinta 100% opaco. Sobe
  *            por cima da capa 1 conforme o usuário rola. Limpa: sem grid,
  *            sem aurora — é a diferenciação entre as duas. Headline grande
@@ -36,33 +54,79 @@ import { CONTACT_ID, CTA_PRIMARY, SITE_DESCRIPTOR } from "@/lib/site";
  *
  * Headings: um único <h1> (capa 1). A capa 2 usa <h2> (sistemas) e <h3>.
  *
- * Textura (capa 1): realce + vinheta + grão, o mesmo sistema das artes do
- * Instagram, derivado dos tokens (hero-aurora.css). O grid ficou a 2,5%
- * como camada de apoio. A animação de entrada é a CSS do site (.hero-fade,
- * escalonada por --d; some com prefers-reduced-motion) — não precisou de
- * framer-motion.
+ * Textura (capa 1) — revisão de 2026-09-03. O fundo estava com cinco
+ * camadas todas quase invisíveis: cada uma tinha sido abaixada pra
+ * proteger o AA (grid a 2,5%), e o somatório dava um hero com cara de
+ * template. A correção não foi somar uma sexta camada tímida, foi refazer
+ * as três que importam:
+ *   - grid de PONTOS (26px, 9%) no lugar do grid de linhas a 3,5%. Ponto
+ *     lê como estúdio técnico; linha lê como dashboard.
+ *   - aurora com deriva lenta de 16s (32s ida e volta). A 9s dava pra
+ *     perceber o movimento, e fundo que se percebe mexendo lê como banner.
+ *   - grão no mesmo nível das artes do Instagram (.45/.6, baseFrequency
+ *     .8, tile 240px, soft-light), pra site e social terem a mesma
+ *     matéria.
+ *
+ * REGRA que substitui "abaixar tudo": contraste se resolve com MÁSCARA,
+ * não com opacidade global. O grid de pontos usa duas máscaras com
+ * `intersect` — uma radial que abre um vazio no miolo (onde moram eyebrow,
+ * H1, sub e CTA) e uma linear que apaga topo e base. Só sobra ponto no
+ * perímetro, que é onde ele pode ser forte. Foi assim que a camada subiu
+ * de 3,5% pra 9% sem mexer em um único valor de AA. Antes de enfraquecer
+ * qualquer camada por causa de contraste, tentar máscara primeiro.
+ *
+ * A animação de entrada é a CSS do site (.hero-fade, escalonada por --d;
+ * some com prefers-reduced-motion) — não precisou de framer-motion.
  *
  * Contraste — capa 1: a aurora fica centrada no H1 e some antes do sub; o
  * grid tem um vazio atrás do bloco de texto. O sub NÃO usa --ink-soft: o
  * cinza médio sobre o papel mede 4,63:1 nominal e, com o grain do site,
  * o pior pixel fica em 4,46–4,59 — no limite do AA. Aqui o sub é tinta a
- * 75% (≈ 7:1). O brilho da 2ª linha vai só até 72% de tinta (o original
- * ia a 40% e reprovaria o AA na base dos glifos). Capa 2: papel sobre
+ * 75% (≈ 7:1). A 2ª linha do H1 é tinta CHEIA (16,9:1 no claro, 16,0:1 no
+ * escuro) — antes o gradiente deixava a base dos glifos em 72% de tinta,
+ * ≈ 10:1, que passava mas com menos folga. Capa 2: papel sobre
  * tinta (16:1); eyebrow e numerais a 70% de papel (≈ 8:1 no claro, ≈ 6:1
  * no escuro — a 60% o escuro dava 4,49).
  *
  * H1 — line-height 1.15 (era 1.08): a 1.08 as três linhas do mobile
  * colidiam em 91 colunas (folga 0 entre o "q" de "que" e a linha
  * seguinte); no desktop, com duas linhas, havia 24px e não aparecia.
- * O gradiente (.hero-text-glow) fica só na 2ª linha, que não tem
- * descendente — se o texto mudar, conferir de novo.
+ *
+ * H1 — DOIS TONS (2026-09-04). A 2ª linha usava `.hero-text-glow`
+ * (gradiente de --foreground até 72% de tinta): somado ao cinza da 1ª
+ * linha dava TRÊS tonalidades na mesma headline. A classe saiu e a linha
+ * virou tinta chapada. Regra que fica valendo no site: headline com no
+ * máximo dois tons, a ênfase vem de contraste chapado ENTRE linhas e
+ * nunca de gradiente dentro de uma; e nada de `background-clip: text` em
+ * texto com descendente. A classe não é usada em mais lugar nenhum e foi
+ * apagada do hero-aurora.css.
  *
  * H1 — medido no Chrome (Geist 600, -0.025em): mobile 3 linhas,
  * (100vw − 48px) / 11 teto 46px → 30px a 375px; desktop 2 linhas,
  * min(64px, (100vw − 80px) / 14.8).
  */
 const SUB =
-  "Construo a estrutura digital que faz o cliente achar, confiar e comprar — site, tráfego pago, sistema e automação de rotina. Quem fecha o escopo com você é quem executa.";
+  "Construo a estrutura digital que faz o cliente achar, confiar e comprar: sistemas sob medida para sua empresa, automação de tarefas, sites e tráfego pago. Quem fecha o escopo com você é quem executa.";
+
+/*
+ * SUB CURTO PRO MOBILE (2026-09-04).
+ *
+ * O sub completo cai em CINCO linhas a 390px de largura e come sozinho ~120
+ * dos ~770px úteis da dobra. Era ele, e não o leque, que estava apertando a
+ * capa: o leque só era o que aparecia espremido no fim da conta.
+ *
+ * O texto longo diz três coisas — o que eu construo, a lista de serviços e
+ * quem executa. Numa tela de telefone cabe UMA ideia por vez, e as duas que
+ * sobrevivem são a lista (diz o que é) e a última frase (diz por que comigo).
+ * O "achar, confiar e comprar" é o que sai: é a parte que o H1 logo acima já
+ * encena em forma de pergunta.
+ *
+ * Os dois textos ficam em <span> irmãos com `display` responsivo, nunca os
+ * dois ao mesmo tempo: `display: none` também tira do leitor de tela, então
+ * cada viewport expõe exatamente uma versão — nada de conteúdo duplicado.
+ */
+const SUB_MOBILE =
+  "Sites, sistemas, automação e tráfego pago. Quem fecha o escopo com você é quem executa.";
 
 /*
  * Capa 2 — hierarquia invertida (2026-09-03): a chamada de sistemas e
@@ -70,36 +134,49 @@ const SUB =
  * até você." virou apoio (h3 pequeno, ao lado do CTA). Sistemas é a
  * prioridade nº 1 de serviço e a capa 1 fala só da frente.
  *
- * Headline A ("O que sua equipe faz em 3 horas, o sistema faz sozinho."):
- * universal, número exato do caso real (≈ 3 h/dia varrendo 75 sites de
- * licitação) e completa sem depender do sub. B ("75 sites por dia. Hoje,
- * zero.") e D ("3 horas por dia. Ou nenhuma.") aguentam corpo gigante mas
- * são crípticas sem o apoio; C não tem número e cai pra 24px no mobile.
+ * Headline (2026-09-03) — trocada de "O que sua equipe faz em 3 horas, o
+ * sistema faz sozinho." para o par problema → solução abaixo. Motivo: o
+ * "3 horas" não tinha contexto DENTRO da headline (o exemplo só aparece no
+ * apoio), então o número, que devia dar peso, ficava solto. A nova nomeia
+ * o problema ("tarefas repetitivas") e fecha em primeira pessoa, que é a
+ * voz da marca. Descartadas: "Tem alguém na sua empresa fazendo na mão o
+ * que um sistema faz sozinho." (mais longa, mesma ideia), "Três horas por
+ * dia numa tarefa que ninguém questiona." (mantém o número mas não fecha
+ * com a solução) e "Sua equipe não devia estar fazendo isso na mão."
+ * ("isso" depende do apoio pra fazer sentido).
  *
- * line-height 1.15 (era 1.05): medido em pixel, com 1.05 os descendentes
- * ("q" de "que", "p" de "equipe") ficavam a 12px da linha de baixo e no
- * pior caso (gqpjy sobre ÁÉÍbdfhkl) colidiam em 45 colunas; 1.10 ainda
- * colidia em 49. 1.15 é o primeiro sem colisão (5px de folga no pior
- * caso, 19px no texto real). Regra da marca: Geist 600–700, tracking
- * entre 0 e -0.03em, line-height ≥ 1.05 e nunca abaixo de 1.15 quando há
- * duas linhas com descendente.
+ * Duas cores por linha, NÃO por gradiente: a linha do problema em papel a
+ * 60% e a da solução em papel cheio, cada uma no seu <span>. Encena o
+ * antes/depois — problema apagado, solução firme — e é o mesmo recurso do
+ * H1 da capa 1. Gradiente com background-clip:text está proibido aqui: a
+ * caixa do gradiente é calculada pela line-height e comeria o descendente
+ * do "q" de "equipe" e do "p" de "perde"/"repetitivas". A 60% de papel
+ * sobre tinta dá ≈ 4,5:1 — passa AA de texto grande (mín. 3:1) com folga.
  *
- * Medição (Geist 600, -0.025em): L1 "O que sua equipe faz em 3
- * horas," 15.62em · L2 "o sistema faz sozinho." 10.51em. Uma frase por
- * bloco:
- *   - < lg ...... L1 em 2 linhas + L2 em 1 = 3 linhas; corpo =
- *                 (100vw − 48px) / 10.7 (L2 manda), teto 48px →
- *                 320: 25px · 360: 29px · 375: 31px · 390: 32px · 430: 36px.
- *                 Sem os blocos, o balance dava "faz em 3 horas, o /
- *                 sistema faz sozinho." com o "o" órfão.
- *   - lg+ ....... 2 linhas: corpo = (100vw − 80px) / 15.9, teto 68px →
- *                 1024: 59px · 1280+: 68px (o H1 da capa 1 tem 64px; a
- *                 capa 2 precisa dominar a própria capa, não a página).
+ * line-height 1.15: medido em pixel na headline anterior, com 1.05 os
+ * descendentes ficavam a 12px da linha de baixo e no pior caso (gqpjy
+ * sobre ÁÉÍbdfhkl) colidiam em 45 colunas; 1.10 ainda colidia em 49. 1.15
+ * é o primeiro sem colisão. Regra da marca: Geist 600–700, tracking entre
+ * 0 e -0.03em, line-height ≥ 1.05 e nunca abaixo de 1.15 quando há duas
+ * linhas com descendente.
+ *
+ * TODO — RE-MEDIR O CORPO. Os divisores abaixo (10.7 e 15.9) e os tetos
+ * (48px / 68px) foram calculados para a headline ANTIGA, cujas linhas
+ * mediam 15.62em e 10.51em. A nova é bem mais longa na L1 e bem mais
+ * curta na L2, por isso ela quebra em 3 linhas no desktop em vez de 2.
+ * Medir no Chrome, em Geist 600 / -0.025em:
+ *   1. largura em em de "Sua equipe perde horas em tarefas repetitivas."
+ *      e de "Eu resolvo isso."
+ *   2. decidir se o alvo no desktop é 2 ou 3 linhas — 3 linhas está
+ *      legível e equilibrado, então é uma escolha, não um defeito
+ *   3. recalcular divisor pelo bloco que manda (a L1) e o teto
+ *   4. reconferir em 320/360/375/390/430 e no desktop, e confirmar que
+ *      nenhuma palavra quebra no meio
  */
 const SYSTEMS = {
   eyebrow: "Sistemas sob medida e automação de tarefas",
-  line1: "O que sua equipe faz em 3 horas,",
-  line2: "o sistema faz sozinho.",
+  line1: "Sua equipe perde horas em tarefas repetitivas.",
+  line2: "Eu resolvo isso.",
   // três casos reais, sem contar a história; ordem: licitação → financeiro → relatório
   // TODO: confirmar o que foi entregue no caso do financeiro — "vive num painel" é provisório
   apoio:
@@ -114,17 +191,72 @@ export function HeroAurora() {
       {/* ---------- capa 1 — a pergunta ---------- */}
       <section
         id="top"
-        className="sticky top-0 z-0 flex min-h-[100svh] items-center overflow-hidden bg-bg pt-[var(--header-h)]"
+        /* `items-stretch` (o padrão) e não `items-center`: quem centraliza
+           é o container, por dentro — ver a nota de equilíbrio vertical
+           logo abaixo. */
+        className="hero-paper sticky top-0 z-0 flex min-h-[100svh] overflow-hidden pt-[var(--header-h)]"
         aria-labelledby="hero-title"
       >
-        {/* textura (de trás pra frente): grid → realce → aurora → vinheta → grão */}
-        <div aria-hidden className="hero-bg-grid pointer-events-none absolute inset-0" />
-        <div aria-hidden className="hero-spot pointer-events-none absolute inset-0" />
-        <div aria-hidden className="hero-aurora pointer-events-none" />
-        <div aria-hidden className="hero-vignette pointer-events-none absolute inset-0" />
+        {/* O fundo da capa 1 tem CINCO camadas e nenhuma a mais — as duas
+            primeiras (cor chapada e gradiente linear) e a última (o fio de
+            base) moram na própria <section>, via `.hero-paper`. Aqui ficam
+            só as duas do meio, nesta ordem: monograma → grão. Nenhuma
+            radial em lugar nenhum; ver a nota no topo do hero-aurora.css. */}
+        {/*
+          MONOGRAMA HM — marca d'água, como no primeiro hero do rebrand.
+
+          Só o símbolo: o nome já está no header, repetir seria eco. Sangra
+          pela borda direita e fica ANCORADO NA FAIXA DE BAIXO da capa, na
+          altura do sub e do CTA, não na do H1 — abaixo da headline o
+          conteúdo é bem mais estreito (sub em 40rem, CTA em ~250px), e é
+          essa diferença que abre a lateral onde ele cabe sem encostar em
+          nada. Na altura do H1 não caberia: a headline chega perto da
+          largura do container.
+
+          `hero-wm-hide` some abaixo de 900px — mesma régua do hero
+          original. No telefone o texto ocupa a largura toda e não existe
+          lateral; enfiar o monograma ali devolveria a variação de tom que
+          a limpeza deste fundo veio tirar.
+        */}
+        <div aria-hidden className="hero-wm pointer-events-none absolute select-none">
+          <Image
+            src={Monograma}
+            alt=""
+            width={340}
+            height={220}
+            sizes="(min-width: 900px) 34vw, 0px"
+            className="h-auto w-full opacity-[0.055] dark:opacity-[0.07] dark:invert"
+          />
+        </div>
+
         <div aria-hidden className="hero-grain pointer-events-none absolute inset-0" />
 
-        <div className="container-studio relative z-10 flex w-full flex-col items-center pb-6 pt-8 text-center md:py-10">
+        {/* `hero-recede`: o conteúdo da capa 1 encolhe e desbota conforme a
+            capa 2 sobe — ver a nota "PROFUNDIDADE" no CSS. O papel e a
+            textura NÃO recuam: quem fica pra trás é o conteúdo, o chão é
+            chão. */}
+        {/*
+          EQUILÍBRIO VERTICAL. O bloco é centrado pelo container, não pela
+          seção — mas a seção tem `pt-[var(--header-h)]` e não tem o
+          equivalente embaixo, então "centro do container" fica 38px ABAIXO
+          do centro da tela (medido: bloco em y 281–696 numa viewport de
+          900, centro em 488 contra 450). Com o leque fora, essa diferença
+          deixou de ser disfarçada por peso na base e o conteúdo passou a
+          ler como se estivesse afundado.
+
+          `pb-[8svh]` compensa. A conta é direta: padding embaixo sobe o
+          bloco pela METADE do que se acrescenta, então pra anular os 76px
+          do header são precisos ~76px de assimetria — 8svh dá 72px em 900
+          e leva o centro do bloco de 488 pra 452, contra os 450 da tela.
+          Proporcional e não fixo em 76px de propósito: em tela curta um
+          padding fixo empurraria a capa pra fora dos 100svh, enquanto 8svh
+          encolhe junto (45px em 568).
+
+          O `max-h` saiu junto com o leque: ele existia só pra forçar a
+          janela dos cartões a entrar em `flex-shrink`. Sem nada que encolha,
+          ele viraria uma tesoura em cima do texto em tela curta.
+        */}
+        <div className="hero-recede container-studio relative z-10 flex w-full flex-col items-center justify-center pb-[8svh] pt-0 text-center md:pb-[calc(2.5rem+8svh)] md:pt-10">
           <p
             className="hero-fade eyebrow max-w-full !text-[11px] !tracking-[0.12em] leading-relaxed md:!text-[12px] md:!tracking-[0.14em]"
             style={delay(0.05)}
@@ -135,41 +267,42 @@ export function HeroAurora() {
 
           <h1
             id="hero-title"
-            className="hero-fade mt-6 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/11),2.875rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-ink md:mt-8 lg:text-[length:min(64px,calc((100vw-80px)/14.8))]"
+            className="hero-fade mt-6 max-w-full font-display text-[length:clamp(2rem,calc((100vw-48px)/8.5),3.5rem)] font-semibold leading-[1.15] tracking-[-0.025em] text-ink md:mt-8 lg:text-[length:min(64px,calc((100vw-80px)/14.8))]"
             style={delay(0.2)}
           >
-            {/* a pergunta é o clímax: cinza na primeira linha, tinta com brilho na segunda */}
-            <span className="block text-ink-soft">Você tem o que vender.</span>
-            <span className="hero-text-glow block text-balance">Seu cliente sabe te encontrar?</span>
+            {/* DOIS TONS, nunca três: cinza na pergunta de cima, tinta CHEIA e
+                chapada na de baixo. A 2ª linha tinha `.hero-text-glow`, um
+                gradiente de tinta cheia até 72% de tinta — uma cor virava
+                duas e a headline ficava com três tonalidades. A ênfase da
+                virada vem do contraste entre as linhas, não de gradiente
+                dentro de uma delas. Some junto o `background-clip: text`, que
+                era o que comia descendente sempre que o texto mudasse. */}
+            <span className="block text-balance text-ink-soft">Você tem o que vender.</span>
+            <span className="block text-balance">Seu cliente sabe te encontrar?</span>
           </h1>
 
           <p
-            className="hero-sub hero-fade mt-6 max-w-[34rem] text-[16px] leading-[1.55] text-ink/75 [text-wrap:pretty] md:mt-8 md:max-w-[40rem] md:text-[19px]"
+            className="hero-sub hero-fade mt-6 max-w-[34rem] text-[16px] leading-[1.5] text-ink/75 [text-wrap:pretty] md:mt-8 md:max-w-[40rem] md:text-[19px] md:leading-[1.55]"
             style={delay(0.45)}
           >
-            {SUB}
+            <span className="md:hidden">{SUB_MOBILE}</span>
+            <span className="hidden md:inline">{SUB}</span>
           </p>
 
-          {/* CTA sólido: é a ação mais importante da página e precisa ganhar do fundo — o vidro sumia no papel */}
-          <div className="hero-fade mt-8 w-full sm:w-auto md:mt-10 [perspective:600px]" style={delay(0.6)}>
-            <MagneticButton
-              href={`#${CONTACT_ID}`}
-              className="inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-full bg-ink px-8 py-4 text-base font-medium text-bg shadow-[0_12px_32px_-12px_color-mix(in_oklch,var(--ink)_45%,transparent)] transition-colors duration-300 hover:bg-ink/90 sm:w-auto"
-            >
-              {CTA_PRIMARY}
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </MagneticButton>
+          {/* CTA sólido: é a ação mais importante da página e precisa ganhar do
+              fundo — o vidro sumia no papel. Abre o WhatsApp (link externo),
+              não rola mais pro formulário; ver start-project-cta.tsx. */}
+          <div className="hero-cta hero-fade mt-8 md:mt-10 [perspective:600px]" style={delay(0.6)}>
+            <StartProjectCta />
           </div>
 
-          {/* leque de 3 cartões (Hero10): monograma · foto · print provisório */}
-          <HeroFan className="mt-6 md:mt-10 [@media(max-height:599px)]:hidden" />
         </div>
       </section>
 
       {/* ---------- capa 2 — a resposta ---------- */}
       <section
         id="resposta"
-        className="relative z-10 flex items-center bg-ink text-bg md:min-h-[72svh]"
+        className="hero-capa2 relative z-10 flex items-center bg-ink text-bg md:min-h-[72svh]"
         aria-labelledby="resposta-title"
       >
         {/* pt maior no mobile: o header fixo (60px rolado) cobriria o eyebrow quando a capa 2 chega ao topo */}
@@ -180,7 +313,9 @@ export function HeroAurora() {
             id="resposta-title"
             className="mt-5 max-w-full font-display text-[length:clamp(1.5rem,calc((100vw-48px)/10.7),3rem)] font-semibold leading-[1.15] tracking-[-0.025em] md:mt-7 lg:text-[length:min(68px,calc((100vw-80px)/15.9))]"
           >
-            <span className="block text-balance">{SYSTEMS.line1}</span>
+            {/* duas cores por <span>, nunca por gradiente: background-clip:text comeria
+                o descendente do "q" de "equipe" e do "p" de "perde"/"repetitivas" */}
+            <span className="block text-balance text-bg/60">{SYSTEMS.line1}</span>
             <span className="block">{SYSTEMS.line2}</span>
           </h2>
 

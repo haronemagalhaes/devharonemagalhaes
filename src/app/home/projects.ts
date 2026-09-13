@@ -91,7 +91,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "unicortte-penedo",
-    title: "Armarinho Unicortte — Penedo",
+    title: "Armarinho Unicortte — Penedo",
     sector: "Comércio",
     work: "Site da unidade",
     year: "2026",
@@ -146,7 +146,7 @@ export const PROJECTS: Project[] = [
     image: "/psinaiade.png",
     alt: "Site da psicóloga Naiade Santana",
     description:
-      "Site para a psicóloga Naiade Santana, especialista em ABA. Foco em agendamento, locais de atendimento e apresentação do trabalho — layout leve, acolhedor e responsivo.",
+      "Site para a psicóloga Naiade Santana, especialista em ABA. Foco em agendamento, locais de atendimento e apresentação do trabalho — layout leve, acolhedor e responsivo.",
     technologies: [],
     link: "https://psinaiade.vercel.app/",
   },

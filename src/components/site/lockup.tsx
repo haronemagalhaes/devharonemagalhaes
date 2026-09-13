@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Monograma from "@/assets/monograma.png";
+import Monograma from "@/assets/monograma-Photoroom.png";
 import { SITE_DESCRIPTOR, SITE_NAME } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -24,7 +24,8 @@ export function Lockup({
         aria-hidden
         width={34}
         height={22}
-        className="h-[18px] w-auto shrink-0 md:h-[20px]"
+        /* a arte é preta com fundo transparente: no escuro precisa virar branca */
+        className="h-[18px] w-auto shrink-0 dark:invert md:h-[20px]"
         priority
       />
       {!compact && <span aria-hidden className="h-6 w-px bg-line" />}

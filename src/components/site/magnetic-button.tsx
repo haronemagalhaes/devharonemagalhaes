@@ -13,18 +13,28 @@ import { scrollToId } from "@/components/motion/smooth-scroll";
  *     rotação 3D; ao sair, volta com mola elástica (useSpring)
  *   - só com ponteiro fino e hover real (`(hover: hover) and (pointer: fine)`)
  *     e sem `prefers-reduced-motion` — no touch é um link comum
- *   - href "#id" faz o scroll suave do site (scrollToId), como o StudioButton
+ *   - href "#id" faz o scroll suave do site (scrollToId), como o StudioButton;
+ *     href externo passa direto, com `target`/`rel`/`ariaLabel` opcionais
  */
 export function MagneticButton({
   href,
   className,
   children,
   strength = 0.35,
+  target,
+  rel,
+  ariaLabel,
+  onClick: onClickProp,
 }: {
   href: string;
   className?: string;
   children: ReactNode;
   strength?: number;
+  /* o botão também serve pra link externo (o CTA do hero abre o WhatsApp) */
+  target?: string;
+  rel?: string;
+  ariaLabel?: string;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 }) {
   const reduced = useReducedMotion();
   const [fine, setFine] = useState(false);
@@ -57,7 +67,10 @@ export function MagneticButton({
     y.set(0);
   };
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
-    if (href.startsWith("#")) {
+    onClickProp?.(e);
+    /* o scroll suave é só pra âncora interna; link externo segue o caminho
+       normal do navegador (nova aba, ctrl+clique, botão do meio…) */
+    if (href.startsWith("#") && !e.defaultPrevented) {
       e.preventDefault();
       scrollToId(href.slice(1));
     }
@@ -67,6 +80,9 @@ export function MagneticButton({
     <m.a
       ref={ref}
       href={href}
+      target={target}
+      rel={rel}
+      aria-label={ariaLabel}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       onClick={onClick}

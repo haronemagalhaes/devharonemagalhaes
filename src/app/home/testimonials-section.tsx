@@ -105,7 +105,7 @@ export function TestimonialsSection() {
   return (
     <section id="depoimentos" className="section-pad" aria-labelledby="depoimentos-title">
       <div className="container-studio">
-        <SectionHeading index="07" eyebrow="Depoimentos" title="O que dizem os clientes" id="depoimentos-title" />
+        <SectionHeading index="06" eyebrow="Depoimentos" title="O que dizem os clientes" id="depoimentos-title" />
 
         <Reveal className="mt-10 md:mt-14">
           <div
@@ -242,7 +242,11 @@ export function TestimonialsSection() {
               aria-labelledby={tabId(active)}
               className="order-first col-span-12 flex justify-center lg:order-none lg:col-span-4 lg:self-center lg:justify-end"
             >
-              <div className="relative h-32 w-32 overflow-hidden rounded-full border border-line bg-surface md:h-44 md:w-44 lg:h-52 lg:w-52">
+              {/* a marca do cliente é imagem clara: no escuro ela viraria um
+                  disco branco ofuscante. `dark:brightness-90` tira o glare sem
+                  tingir a marca; o anel em --ink/15 devolve a borda que --line
+                  perde contra o branco. */}
+              <div className="relative h-32 w-32 overflow-hidden rounded-full border border-line bg-surface dark:border-ink/15 dark:brightness-90 md:h-44 md:w-44 lg:h-52 lg:w-52">
                 <AnimatePresence mode="wait" initial={false}>
                   <m.div
                     key={current.id}
@@ -251,6 +255,13 @@ export function TestimonialsSection() {
                     exit={{ opacity: 0, scale: reduced ? 1 : 0.94 }}
                     transition={{ duration: dur, ease: EASE }}
                     className="absolute inset-0"
+                    /* o fundo mora na camada que troca, não no círculo: entra e
+                       sai junto com a logo, em vez de mudar de cor de uma vez */
+                    style={
+                      current.marca?.tipo === "tile" && current.marca.fundo
+                        ? { backgroundColor: current.marca.fundo }
+                        : undefined
+                    }
                   >
                     {current.marca?.tipo === "logo" ? (
                       // logo horizontal em círculo: contain + respiro de 20%, nunca cover
@@ -263,6 +274,17 @@ export function TestimonialsSection() {
                           className="object-contain p-[20%]"
                         />
                       </div>
+                    ) : current.marca?.tipo === "tile" && current.marca.fundo ? (
+                      // "tile" com fundo: a arte encosta nas bordas do quadrado, então
+                      // entra inteira (contain + 8%) sobre a própria cor de fundo —
+                      // o círculo é da mesma cor do PNG e não aparece emenda
+                      <Image
+                        src={current.marca.src}
+                        alt={current.marca.alt ?? `Logomarca de ${current.cliente}`}
+                        fill
+                        sizes="208px"
+                        className="object-contain p-[8%]"
+                      />
                     ) : current.marca ? (
                       // "tile" (logo quadrada com fundo próprio) ou "foto": preenche o círculo
                       <Image

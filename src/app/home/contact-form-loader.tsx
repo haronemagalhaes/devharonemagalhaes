@@ -33,8 +33,13 @@ export function ContactFormLoader() {
     return () => io.disconnect();
   }, []);
 
+  /*
+   * Sem `min-height` no wrapper: o esqueleto já reserva a altura enquanto
+   * carrega, e a antiga min-h-[480px] sobrevivia à troca — sobrava ~30px de
+   * vazio embaixo do formulário pra sempre.
+   */
   return (
-    <div ref={ref} aria-busy={!near} className="min-h-[480px]">
+    <div ref={ref} aria-busy={!near}>
       {near ? <ContactForm /> : <FormSkeleton />}
     </div>
   );
@@ -43,30 +48,35 @@ export function ContactFormLoader() {
 function FormSkeleton() {
   return (
     <div aria-hidden className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <span className="h-4 w-56 rounded-[4px] bg-surface-2" />
+      <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
         <SkeletonField />
         <SkeletonField />
       </div>
       <SkeletonField />
-      <div className="flex flex-col gap-3">
-        <span className="h-4 w-40 rounded-[4px] bg-surface-2" />
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <span className="h-12 rounded-[8px] border border-line bg-surface" />
-          <span className="h-12 rounded-[8px] border border-line bg-surface" />
-          <span className="h-12 rounded-[8px] border border-line bg-surface" />
-          <span className="h-12 rounded-[8px] border border-line bg-surface" />
+      <div className="flex flex-col gap-1.5">
+        <span className="h-3.5 w-44 rounded-[4px] bg-surface-2" />
+        <span className="mt-1.5 h-3.5 w-32 rounded-[4px] bg-surface-2" />
+        <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <span className="h-[46px] rounded-[8px] border border-ink/50 bg-surface" />
+          <span className="h-[46px] rounded-[8px] border border-ink/50 bg-surface" />
+          <span className="h-[46px] rounded-[8px] border border-ink/50 bg-surface" />
+          <span className="h-[46px] rounded-[8px] border border-ink/50 bg-surface" />
         </div>
       </div>
-      <span className="mt-2 h-14 w-48 rounded-[8px] bg-surface-2" />
+      <div className="flex flex-col gap-3 pt-2">
+        <span className="h-14 w-[176px] rounded-[8px] bg-surface-2" />
+        <span className="h-4 w-48 max-w-full rounded-[4px] bg-surface-2" />
+      </div>
     </div>
   );
 }
 
 function SkeletonField() {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="h-4 w-24 rounded-[4px] bg-surface-2" />
-      <span className="h-[52px] rounded-[8px] border border-line bg-surface" />
+    <div className="flex flex-col gap-1.5">
+      <span className="h-3.5 w-24 rounded-[4px] bg-surface-2" />
+      <span className="h-[46px] rounded-[8px] border border-ink/50 bg-surface" />
     </div>
   );
 }

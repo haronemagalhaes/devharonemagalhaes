@@ -2,20 +2,31 @@
 
 import { Reveal } from "@/components/motion/reveal";
 import { Eyebrow } from "@/components/site/eyebrow";
-import { CITY, CONTACT_ID, EMAIL, RESPONSE_TIME, STATE, whatsappUrl } from "@/lib/site";
+import { SocialLinks } from "@/components/site/social-links";
+import { CONTACT_ID } from "@/lib/site";
 import { ContactFormLoader } from "./contact-form-loader";
 
 /**
  * Seção "Vamos conversar": título, texto e contatos renderizados no servidor;
  * o formulário em si (react-hook-form + zod) entra sob demanda.
- * A cidade aparece aqui como origem ("Base"), não como limite — saiu do hero.
+ *
+ * A coluna esquerda encerra nos três atalhos em ícone — as alternativas ao
+ * formulário. Sem endereço por extenso e sem cidade: isso é fato de colofão e
+ * vive no rodapé.
+ *
+ * `pb` menor que o `section-pad` padrão: com 140px embaixo + o topo do rodapé
+ * sobrava um vão grande antes do fio.
  */
 export function ContactSection() {
   return (
-    <section id={CONTACT_ID} className="section-pad" aria-labelledby="contato-title">
-      <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-12">
+    <section
+      id={CONTACT_ID}
+      className="section-pad pb-16 md:pb-20 xl:pb-24"
+      aria-labelledby="contato-title"
+    >
+      <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-10">
         <Reveal className="col-span-12 flex flex-col gap-5 lg:col-span-5">
-          <Eyebrow index="10">Contato</Eyebrow>
+          <Eyebrow index="09">Contato</Eyebrow>
           <h2
             id="contato-title"
             className="font-display text-[30px] font-semibold leading-[1.2] tracking-[-0.015em] text-ink sm:text-[34px] md:text-[44px]"
@@ -26,40 +37,7 @@ export function ContactSection() {
             Cinco perguntas rápidas. Com isso eu já chego na primeira conversa
             sabendo por onde começar.
           </p>
-          <dl className="mt-4 flex flex-col gap-3 text-[15px]">
-            <div className="flex gap-3">
-              <dt className="w-24 shrink-0 text-ink-soft">E-mail</dt>
-              {/* e-mail longo: quebra em vez de alargar a página em telas ≤ 360px */}
-              <dd className="min-w-0 [overflow-wrap:anywhere]">
-                <a href={`mailto:${EMAIL}`} className="link-line text-ink">
-                  {EMAIL}
-                </a>
-              </dd>
-            </div>
-            <div className="flex gap-3">
-              <dt className="w-24 shrink-0 text-ink-soft">WhatsApp</dt>
-              <dd>
-                <a
-                  href={whatsappUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="link-line text-ink"
-                >
-                  +55 79 98116-4388
-                </a>
-              </dd>
-            </div>
-            <div className="flex gap-3">
-              <dt className="w-24 shrink-0 text-ink-soft">Base</dt>
-              <dd className="text-ink">
-                {CITY}/{STATE} · atendo todo o Brasil, online
-              </dd>
-            </div>
-            <div className="flex gap-3">
-              <dt className="w-24 shrink-0 text-ink-soft">Prazo</dt>
-              <dd className="text-ink">{RESPONSE_TIME}</dd>
-            </div>
-          </dl>
+          <SocialLinks className="mt-1" />
         </Reveal>
 
         <Reveal delay={0.1} className="col-span-12 lg:col-span-7">

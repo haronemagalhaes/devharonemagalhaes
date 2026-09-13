@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/site/section-heading";
 const FAQ = [
   {
     q: "Quanto tempo leva?",
-    a: "Depende do escopo do projeto. Fecho o prazo com você na proposta, por escrito, antes de começar — e ele é cumprido.",
+    a: "Depende do escopo do projeto. Fecho o prazo com você na proposta, por escrito, antes de começar — e ele é cumprido.",
   },
   {
     q: "Como funciona o pagamento?",
@@ -38,7 +38,7 @@ export function FaqSection() {
     <section id="faq" className="section-pad" aria-labelledby="faq-title">
       <div className="container-studio grid grid-cols-12 gap-x-6 gap-y-10">
         <div className="col-span-12 lg:col-span-4">
-          <SectionHeading index="09" eyebrow="FAQ" title="Perguntas frequentes" id="faq-title" />
+          <SectionHeading index="08" eyebrow="FAQ" title="Perguntas frequentes" id="faq-title" />
         </div>
 
         <Reveal className="col-span-12 lg:col-span-8">

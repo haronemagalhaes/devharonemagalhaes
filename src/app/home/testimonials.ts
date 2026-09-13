@@ -7,11 +7,19 @@
  *   - tipo "logo": PNG com fundo transparente → object-contain com respiro
  *   - tipo "tile": logo quadrada com fundo opaco próprio → preenche o
  *     círculo (os cantos cortados são só o fundo da própria arte)
+ *   - tipo "tile" com `fundo`: pra arte que encosta nas bordas do quadrado
+ *     (o cover cortaria o símbolo) — o círculo pinta essa cor e a logo
+ *     entra inteira, em contain com 8% de respiro. `fundo` tem que ser a
+ *     cor exata do fundo do PNG, senão aparece a emenda
  *   - tipo "foto": retrato → object-cover
  *   Sem `marca`, o círculo mostra as iniciais do cliente em Geist.
  * Logos ficam na cor natural de cada cliente; a interface em volta é
  * monocromática. Nada foi recortado de print nem baixado.
  */
+export type Marca =
+  | { src: string; tipo: "logo" | "foto"; alt?: string }
+  | { src: string; tipo: "tile"; alt?: string; fundo?: string };
+
 export type Testimonial = {
   id: string;
   /** quem falou: pessoa ou empresa */
@@ -21,7 +29,7 @@ export type Testimonial = {
   citacao: string;
   /** avaliação em estrelas (1–5) */
   estrelas: 1 | 2 | 3 | 4 | 5;
-  marca?: { src: string; tipo: "logo" | "tile" | "foto"; alt?: string };
+  marca?: Marca;
 };
 
 export const TESTIMONIALS: Testimonial[] = [
@@ -50,6 +58,9 @@ export const TESTIMONIALS: Testimonial[] = [
     empresa: "Escritório de advocacia",
     citacao: "Superou a expectativa. Gostamos do estilo do trabalho e do resultado.",
     estrelas: 5,
+    // arte nova (2026-09-13): a balança já vem com margem — o ponto mais
+    // longe do centro fica a 0,70 do raio —, então preenche o círculo sem
+    // cortar e dispensa `fundo` (o azul dela nem é chapado, tem textura)
     marca: { src: "/mendonca-logo.png", tipo: "tile", alt: "Logomarca da Mendonça Advocacia" },
   },
   {

@@ -1,0 +1,109 @@
+/* =====================================================================
+   Harone Magalhães — tokens da marca, v1.0 (11/09/2026)
+   Fonte da verdade: brand/manual/BRAND-BOOK.md
+
+   Para usar FORA do site (artes, documentos, propostas, protótipos).
+   O site tem os tokens dele em src/app/globals.css — não duplique lá.
+
+   Monocromático. Não existe cor de destaque. Não adicione uma.
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500&display=swap");
+
+:root {
+  /* --- Paleta do site (tema claro) --- */
+  --hm-bg: #f6f5f2;
+  --hm-surface: #ffffff;
+  --hm-surface-2: #eeece6;
+  --hm-ink: #141414;
+  --hm-ink-soft: #6b6b6b;
+  --hm-line: #e3e1dc;
+  --hm-error: #8a1c1c;
+
+  /* --- Paleta das artes (papel) --- */
+  --hm-art-paper: #f6f5f1;
+  --hm-art-paper-hi: #fcfbf8;
+  --hm-art-ink: #131310;
+  --hm-art-ink-2: #6e6c63;
+  --hm-art-ink-3: #9e9c91; /* 2,5:1 sobre papel — não usar em texto pequeno (P04) */
+  --hm-art-line: #e3e1d9;
+
+  /* --- Paleta das artes (noir — uso restrito) --- */
+  --hm-noir-bg: #141310;
+  --hm-noir-fg: #f4f3ef;
+  --hm-noir-fg-2: #b8b5a9;
+  --hm-noir-fg-3: #7e7b70;
+  --hm-noir-line: #2c2a23;
+
+  /* --- Tipografia --- */
+  --hm-font-web-heading: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --hm-font-web-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --hm-font-art-heading: "Archivo", ui-sans-serif, system-ui, Arial, sans-serif;
+  --hm-font-art-label: "Geist Mono", ui-monospace, Menlo, monospace;
+
+  --hm-heading-weight: 700;
+  --hm-heading-tracking: -0.04em;
+  --hm-heading-leading: 1.15;
+  --hm-body-leading: 1.6;
+
+  /* --- Layout --- */
+  --hm-max-content: 1120px;
+  --hm-gutter: 24px;
+  --hm-section: 64px;
+  --hm-radius: 8px;
+  --hm-radius-sm: 4px;
+  --hm-radius-md: 6px;
+  --hm-radius-xl: 12px;
+
+  /* --- Movimento --- */
+  --hm-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --hm-dur-fast: 250ms;
+  --hm-dur-base: 600ms;
+  --hm-dur-slow: 900ms;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --hm-gutter: 40px;
+    --hm-section: 112px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --hm-gutter: 64px;
+    --hm-section: 140px;
+  }
+}
+
+/* Tema escuro do site — mesmo sistema, invertido, sem cor */
+.dark,
+[data-theme="dark"] {
+  --hm-bg: #121211;
+  --hm-surface: #1a1a18;
+  --hm-surface-2: #201f1d;
+  --hm-ink: #f4f3ef;
+  --hm-ink-soft: #9a9994;
+  --hm-line: #2a2a28;
+  --hm-error: #f08a84;
+}
+
+/* Grão de papel das artes: soft-light, nunca multiply */
+.hm-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  mix-blend-mode: soft-light;
+  background-size: 240px 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s !important;
+  }
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>STORY_PROCESS — Processo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="stories.css">
+<!--
+  STORY_PROCESS · Processo. Primeira composição CENTRALIZADA do sistema.
+  Eixo: x = 540. Coluna de texto: até 760 px. Tudo no eixo; crumb e rodapé
+  continuam na moldura simétrica de sempre (92 px de cada lado).
+  Texto: seção Abordagem do site (src/app/home/approach-section.tsx),
+  resumido sem mudar o sentido.
+-->
+<style>
+  .axis { align-items: center; text-align: center; }
+
+  /* Correções ópticas
+     1. letter-spacing deixa um espaço depois da última letra e empurra o
+        texto para a esquerda; o padding-left do mesmo valor devolve o centro.
+     2. o ponto final no fim da headline tem pouca massa e desloca o centro
+        visual para a esquerda; a margem negativa tira o ponto da conta. */
+  .trk { padding-left: .24em; }
+  .pt { margin-right: -.22em; }
+
+  .hl { font-weight: 700; font-size: 104px; line-height: 1.04; letter-spacing: -.045em; }
+  /* cada linha da headline é uma decisão: nunca deixa o navegador quebrar */
+  .hl > span { display: block; white-space: nowrap; }
+
+  .steps { display: flex; flex-direction: column; align-items: center; margin-top: 96px; }
+  .step { display: flex; flex-direction: column; align-items: center; }
+  .step .n { font: 400 18px/1 "Geist Mono", monospace; letter-spacing: .2em; padding-left: .2em; color: var(--fg3); }
+  .step h2 { font-weight: 600; font-size: 46px; line-height: 1.1; letter-spacing: -.025em; margin-top: 16px; }
+  .step p { font-size: 30px; line-height: 1.4; color: var(--fg2); max-width: 760px; margin-top: 10px; }
+  /* conector: marca a sequência, 2 px exatos sobre o eixo (539–541) */
+  .link { width: 2px; height: 40px; background: var(--fg3); opacity: .55; margin: 28px 0; }
+</style>
+</head>
+<body>
+<div class="spot"></div>
+<div class="grain"></div>
+<div class="stage">
+  <div class="crumb"><span>haronedev_</span><span>Processo</span></div>
+
+  <div class="mid axis">
+    <p class="label trk">Como funciona</p>
+    <h1 class="hl gap-s">
+      <span>Quatro passos<span class="pt">.</span></span>
+      <span class="dim">Um responsável<span class="pt">.</span></span>
+    </h1>
+
+    <div class="steps">
+      <div class="step">
+        <span class="n">01</span>
+        <h2>Diagnóstico gratuito</h2>
+        <p>Você me conta onde a operação trava.</p>
+      </div>
+      <i class="link"></i>
+      <div class="step">
+        <span class="n">02</span>
+        <h2>Proposta fechada</h2>
+        <p>Escopo, prazo e valor por escrito.</p>
+      </div>
+      <i class="link"></i>
+      <div class="step">
+        <span class="n">03</span>
+        <h2>Execução acompanhada</h2>
+        <p>Entregas parciais toda semana.</p>
+      </div>
+      <i class="link"></i>
+      <div class="step">
+        <span class="n">04</span>
+        <h2>Entrega e manutenção</h2>
+        <p>O projeto continua tendo dono.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="foot"><span>quem fecha o escopo é quem executa</span><span>haronedev.com.br</span></div>
+</div>
+</body>
+</html>

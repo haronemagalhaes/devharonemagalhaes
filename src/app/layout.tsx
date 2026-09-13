@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "@/components/theme-provider";
 import { WhatsappFloat } from "@/components/whatsapp-float";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { MotionProvider } from "@/components/motion/motion-provider";
@@ -63,8 +64,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F6F5F2",
-  colorScheme: "light",
+  /* a barra do navegador acompanha o tema — --bg claro / --bg escuro */
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F6F5F2" },
+    { media: "(prefers-color-scheme: dark)", color: "#121211" },
+  ],
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
 };
@@ -118,18 +123,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${geist.variable} ${inter.variable} h-full`}>
+    /* suppressHydrationWarning: o script do next-themes carimba a classe no
+       <html> antes do React hidratar, então servidor e cliente divergem aqui
+       de propósito. */
+    <html
+      lang="pt-BR"
+      suppressHydrationWarning
+      className={`${geist.variable} ${inter.variable} h-full`}
+    >
       <body className="flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground antialiased">
+        {/* ThemeProvider primeiro: o script que carimba a classe no <html> é
+            renderizado na posição do provider, então quanto mais cedo no
+            <body>, menos chance de o navegador pintar um frame no tema errado. */}
+        <ThemeProvider>
+          <SmoothScroll />
+          <MotionProvider>
+            {children}
+            <WhatsappFloat />
+          </MotionProvider>
+          <Grain />
+        </ThemeProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SmoothScroll />
-        <MotionProvider>
-          {children}
-          <WhatsappFloat />
-        </MotionProvider>
-        <Grain />
         {/* Vercel Analytics: o script só existe no deploy da Vercel */}
         {process.env.VERCEL && <Analytics />}
       </body>
