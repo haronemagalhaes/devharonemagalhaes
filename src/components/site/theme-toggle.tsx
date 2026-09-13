@@ -17,8 +17,7 @@ import { cn } from "@/lib/utils";
  * é um render a mais por montagem).
  *
  * O MutationObserver mantém o `aria-checked` certo mesmo quando quem muda o
- * tema não é este botão — troca de preferência do sistema com o tema em
- * "system", ou outra aba.
+ * tema não é este botão — por exemplo, a troca feita em outra aba.
  */
 function subscribeToTheme(onChange: () => void) {
   const mo = new MutationObserver(onChange);
@@ -55,7 +54,9 @@ const isDarkOnServer = () => false;
  * atributo e não CSS, precisa de JS: ver `subscribeToTheme` abaixo. Leitor
  * de tela lê o DOM já hidratado, então ouve o valor certo.
  *
- * A preferência persiste entre visitas — localStorage, pelo next-themes.
+ * A preferência persiste entre visitas — localStorage ("hm-theme"), pelo
+ * next-themes. Sem escolha salva, o site abre no claro: o tema do sistema
+ * não conta (ver components/theme-provider.tsx).
  */
 export function ThemeToggle({ className }: { className?: string }) {
   const { setTheme } = useTheme();

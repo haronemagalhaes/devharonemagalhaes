@@ -64,12 +64,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  /* a barra do navegador acompanha o tema — --bg claro / --bg escuro */
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F5F2" },
-    { media: "(prefers-color-scheme: dark)", color: "#121211" },
-  ],
-  colorScheme: "light dark",
+  /* Tema oficial é o claro: barra do navegador sempre no --bg claro, sem
+     variação por prefers-color-scheme (o site não segue o tema do sistema).
+     "only light" diz ao navegador que a página, por padrão, é clara — ele não
+     pinta o fundo escuro antes do CSS nem aplica escurecimento automático.
+     Quando a pessoa escolhe o escuro, `html.dark { color-scheme: dark }` no
+     globals.css passa por cima deste padrão. */
+  themeColor: "#F6F5F2",
+  colorScheme: "only light",
   width: "device-width",
   initialScale: 1,
 };

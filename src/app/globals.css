@@ -1,7 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* escuro só pela classe .dark no <html> (interruptor do rodapé), nunca pelo
+   tema do sistema — nada de @media (prefers-color-scheme: dark) no projeto */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* =====================================================================
    Tokens de marca — monocromático, sem acento.
@@ -136,8 +138,10 @@
   html {
     scrollbar-gutter: stable;
     -webkit-text-size-adjust: 100%;
-    /* segue o tema: controla scrollbars, campos nativos e o form control UA */
-    color-scheme: light;
+    /* segue o tema: controla scrollbars, campos nativos e o form control UA.
+       "only light" no padrão: o navegador não escurece a página sozinho
+       quando o sistema está no escuro. O escuro vem só da classe .dark. */
+    color-scheme: only light;
   }
 
   html.dark {
