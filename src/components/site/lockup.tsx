@@ -1,0 +1,49 @@
+import Image from "next/image";
+import Monograma from "@/assets/monograma-Photoroom.png";
+import { SITE_DESCRIPTOR, SITE_NAME } from "@/lib/site";
+import { cn } from "@/lib/utils";
+
+/**
+ * Lockup da marca: monograma + "Harone Magalhães" + fio vertical + descritor.
+ * `compact` esconde o descritor (mobile / header encolhido).
+ */
+export function Lockup({
+  compact = false,
+  className,
+  descriptorClassName,
+}: {
+  compact?: boolean;
+  className?: string;
+  descriptorClassName?: string;
+}) {
+  return (
+    <span className={cn("inline-flex items-center gap-3", className)}>
+      <Image
+        src={Monograma}
+        alt=""
+        aria-hidden
+        width={34}
+        height={22}
+        /* a arte é preta com fundo transparente: no escuro precisa virar branca */
+        className="h-[18px] w-auto shrink-0 dark:invert md:h-[20px]"
+        priority
+      />
+      {!compact && <span aria-hidden className="h-6 w-px bg-line" />}
+      <span className="flex flex-col gap-[3px]">
+        <span className="whitespace-nowrap font-display text-[15px] font-semibold leading-none tracking-[-0.01em] text-ink md:text-base">
+          {SITE_NAME}
+        </span>
+        {!compact && (
+          <span
+            className={cn(
+              "eyebrow whitespace-nowrap !text-[10px] leading-none",
+              descriptorClassName,
+            )}
+          >
+            {SITE_DESCRIPTOR}
+          </span>
+        )}
+      </span>
+    </span>
+  );
+}

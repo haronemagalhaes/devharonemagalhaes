@@ -1,0 +1,142 @@
+/* =====================================================================
+   STORIES — sistema compartilhado dos 13 modelos (v1.0 · 11/09/2026)
+   Regras: brand/social/stories/STORIES.md · marca: brand/manual/BRAND-BOOK.md
+
+   Paleta: SÓ as cores das artes aprovadas (papel + tinta + noir).
+   Não existe cor secundária. Variação vem de fundo, bloco e escala.
+   ===================================================================== */
+
+:root {
+  --paper: #F6F5F1;
+  --paper-hi: #FCFBF8;
+  --ink: #131310;
+  --ink-2: #6E6C63;
+  --ink-3: #9E9C91;
+  --line: #E3E1D9;
+
+  --noir: #141310;
+  --n-fg: #F4F3EF;
+  --n-fg2: #B8B5A9;
+  --n-fg3: #7E7B70;
+  --n-line: #2C2A23;
+
+  /* tokens de uso — os blocos escuros redefinem estes */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg2: var(--ink-2);
+  --fg3: var(--ink-3);
+  --ln: var(--line);
+
+  --m: 92px; /* margem lateral */
+}
+
+/* superfície escura: fundo inteiro (.noir) ou bloco/texto sobre bloco (.inv) */
+.noir, .inv {
+  --bg: var(--noir);
+  --fg: var(--n-fg);
+  --fg2: var(--n-fg2);
+  --fg3: var(--n-fg3);
+  --ln: var(--n-line);
+}
+.inv { color: var(--fg); }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; }
+body {
+  position: relative;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Archivo", ui-sans-serif, system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+}
+.mono { font-family: "Geist Mono", ui-monospace, Menlo, monospace; }
+
+/* ---------- camadas: luz (1) · blocos (2) · grão (3) · conteúdo (5) ---------- */
+.spot {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse 80% 46% at 30% 24%, var(--paper-hi) 0%, rgba(252, 251, 248, 0) 58%);
+}
+.noir .spot { background: radial-gradient(ellipse 64% 40% at 36% 26%, rgba(64, 62, 56, .45) 0%, rgba(64, 62, 56, 0) 64%); }
+.grain {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  opacity: .45; mix-blend-mode: soft-light; background-size: 240px 240px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.noir .grain { opacity: .6; }
+
+/* bloco de tinta — função: separar a ação/oferta do resto. Nunca decoração. */
+.blk { position: absolute; z-index: 2; background: var(--noir); }
+
+/* ---------- moldura fixa: crumb (212) · régua + rodapé (≈1690) ---------- */
+.stage { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; padding: 212px var(--m) 200px; }
+.crumb { display: flex; justify-content: space-between; font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--fg3); }
+.mid { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.mid.top { justify-content: flex-start; padding-top: 120px; }
+.rule { height: 1px; background: var(--ln); margin-top: 30px; }
+.foot { display: flex; justify-content: space-between; font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .05em; color: var(--fg3); margin-top: 22px; }
+
+/* zona posicionada à mão, para composições com bloco ou imagem */
+.zone { position: absolute; z-index: 5; left: var(--m); right: var(--m); }
+
+/* ---------- escala tipográfica (story) ---------- */
+.label { font: 400 18px/1.3 "Geist Mono", monospace; letter-spacing: .24em; text-transform: uppercase; color: var(--fg2); }
+.display { font-weight: 700; font-size: 300px; line-height: .86; letter-spacing: -.06em; }
+.h1 { font-weight: 700; font-size: 96px; line-height: 1.06; letter-spacing: -.04em; }
+.h1.xl { font-size: 116px; line-height: 1.04; letter-spacing: -.045em; }
+.h2 { font-weight: 700; font-size: 70px; line-height: 1.08; letter-spacing: -.035em; }
+.h3 { font-weight: 600; font-size: 40px; line-height: 1.2; letter-spacing: -.02em; }
+.sub { font-weight: 400; font-size: 30px; line-height: 1.45; color: var(--fg2); max-width: 840px; }
+.cap { font: 400 20px/1.5 "Geist Mono", monospace; letter-spacing: .04em; color: var(--fg2); }
+.two span { display: block; }
+.dim { color: var(--fg3); }
+
+.gap-s { margin-top: 24px; }
+.gap-m { margin-top: 44px; }
+.gap-l { margin-top: 72px; }
+
+/* ---------- lista com fio (herdada do story de serviços aprovado) ---------- */
+.rows { border-top: 1px solid var(--ln); }
+.row { display: flex; gap: 36px; align-items: baseline; padding: 30px 0; border-bottom: 1px solid var(--ln); }
+.row .i { font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .1em; color: var(--fg3); min-width: 36px; }
+.row .t { font-weight: 600; font-size: 40px; line-height: 1.18; letter-spacing: -.02em; }
+.rows.big .row { gap: 32px; padding: 34px 0; }
+.rows.big .i { font: 700 52px/1 "Archivo", sans-serif; letter-spacing: -.04em; color: var(--fg3); min-width: 76px; }
+.rows.big .t { font-size: 42px; }
+
+/* ---------- CTA: bloco sólido, raio 8. Rótulo único: Começar meu projeto ---------- */
+.cta {
+  display: inline-flex; align-items: center; gap: 22px; align-self: flex-start;
+  background: var(--fg); color: var(--bg);
+  font-weight: 600; font-size: 36px; letter-spacing: -.015em; line-height: 1;
+  padding: 32px 40px; border-radius: 8px;
+}
+.cta .arr { font-family: "Geist Mono", monospace; font-weight: 400; }
+
+/* ---------- imagem: moldura com marcas de canto ---------- */
+.fig { position: absolute; z-index: 4; }
+.fig img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.fig .c { position: absolute; width: 30px; height: 30px; border: 0 solid var(--fg); }
+.fig .tl { top: -16px; left: -16px; border-top-width: 2px; border-left-width: 2px; }
+.fig .tr { top: -16px; right: -16px; border-top-width: 2px; border-right-width: 2px; }
+.fig .bl { bottom: -16px; left: -16px; border-bottom-width: 2px; border-left-width: 2px; }
+.fig .br { bottom: -16px; right: -16px; border-bottom-width: 2px; border-right-width: 2px; }
+.mono-img img { filter: grayscale(1) contrast(1.04); }
+
+/* ---------- cartão (agenda, dados) ---------- */
+.cards { display: grid; gap: 14px; }
+.card {
+  display: flex; align-items: center; gap: 36px;
+  background: var(--paper-hi); border: 1px solid var(--ln); border-radius: 8px; padding: 22px 30px;
+}
+.card .day { display: grid; gap: 6px; min-width: 88px; }
+.card .day small { font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .18em; color: var(--fg2); }
+.card .day b { font-weight: 700; font-size: 56px; line-height: .9; letter-spacing: -.04em; }
+.card .what { flex: 1; font-weight: 600; font-size: 34px; letter-spacing: -.015em; }
+.card .st { font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--fg2); }
+.card.off { background: transparent; }
+.card.off .what, .card.off .day b { color: var(--fg3); }
+.card.off .what { text-decoration: line-through; text-decoration-thickness: 2px; }
+
+.mark { display: block; width: 116px; height: auto; filter: drop-shadow(28px 24px 30px rgba(19, 19, 16, .13)); }
+.noir .mark, .inv .mark { filter: invert(1); }

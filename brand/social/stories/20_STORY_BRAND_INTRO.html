@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>STORY_BRAND_INTRO — Apresentação da marca</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="stories.css">
+<!--
+  STORY_BRAND_INTRO · Apresentação da marca. Composição centralizada, eixo x = 540.
+  Protagonista: assinatura empilhada OFICIAL (brand/logo/assinatura-empilhado-preto.png,
+  11/09/2026), sem alteração, a 740 px de largura (proporção original 1644 × 915).
+  Moldura: marcas de canto nas margens (92 / 988) — elemento da identidade que
+  enquadra o bloco de destaque. Texto: frase aprovada da marca + as quatro frentes.
+  Fundo papel: fundo preto foi reprovado nas peças de identidade (08/09/2026).
+-->
+<style>
+  .axis { align-items: center; text-align: center; }
+  .trk { padding-left: .2em; }
+  .pt { margin-right: -.22em; }
+
+  .frame { position: relative; width: 896px; padding: 96px 0; display: flex; justify-content: center; }
+  .frame .c { position: absolute; width: 40px; height: 40px; border: 0 solid var(--fg); }
+  .frame .tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+  .frame .tr { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
+  .frame .bl { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
+  .frame .br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+  .logo { display: block; width: 740px; height: auto; }
+
+  .st { font-weight: 700; font-size: 58px; line-height: 1.14; letter-spacing: -.035em; margin-top: 96px; }
+  .st > span { display: block; white-space: nowrap; }
+  .st .soft { color: var(--fg2); }
+
+  .fronts { font: 400 18px/1 "Geist Mono", monospace; letter-spacing: .2em; text-transform: uppercase;
+            color: var(--fg2); margin-top: 56px; }
+</style>
+</head>
+<body>
+<div class="spot"></div>
+<div class="grain"></div>
+<div class="stage">
+  <div class="crumb"><span>haronedev_</span><span>2026</span></div>
+
+  <div class="mid axis">
+    <div class="frame">
+      <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      <img class="logo" src="../../logo/assinatura-empilhado-preto.png" alt="Harone Magalhães — Estúdio de tecnologia e presença digital">
+    </div>
+
+    <h1 class="st">
+      <span class="soft">Quem fecha o escopo com você</span>
+      <span>é quem executa<span class="pt">.</span></span>
+    </h1>
+
+    <p class="fronts trk">Sistemas · Automação · Sites · Tráfego pago</p>
+  </div>
+
+  <div class="rule"></div>
+  <div class="foot"><span>de aracaju para o brasil inteiro</span><span>haronedev.com.br</span></div>
+</div>
+</body>
+</html>

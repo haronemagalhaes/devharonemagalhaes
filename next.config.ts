@@ -1,17 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // evita que um package-lock.json fora do projeto confunda o file tracing
+  outputFileTracingRoot: process.cwd(),
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "plus.unsplash.com",
-      },
-    ],
+    formats: ["image/avif", "image/webp"],
   },
 };
 

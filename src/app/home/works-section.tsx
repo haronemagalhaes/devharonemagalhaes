@@ -1,258 +1,205 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProjectModal } from "@/app/home/project-modal";
+import {
+  AnimatePresence,
+  m,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "@/components/motion/reveal";
+import { Rule } from "@/components/motion/rule";
+import { SectionHeading } from "@/components/site/section-heading";
+import { CornerMarks } from "@/components/site/corner-marks";
+import { EASE } from "@/lib/motion";
+import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
+import { PROJECTS, type Project } from "./projects";
+import dynamic from "next/dynamic";
 
-type Project = {
-  id: string;
-  title: string;
-  image: string;
-  category: "Web" | "Automação" | "Dashboard";
-  description: string;
-  technologies: string[];
-  link?: string;
-  aspectRatio: "16/9" | "4/3" | "1/1";
-};
+const ProjectModal = dynamic(
+  () => import("./project-modal").then((mod) => mod.ProjectModal),
+  { ssr: false },
+);
 
-const projects: Project[] = [
-  {
-    id: "vitalle",
-    title: "Centro Médico Vitalle",
-    image: "/Vitalle.png",
-    category: "Web",
-    description:
-      "Projeto desenvolvido para o Centro Médico Vitalle, com foco em presença digital, performance e acessibilidade. O site oferece navegação fluida e responsiva, permitindo que pacientes acessem serviços, especialidades e canais de contato de forma rápida e intuitiva em qualquer dispositivo.",
-    technologies: [""],
-    link: "https://link-bio.centromedicovitalle.com.br/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "albuquerque-va",
-    title: "Albuquerque V.A — Moda Feminina",
-    image: "/loja.png",
-    category: "Web",
-    description:
-      "Projeto para a loja Albuquerque V.A, desenvolvido com foco em identidade visual, desempenho e experiência do usuário, conectando clientes aos canais de atendimento e redes sociais por meio de uma navegação fluida e responsiva.",
-    technologies: [""],
-    link: "https://abmoda.com.br",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "angelica-cruz",
-    title: "Angelica Cruz - Nutricionista",
-    image: "/angelicacruz.jpeg",
-    category: "Web",
-    description:
-      "Microsite estilo Linktree com design moderno, links rápidos e foco em agendamento.",
-    technologies: [""],
-    link: "https://www.angelicacruznutricionista.com.br",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "unicortte",
-    title: "Armarinho Unicortte",
-    image: "/unicortte.jpeg",
-    category: "Web",
-    description:
-      "Página desenvolvida para o Armarinho Unicortte, com foco em apresentação institucional, cursos e presença digital. Interface leve, responsiva e alinhada à identidade da marca.",
-    technologies: [""],
-    link: "https://armarinhounicortte.vercel.app/",
-    aspectRatio: "4/3",
-  },
-
-  // 🔥 NOVOS PROJETOS
-
-  {
-    id: "mendonca",
-    title: "Mendonça Advocacia",
-    image: "/mendonca.png",
-    category: "Web",
-    description:
-      "Website institucional desenvolvido para o escritório Mendonça Advocacia, focado em autoridade, credibilidade e posicionamento profissional. Layout moderno com navegação clara e foco em conversão de clientes.",
-    technologies: [""],
-    link: "https://www.mendonca-advocaciaa.com.br/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "tathi-rocha",
-    title: "Link Bio — Tathi Rocha",
-    image: "/tathi.png",
-    category: "Web",
-    description:
-      "Página estilo Link in Bio desenvolvida para centralizar redes sociais, serviços e canais de contato. Design moderno, direto e altamente otimizado para mobile.",
-    technologies: [""],
-    link: "https://tathi-rocha-website.vercel.app/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "siagenda",
-    title: "SI-Agenda — Plataforma de Agendamento",
-    image: "/si-agenda1.png",
-    category: "Web",
-    description:
-      "Plataforma completa de agendamento online para clínicas e profissionais de saúde. Sistema moderno com foco em automação, gestão de pacientes, organização de agenda e experiência do usuário.",
-    technologies: [""],
-    link: "https://si-agenda.com.br/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "unicortte-penedo",
-    title: "Armarinho Unicortte — Penedo",
-    image: "/unicortte2.png",
-    category: "Web",
-    description:
-      "Website desenvolvido para a unidade de Penedo do Armarinho Unicortte, com foco em divulgação de produtos, cursos e presença digital. Interface simples, funcional e otimizada para conversão.",
-    technologies: [""],
-    link: "https://armarinhounicortte-penedo.vercel.app/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "via-reta-engenharia",
-    title: "Via Reta Engenharia",
-    image: "/ViaReta.png",
-    category: "Web",
-    description:
-      "Site institucional para a Via Reta Engenharia, especializada em iluminação pública e sistemas elétricos. Apresenta soluções em SPDA, subestações, compliance e projetos para o setor público, com layout técnico e profissional que transmite autoridade e confiança.",
-    technologies: [""],
-    link: "https://www.viaretaluz.com.br/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "yangled-luminarias",
-    title: "YangLed Luminárias",
-    image: "/YangLed.png",
-    category: "Web",
-    description:
-      "Site institucional para a YangLed, fabricante de luminárias públicas LED de engenharia voltadas a prefeituras, concessionárias e integradores. Destaque para especificações técnicas (IP66, IK08, DPS 10 kV, conformidade RoHS) em uma interface moderna e orientada a credibilidade.",
-    technologies: [""],
-    link: "https://www.yangledbr.com.br/",
-    aspectRatio: "4/3",
-  },
-  {
-    id: "marina-pier-mosqueiro",
-    title: "Marina Pier Mosqueiro",
-    image: "/Marina.png",
-    category: "Web",
-    description:
-      "Site para a Marina Pier Mosqueiro, marina exclusiva de jet skis em Aracaju. Apresenta vagas secas, segurança 24h, espaço gourmet e processos automatizados, com design imersivo à beira do rio que valoriza a experiência e converte visitantes em clientes.",
-    technologies: [""],
-    link: "https://www.marinapiermosqueiro.com.br/",
-    aspectRatio: "4/3",
-  },
-];
-
-const categories = ["Todos"] as const;
-type Category = (typeof categories)[number];
+const THUMB_W = 240;
+const THUMB_H = 160;
 
 export function WorksSection() {
-  const [selectedCategory, setSelectedCategory] = useState<Category>("Todos");
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selected, setSelected] = useState<Project | null>(null);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const reduced = useReducedMotion();
+  const listRef = useRef<HTMLDivElement>(null);
 
-  const filteredProjects =
-    selectedCategory === "Todos"
-      ? projects
-      : projects.filter((p) => p.category === selectedCategory);
+  /* Miniatura flutuante que segue o cursor (desktop) */
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 260, damping: 28, mass: 0.4 });
+  const sy = useSpring(my, { stiffness: 260, damping: 28, mass: 0.4 });
+
+  const onMove = (e: React.MouseEvent) => {
+    const r = listRef.current?.getBoundingClientRect();
+    if (!r) return;
+    mx.set(e.clientX - r.left + 24);
+    my.set(e.clientY - r.top - THUMB_H / 2);
+  };
+
+  const hoveredProject = PROJECTS.find((p) => p.id === hovered) ?? null;
 
   return (
     <>
-      <section id="trabalhos" className="relative py-12 md:py-16">
-        <div className="mx-auto max-w-[1280px] px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-6 md:mb-8"
-          >
-            <h2 className="text-3xl md:text-5xl text-white tracking-tight">
-              Trabalhos
-            </h2>
-            <p className="mt-2 text-white/80 max-w-2xl mx-auto text-sm md:text-base">
-              Projetos selecionados que demonstram qualidade e atenção aos
-              detalhes.
-            </p>
-          </motion.div>
+      <section
+        id="trabalho"
+        className="section-pad"
+        aria-labelledby="trabalho-title"
+      >
+        <div className="container-studio">
+          <SectionHeading
+            index="05"
+            eyebrow="Trabalho"
+            title="Trabalho selecionado"
+            sub="Setores diferentes, mesma régua."
+            id="trabalho-title"
+          />
 
-          <div className="flex justify-center mb-6 md:mb-8">
-            <Tabs
-              value={selectedCategory}
-              onValueChange={(v) => setSelectedCategory(v as Category)}
+          <div className="relative mt-14 md:mt-20">
+            <CornerMarks inset={16} className="hidden md:block" />
+
+            {/* cabeçalho das colunas */}
+            <div className="hidden grid-cols-12 gap-x-6 pb-3 md:grid">
+              <span className="eyebrow col-span-4">Projeto</span>
+              <span className="eyebrow col-span-2">Setor</span>
+              <span className="eyebrow col-span-5">O que foi feito</span>
+              <span className="eyebrow col-span-1 text-right">Ano</span>
+            </div>
+            <Rule />
+
+            <div
+              ref={listRef}
+              className="relative"
+              onMouseMove={onMove}
+              onMouseLeave={() => setHovered(null)}
             >
-              <TabsList className="bg-white/5 backdrop-blur-sm border border-white/10 p-1 rounded-xl">
-                {categories.map((category) => (
-                  <TabsTrigger
-                    key={category}
-                    value={category}
-                    className="px-4 py-2 text-white rounded-lg 
-                    data-[state=active]:bg-cyan-500/20 
-                    data-[state=active]:text-cyan-400 
-                    hover:text-cyan-300 transition-all duration-200"
-                  >
-                    {category}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-          </div>
+              <ul>
+                {PROJECTS.map((p, i) => {
+                  const dim = hovered !== null && hovered !== p.id;
+                  const active = hovered === p.id;
+                  return (
+                    <li key={p.id}>
+                      <Reveal delay={Math.min(i * 0.04, 0.3)}>
+                        <button
+                          type="button"
+                          onClick={() => setSelected(p)}
+                          onMouseEnter={() => setHovered(p.id)}
+                          onFocus={() => setHovered(p.id)}
+                          onBlur={() => setHovered(null)}
+                          className={cn(
+                            "grid w-full grid-cols-12 items-center gap-x-4 gap-y-1 py-5 text-left transition-colors duration-500 md:gap-x-6 md:py-6",
+                            dim ? "text-ink-soft" : "text-ink",
+                          )}
+                          aria-label={`${p.title} — ${p.work}. Abrir detalhes`}
+                        >
+                          {/* miniatura só no mobile */}
+                          <span className="relative col-span-3 aspect-[4/3] overflow-hidden rounded-[6px] border border-line bg-surface-2 md:hidden">
+                            <Image
+                              src={p.image}
+                              alt=""
+                              fill
+                              sizes="120px"
+                              className="object-cover object-top"
+                            />
+                          </span>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="group cursor-pointer"
-                onClick={() => setSelectedProject(project)}
-              >
-                <div className="relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
-                  <div
-                    className="relative overflow-hidden"
-                    style={{ aspectRatio: project.aspectRatio }}
-                  >
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                          <span className="col-span-9 flex flex-col gap-1 md:col-span-4 md:flex-row md:items-center md:gap-3">
+                            <span
+                              className={cn(
+                                "font-display text-[18px] leading-tight tracking-[-0.01em] transition-[font-weight] duration-300 md:text-[20px]",
+                                active ? "font-semibold" : "font-medium",
+                              )}
+                            >
+                              {p.title}
+                            </span>
+                            <span
+                              aria-hidden
+                              className={cn(
+                                "hidden items-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] md:inline-flex",
+                                active
+                                  ? "translate-x-0 opacity-100"
+                                  : "-translate-x-2 opacity-0",
+                              )}
+                            >
+                              <ArrowUpRight className="h-4 w-4" />
+                            </span>
+                            <span className="text-[13px] text-ink-soft md:hidden">
+                              {p.sector} · {p.work} · {p.year}
+                            </span>
+                          </span>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
-
-                    <div className="absolute inset-0 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProject(project);
+                          <span className="hidden text-[15px] md:col-span-2 md:block">
+                            {p.sector}
+                          </span>
+                          <span className="hidden text-[15px] md:col-span-5 md:block">
+                            {p.work}
+                          </span>
+                          <span className="hidden text-[15px] tabular-nums md:col-span-1 md:block md:text-right">
+                            {p.year}
+                          </span>
+                        </button>
+                      </Reveal>
+                      <Rule delay={Math.min(i * 0.04, 0.3)} />
+                    </li>
+                  );
+                })}
+              </ul>
+              {/* thumbnail flutuante (desktop, ponteiro fino) */}
+              {!reduced && (
+                <div className="pointer-events-none absolute inset-0 hidden overflow-visible [@media(pointer:fine)]:md:block">
+                  <AnimatePresence>
+                    {hoveredProject && (
+                      <m.div
+                        key={hoveredProject.id}
+                        className="absolute left-0 top-0 z-10 overflow-hidden rounded-[8px] border border-line bg-surface shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)] dark:border-ink/15 dark:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.75)]"
+                        style={{
+                          x: sx,
+                          y: sy,
+                          width: THUMB_W,
+                          height: THUMB_H,
                         }}
-                        className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-5 py-2.5 text-sm text-white
-                                   active:scale-[0.98] active:brightness-110 transition-all duration-200"
+                        initial={{ opacity: 0, scale: 0.92 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.96 }}
+                        transition={{ duration: 0.35, ease: EASE }}
                       >
-                        Ver Projeto
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
-                    <h3 className="text-base md:text-lg text-white leading-snug">
-                      {project.title}
-                    </h3>
-                  </div>
+                        <m.div
+                          className="relative h-full w-full"
+                          initial={{ filter: "grayscale(1)", scale: 1 }}
+                          animate={{ filter: "grayscale(0)", scale: 1.03 }}
+                          transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
+                        >
+                          <Image
+                            src={hoveredProject.image}
+                            alt=""
+                            fill
+                            sizes={`${THUMB_W}px`}
+                            className="object-cover object-top"
+                          />
+                        </m.div>
+                      </m.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            ))}
+              )}
+            </div>
           </div>
         </div>
       </section>
 
       <ProjectModal
-        project={selectedProject}
-        isOpen={!!selectedProject}
-        onClose={() => setSelectedProject(null)}
+        project={selected}
+        isOpen={!!selected}
+        onClose={() => setSelected(null)}
       />
     </>
   );

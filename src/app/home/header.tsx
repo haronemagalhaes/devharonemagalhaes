@@ -1,324 +1,460 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useSpring } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, m, useScroll, useSpring, type Transition, type Variants } from "framer-motion";
+import { Lockup } from "@/components/site/lockup";
+import { StudioButton } from "@/components/site/studio-button";
+import { AnchorLink } from "@/components/site/anchor-link";
+import { getLenis, scrollToId } from "@/components/motion/smooth-scroll";
 import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetClose,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Home,
-  PanelsTopLeft,
-  Calculator,
-  Briefcase,
-  MessageSquareText,
-  Menu,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+  CTA_PRIMARY,
+  CTA_PRIMARY_ARIA,
+  NAV_LINKS,
+  WHATSAPP_BASE_URL,
+  withGreeting,
+} from "@/lib/site";
+import { DUR, EASE } from "@/lib/motion";
+import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
-type LinkItem = { label: string; id: string; icon: LucideIcon };
+/*
+ * Em quantos pixels de rolagem o header ganha fundo, fio e altura menor.
+ * Valor medido, não escolhido no olho — ver o comentário do <header>.
+ */
+const SCROLL_THRESHOLD = 48;
 
-const LINKS: LinkItem[] = [
-  { label: "Início", id: "inicio", icon: Home },
-  { label: "Serviços", id: "servicos", icon: PanelsTopLeft },
-  { label: "Trabalhos", id: "trabalhos", icon: Briefcase },
-  { label: "Orçamento", id: "orcamento", icon: Calculator },
-  { label: "Contato", id: "contato", icon: MessageSquareText },
-];
+/* ===================================================================== */
+/* Menu mobile — movimento                                                */
+/* ===================================================================== */
 
-function ensureInicioSentinel() {
-  if (typeof document === "undefined") return;
-  if (document.getElementById("inicio")) return;
-  if (!document.getElementById("inicio-sentinel")) {
-    const d = document.createElement("div");
-    d.id = "inicio-sentinel";
-    d.style.height = "1px";
-    document.body.prepend(d);
-  }
-}
+/*
+ * Abrir: fundo em 0,3s; painel desce 12px revelando de cima pra baixo
+ * (clip-path) em 0,45s; links em stagger de 0,05s depois do painel, o CTA
+ * por último. Fechar: o inverso em 0,25s, tudo junto. Reduced-motion: só
+ * fade de 200ms, sem deslocamento nem stagger.
+ */
+const CLOSE: Transition = { duration: DUR.fast, ease: EASE };
+const FADE_ONLY: Variants = {
+  closed: { opacity: 0, transition: { duration: 0.2 } },
+  open: { opacity: 1, transition: { duration: 0.2 } },
+};
+const BACKDROP: Variants = {
+  closed: { opacity: 0, transition: CLOSE },
+  open: { opacity: 1, transition: { duration: 0.3, ease: EASE } },
+};
+const PANEL: Variants = {
+  closed: { opacity: 0, y: -12, clipPath: "inset(0% 0% 100% 0%)", transition: CLOSE },
+  open: {
+    opacity: 1,
+    y: 0,
+    clipPath: "inset(0% 0% 0% 0%)",
+    transition: { duration: 0.45, ease: EASE, delayChildren: 0.2, staggerChildren: 0.05 },
+  },
+};
+const ITEM: Variants = {
+  closed: { opacity: 0, y: 8, transition: CLOSE },
+  open: { opacity: 1, y: 0, transition: { duration: DUR.base, ease: EASE } },
+};
 
-function headerOffset() {
-  const h = document.getElementById("site-header");
-  return (h?.offsetHeight ?? 0) + 8;
-}
-
-function scrollToId(id: string) {
-  if (id === "inicio" || id === "inicio-sentinel") {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    return;
-  }
-  const el = document.getElementById(id);
-  if (!el) return;
-  const y = el.getBoundingClientRect().top + window.scrollY - headerOffset();
-  window.scrollTo({ top: y, behavior: "smooth" });
+/** Três linhas que viram X: as de fora vão ao centro e giram ±45°, a do meio some. */
+function MenuIcon({ open, reduced }: { open: boolean; reduced: boolean }) {
+  const t: Transition = reduced ? { duration: 0 } : { duration: 0.3, ease: EASE };
+  const line = "absolute left-0 top-1/2 -mt-[0.75px] block h-[1.5px] w-full rounded-full bg-current";
+  return (
+    <span aria-hidden className="relative block h-3.5 w-5">
+      <m.span
+        className={line}
+        initial={false}
+        animate={open ? { y: 0, rotate: 45 } : { y: -6, rotate: 0 }}
+        transition={t}
+      />
+      <m.span
+        className={line}
+        initial={false}
+        animate={open ? { opacity: 0, scaleX: 0.4 } : { opacity: 1, scaleX: 1 }}
+        transition={t}
+      />
+      <m.span
+        className={line}
+        initial={false}
+        animate={open ? { y: 0, rotate: -45 } : { y: 6, rotate: 0 }}
+        transition={t}
+      />
+    </span>
+  );
 }
 
 export default function Header() {
-  const [active, setActive] = useState<string>("inicio");
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const reduced = useReducedMotion();
+
+  const headerRef = useRef<HTMLElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  /* seção pedida no menu: a rolagem só sai depois que o menu terminou de fechar */
+  const pendingId = useRef<string | null>(null);
 
   const { scrollYProgress } = useScroll();
-  const progressX = useSpring(scrollYProgress, {
+  const progress = useSpring(scrollYProgress, {
     stiffness: 140,
     damping: 24,
     mass: 0.2,
   });
 
+  /* Encolhe, ganha fundo e ganha fio ao passar de SCROLL_THRESHOLD */
   useEffect(() => {
-    ensureInicioSentinel();
-  }, []);
-
-  const rafLock = useRef(false);
-  const recomputeAndPick = useCallback(() => {
-    const observedIds = LINKS.map((l) => l.id);
-    if (
-      !document.getElementById("inicio") &&
-      document.getElementById("inicio-sentinel")
-    ) {
-      observedIds[0] = "inicio-sentinel";
-    }
-    const els = observedIds
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => !!el);
-
-    if (!els.length) return;
-
-    const headerH = headerOffset();
-    const ACTIVATION_RATIO = 0.38;
-    const HYSTERESIS = 24;
-    const yLine =
-      window.scrollY + headerH + window.innerHeight * ACTIVATION_RATIO;
-
-    const sections = els.map((el) => ({
-      id: el.id,
-      top: Math.max(0, el.getBoundingClientRect().top + window.scrollY),
-    }));
-
-    if (yLine < sections[0].top + HYSTERESIS) {
-      setActive(
-        sections[0].id === "inicio-sentinel" ? "inicio" : sections[0].id
-      );
-      return;
-    }
-
-    const atBottom =
-      Math.abs(
-        window.innerHeight +
-          window.scrollY -
-          document.documentElement.scrollHeight
-      ) <= 2;
-    if (atBottom) {
-      const last = sections[sections.length - 1].id;
-      setActive(last === "inicio-sentinel" ? "inicio" : last);
-      return;
-    }
-
-    let idx = 0;
-    for (let i = 0; i < sections.length; i++) {
-      if (sections[i].top <= yLine) idx = i;
-      else break;
-    }
-
-    const next = sections[idx + 1];
-    if (next) {
-      const boundary = next.top - HYSTERESIS;
-      if (yLine >= boundary) idx = idx + 1;
-    }
-
-    const current = sections[idx].id;
-    setActive(current === "inicio-sentinel" ? "inicio" : current);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
+    let raf = 0;
     const onScroll = () => {
-      if (rafLock.current) return;
-      rafLock.current = true;
-      requestAnimationFrame(() => {
-        recomputeAndPick();
-        rafLock.current = false;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        setScrolled(window.scrollY > SCROLL_THRESHOLD);
+        raf = 0;
       });
     };
-    const onResizeOrLoad = () => {
-      recomputeAndPick();
-    };
-
-    requestAnimationFrame(recomputeAndPick);
-
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResizeOrLoad);
-    window.addEventListener("load", onResizeOrLoad);
-
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResizeOrLoad);
-      window.removeEventListener("load", onResizeOrLoad);
-    };
-  }, [recomputeAndPick]);
-
-  const onNav = useCallback((id: string) => {
-    setOpen(false);
-    scrollToId(id);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Seção ativa no menu */
+  useEffect(() => {
+    const els = NAV_LINKS.map((l) => document.getElementById(l.id)).filter(
+      (el): el is HTMLElement => !!el,
+    );
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  /* Menu aberto e a tela cresce até o desktop: o botão some, o menu fecha junto */
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => mq.matches && setOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  /*
+   * Menu aberto = página parada e fora de alcance.
+   *
+   * TRAVA SEM PULO. A trava é `overflow: hidden` no <body> (não no <html>:
+   * o body tem `overflow-y: scroll` e ganharia uma barra própria) mais o
+   * Lenis parado. Com barra de rolagem clássica, travar faz a barra sumir
+   * e a viewport crescer — medido: 15px, e o `scrollbar-gutter: stable` do
+   * <html> não segurou (o Lenis parado põe overflow no próprio <html>).
+   * Então se mede quanto a viewport cresceu e devolve essa largura:
+   * padding no <body> (conteúdo) e `--scroll-lock-gap` pros fixos (header
+   * e botão do WhatsApp). Barra sobreposta (macOS, celular) cresce 0 e
+   * nada muda. No iOS o overflow não segura o arrasto: touchmove fora do
+   * painel é cancelado.
+   *
+   * FOCO. O resto da página fica `inert` (fora do Tab e do leitor de
+   * tela); no header sobram a marca, o botão (agora X) e o menu. Esc fecha
+   * e devolve o foco ao botão.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const header = headerRef.current;
+    const body = document.body;
+    const lenis = getLenis();
+
+    const root = document.documentElement;
+    const prev = { overflow: body.style.overflow, bodyPad: body.style.paddingRight };
+    const widthBefore = root.clientWidth;
+    body.style.overflow = "hidden";
+    lenis?.stop();
+    const gap = root.clientWidth - widthBefore;
+    if (gap > 0) {
+      body.style.paddingRight = `${gap}px`;
+      root.style.setProperty("--scroll-lock-gap", `${gap}px`);
+    }
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!panelRef.current?.contains(e.target as Node)) e.preventDefault();
+    };
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    const inerted: HTMLElement[] = [];
+    for (const el of Array.from(body.children)) {
+      if (!(el instanceof HTMLElement) || el.inert || (header && el.contains(header))) continue;
+      el.inert = true;
+      inerted.push(el);
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+
+    return () => {
+      body.style.overflow = prev.overflow;
+      body.style.paddingRight = prev.bodyPad;
+      root.style.removeProperty("--scroll-lock-gap");
+      lenis?.start();
+      document.removeEventListener("touchmove", onTouchMove);
+      inerted.forEach((el) => (el.inert = false));
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  /* Clique no menu: fecha primeiro; a rolagem (Lenis, descontando o header)
+     sai no onExitComplete, com a página já destravada. */
+  const onNav = useCallback((id: string) => {
+    pendingId.current = id;
+    setOpen(false);
+  }, []);
+
+  const onMenuClosed = useCallback(() => {
+    const id = pendingId.current;
+    pendingId.current = null;
+    if (id) scrollToId(id);
+  }, []);
+
+  /* com o menu aberto o header fica sólido, como rolado: a barra e o painel
+     viram uma folha só, em vez de o painel sair de baixo de uma faixa
+     transparente sobre o hero */
+  const solid = scrolled || open;
+
   return (
-    <header id="site-header" className="fixed inset-x-0 top-0 z-50">
-      <motion.div
-        style={{ scaleX: progressX }}
-        className="origin-left h-0.5 w-full bg-linear-to-r from-cyan-400 via-sky-400 to-blue-500"
+    <header
+      ref={headerRef}
+      id="site-header"
+      className={cn(
+        /* pr: devolve a largura da barra de rolagem com o menu aberto */
+        "fixed inset-x-0 top-0 z-50 border-b pr-[var(--scroll-lock-gap,0px)] transition-[border-color] duration-500 motion-reduce:transition-none",
+        solid ? "border-line" : "border-transparent",
+      )}
+    >
+      {/*
+        FUNDO EM CAMADA PRÓPRIA (2026-09-03).
+
+        Era `bg-bg/85 backdrop-blur-md` direto no <header>, ligado desde o
+        carregamento. Parado no topo isso desenhava um RETÂNGULO sobre o
+        hero: 85% de papel opaco abafa a textura (pontos, realce, aurora,
+        grão) só naquela faixa, e o olho lê a diferença como uma emenda
+        horizontal atravessando a dobra. O `transition-[background-color]`
+        que estava lá mostra que a intenção sempre foi o fundo entrar ao
+        rolar — ele só nunca nasceu desligado.
+
+        Por que uma camada e não `bg-transparent` ↔ `bg-bg/85` no próprio
+        header: o `backdrop-blur` tem que sair junto (blur sobre o grão do
+        hero cria uma faixa lisa, que é a mesma emenda por outro caminho), e
+        `backdrop-filter` não dá pra ligar e desligar por classe sem
+        estalo — na volta pro topo a classe some de uma vez enquanto o
+        fundo ainda está visível. Numa camada, quem transiciona é a
+        OPACIDADE: o backdrop-filter de um elemento em opacity 0 não
+        pinta nada, e nos valores do meio o resultado borrado é composto
+        por cima do original, o que dá exatamente o cruzamento suave entre
+        borrado e limpo. Um valor animando, os dois estados corretos.
+      */}
+      <div
         aria-hidden
+        className={cn(
+          "absolute inset-0 bg-bg/85 backdrop-blur-md transition-opacity duration-500 motion-reduce:transition-none",
+          solid ? "opacity-100" : "opacity-0",
+        )}
       />
 
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mt-2 mb-2 flex h-14 items-center justify-between rounded-2xl px-4 border border-white/10 bg-white/5 backdrop-blur-xl">
-          <button
-            onClick={() => onNav("inicio")}
-            className="select-none text-lg font-semibold tracking-tight text-white/90 hover:text-white"
-            aria-label="Voltar ao início"
-          >
-            H
-          </button>
+      {/* Barra de progresso — fina, --ink, sem gradiente */}
+      <m.div
+        aria-hidden
+        style={{ scaleX: reduced ? scrollYProgress : progress }}
+        className="absolute inset-x-0 top-0 z-10 h-[2px] origin-left bg-ink"
+      />
 
-          <nav
-            className="hidden md:flex items-center gap-6"
-            aria-label="Navegação"
-          >
-            {LINKS.map(({ label, id }) => (
-              <button
-                key={id}
-                onClick={() => onNav(id)}
-                className="group relative px-0.5 text-sm font-medium text-white/80 hover:text-white"
-                aria-current={active === id ? "page" : undefined}
-              >
-                {label}
-                <span
-                  className={[
-                    "absolute -bottom-1 left-0 h-0.5 w-full rounded bg-linear-to-r from-cyan-400 to-blue-500 transition-all duration-300",
-                    active === id
-                      ? "opacity-100 scale-x-100"
-                      : "opacity-0 scale-x-0",
-                    "origin-left group-hover:opacity-100 group-hover:scale-x-100",
-                  ].join(" ")}
-                  aria-hidden
-                />
-              </button>
-            ))}
-          </nav>
+      <div
+        className={cn(
+          /* `relative`: sem isso a camada de fundo (absoluta) pintaria por
+             cima do logo, da nav e do CTA */
+          "container-studio relative flex items-center justify-between gap-6 transition-[height] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+          scrolled ? "h-[60px]" : "h-[76px]",
+        )}
+      >
+        <AnchorLink href="#top" className="rounded-[4px]" title="Voltar ao início">
+          <span className="hidden xl:inline-flex">
+            {/* descritor em tinta a 70% no lugar de --ink-soft — ver a nota
+                de contraste no <nav> logo abaixo */}
+            <Lockup descriptorClassName="!text-ink/70" />
+          </span>
+          <span className="inline-flex xl:hidden">
+            <Lockup compact />
+          </span>
+        </AnchorLink>
 
-          <div className="flex items-center gap-2 md:gap-3">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                const hour = new Date().getHours();
-                let saudacao = "Olá";
-                if (hour >= 5 && hour < 12) saudacao = "Bom dia";
-                else if (hour >= 12 && hour < 18) saudacao = "Boa tarde";
-                else saudacao = "Boa noite";
-                const mensagem = `${saudacao}! Tudo bem? Tenho interesse em conversar sobre um projeto digital e gostaria de saber como funciona o seu processo de trabalho.`;
-                const link = `https://wa.me/5579981164388?text=${encodeURIComponent(
-                  mensagem
-                )}`;
-                window.open(link, "_blank");
-              }}
-              className="rounded-lg border border-cyan-500/50 bg-transparent text-white hover:bg-cyan-500/10 hover:text-cyan-300 transition-all duration-200"
+        {/*
+          CONTRASTE (2026-09-03) — os links inativos eram `text-ink-soft`.
+          Sem o fundo opaco do header, o texto passou a cair direto sobre o
+          grão do hero, e o PIOR pixel da caixa (que é quem manda, não a
+          média) foi pra 3,85–4,22 no claro e 3,97–4,28 no escuro: reprova
+          o AA de texto pequeno, que pede 4,5. Já era apertado ANTES —
+          4,55–4,60 no claro —, o fundo só escondia o problema.
+
+          A correção não é devolver o fundo, é peso: tinta a 70%, que é a
+          mesma decisão já tomada no sub do hero (`text-ink/75`, pelo mesmo
+          motivo). Medido depois, sempre no PIOR pixel: 5,90–6,15 no claro
+          e 5,96–6,30 no escuro. O cinza fica quase igual e a hierarquia
+          contra o logo em tinta cheia se mantém.
+
+          Como medir de novo: esconder o conteúdo do header, fotografar o
+          hero por baixo e ler pixel a pixel. A cor do texto NÃO pode ser
+          lida por regex — `text-ink/70` sai como `oklab(… / .7)` e os
+          componentes viram lixo se tratados como RGB. Pintar o fundo num
+          canvas 1×1, pintar a cor por cima e ler o pixel composto.
+        */}
+        {/* Nav e CTA a partir de lg (2026-09-13). Com Resultados, marca +
+            cinco links + CTA não cabem abaixo de 1024px: a 768 a marca
+            encostava em "Capacidades" e o CTA saía da tela (medido). De 768
+            a 1023 vale o menu. */}
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Principal">
+          {NAV_LINKS.map(({ label, id }) => (
+            <AnchorLink
+              key={id}
+              href={`#${id}`}
+              className={cn(
+                "link-line py-2 text-[14px] font-medium transition-colors duration-300",
+                active === id ? "text-ink" : "text-ink/70 hover:text-ink",
+              )}
+              aria-current={active === id ? "true" : undefined}
             >
-              Fale comigo
-            </Button>
+              {label}
+            </AnchorLink>
+          ))}
+        </nav>
 
-            <div className="md:hidden">
-              <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    aria-label="Abrir menu"
-                    className="rounded-lg border border-white/10 bg-white/5"
-                  >
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
+        {/*
+          Lado direito: só o CTA (outline, encolhe junto com a barra) + menu
+          mobile. O alternador de tema SAIU daqui (2026-09-04) — competia com
+          o CTA, que é a ação nº 1 da página, e não conversava com nada em
+          volta. O header voltou a ser marca → navegação → CTA. O `gap-4`
+          continua valendo: com um filho só ele não tem efeito no desktop, e
+          no mobile é o respiro entre o CTA (escondido) e o botão de menu.
 
-                <SheetContent
-                  side="top"
-                  className="
-                    border-none bg-[#0a0a0f]/90 text-white backdrop-blur-2xl p-0
-                    transition-all duration-300 ease-out
-                    data-[state=open]:opacity-100 data-[state=closed]:opacity-0
-                    [&>button.absolute.right-4.top-4]:hidden
-                  "
-                >
-                  <SheetTitle className="sr-only">
-                    Menu de navegação
-                  </SheetTitle>
+          O CTA deixou de rolar pro formulário e virou LINK EXTERNO pro
+          WhatsApp: href estático (sem texto) na marcação, saudação montada
+          no clique — ver `withGreeting` em lib/site.ts.
+        */}
+        <div className="flex items-center gap-4">
+          <span className="hidden lg:inline-flex">
+            <StudioButton
+              href={WHATSAPP_BASE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={CTA_PRIMARY_ARIA}
+              onClick={withGreeting}
+              variant="outline"
+              size="sm"
+              className={cn(
+                "transition-[height,background-color,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+                scrolled && "h-[34px]",
+              )}
+            >
+              {CTA_PRIMARY}
+            </StudioButton>
+          </span>
 
-                  <div className="flex items-center justify-between px-5 py-4">
-                    <span className="text-base font-semibold">Navegação</span>
-
-                    <SheetClose asChild>
-                      <button
-                        aria-label="Fechar"
-                        className="rounded-md border border-white/10 bg-white/5 p-2 transition-colors hover:bg-white/10"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </SheetClose>
-                  </div>
-
-                  <Separator className="bg-white/10" />
-
-                  <ScrollArea className="h-[60vh] px-3 py-3">
-                    <ul className="space-y-2">
-                      {LINKS.map(({ label, id, icon: Icon }) => (
-                        <li key={id}>
-                          <SheetClose asChild>
-                            <button
-                              onClick={() => onNav(id)}
-                              className={[
-                                "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors",
-                                "border border-white/10 bg-white/5 hover:border-cyan-500/40 hover:bg-cyan-500/10",
-                                active === id
-                                  ? "text-cyan-300"
-                                  : "text-white/90",
-                              ].join(" ")}
-                              aria-current={active === id ? "page" : undefined}
-                            >
-                              <Icon className="h-5 w-5" />
-                              <span className="text-base font-medium">
-                                {label}
-                              </span>
-                            </button>
-                          </SheetClose>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Separator className="my-4 bg-white/10" />
-
-                    <div className="px-2">
-                      <Button
-                        onClick={() => {
-                          window.open("https://wa.me/5579981164388", "_blank");
-                          setOpen(false);
-                        }}
-                        className="w-full rounded-xl bg-linear-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-600 hover:to-blue-600"
-                      >
-                        Iniciar proposta
-                      </Button>
-                    </div>
-                  </ScrollArea>
-                </SheetContent>
-              </Sheet>
-            </div>
-          </div>
+          <button
+            ref={triggerRef}
+            type="button"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((o) => !o)}
+            className="flex h-11 w-11 items-center justify-center rounded-[8px] border border-line bg-surface text-ink lg:hidden"
+          >
+            <MenuIcon open={open} reduced={reduced} />
+          </button>
         </div>
       </div>
+
+      {/*
+        Menu mobile. Fundo e painel moram DENTRO do header, abaixo da barra
+        (top-full): o botão continua no lugar e vira o X, e o painel é
+        absoluto pra não entrar na altura do header — é ela que o
+        scrollToId desconta.
+      */}
+      <AnimatePresence onExitComplete={onMenuClosed}>
+        {open && (
+          <m.div
+            key="backdrop"
+            aria-hidden
+            variants={reduced ? FADE_ONLY : BACKDROP}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            onClick={() => setOpen(false)}
+            className="absolute inset-x-0 top-full h-[100dvh] bg-ink/20 lg:hidden"
+          />
+        )}
+        {open && (
+          <m.div
+            key="panel"
+            ref={panelRef}
+            id="mobile-menu"
+            variants={reduced ? FADE_ONLY : PANEL}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="absolute inset-x-0 top-full max-h-[calc(100dvh-76px)] overflow-y-auto overscroll-contain border-b border-line bg-bg text-ink lg:hidden"
+          >
+            <nav className="container-studio pb-8" aria-label="Menu">
+              <ul className="divide-y divide-line border-b border-line">
+                {NAV_LINKS.map(({ label, id }) => (
+                  <m.li key={id} variants={reduced ? undefined : ITEM}>
+                    <button
+                      type="button"
+                      onClick={() => onNav(id)}
+                      className="flex w-full items-center justify-between py-4 text-left font-display text-2xl font-semibold tracking-[-0.01em]"
+                      aria-current={active === id ? "true" : undefined}
+                    >
+                      {label}
+                      <span aria-hidden className="text-ink-soft">→</span>
+                    </button>
+                  </m.li>
+                ))}
+              </ul>
+
+              {/*
+                Um CTA só. O primário aqui É o CTA do header no mobile,
+                então ele foi pro WhatsApp junto com o do desktop — mesmo
+                rótulo tem que fazer a mesma coisa. Com isso o secundário
+                "Chamar no WhatsApp", que já existia logo abaixo, virou o
+                mesmo botão duas vezes seguidas e saiu. O formulário
+                continua a um toque: é o item "Contato" da lista acima.
+                Entra por último no stagger.
+              */}
+              <m.div variants={reduced ? undefined : ITEM} className="mt-8 flex flex-col gap-3">
+                <StudioButton
+                  href={WHATSAPP_BASE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={CTA_PRIMARY_ARIA}
+                  onClick={(e) => {
+                    withGreeting(e);
+                    setOpen(false);
+                  }}
+                  size="lg"
+                  className="w-full"
+                >
+                  {CTA_PRIMARY}
+                </StudioButton>
+              </m.div>
+            </nav>
+          </m.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

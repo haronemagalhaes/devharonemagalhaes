@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>STORY_FAQ — Pergunta frequente</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="stories.css">
+<!--
+  STORY_FAQ · Pergunta frequente. Composição ASSIMÉTRICA.
+  Grade de 6 colunas (129 px, 24 px entre elas) dentro das margens de 92 px:
+    c1 92–221 → marcadores P. / R. (alinhados pela linha de base do texto)
+    c2–c6 245–988 → todo o texto começa em x = 245
+  Texto: FAQ do site (src/app/home/faq-section.tsx), pergunta 3 de 6, sem alteração de sentido.
+-->
+<style>
+  .qa {
+    display: grid;
+    grid-template-columns: 129px minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: first baseline;
+  }
+  .qa > .c2 { grid-column: 2; }
+
+  .mk { font: 400 20px/1 "Geist Mono", monospace; letter-spacing: .12em; color: var(--fg3); }
+
+  /* protagonista: a pergunta */
+  .q { font-weight: 700; font-size: 100px; line-height: 1.04; letter-spacing: -.045em; }
+  /* resposta: um nível abaixo; tinta 2 no tom claro porque 64 px < 96 px (regra de contraste) */
+  .a { font-weight: 700; font-size: 64px; line-height: 1.1; letter-spacing: -.035em; }
+  .q span, .a span { display: block; white-space: nowrap; }
+  .a .soft { color: var(--fg2); }
+
+  /* correção óptica: letra grande tem respiro lateral maior e parece recuada */
+  .q { margin-left: -.035em; }
+  .a { margin-left: -.03em; }
+
+  .sep { height: 1px; background: var(--ln); margin: 72px 0; }
+  .note { font-size: 30px; line-height: 1.45; color: var(--fg2); margin-top: 28px; }
+  .qa .cta { justify-self: start; margin-top: 80px; }
+</style>
+</head>
+<body>
+<div class="spot"></div>
+<div class="grain"></div>
+<div class="stage">
+  <div class="crumb"><span>haronedev_</span><span>Dúvidas · 03 / 06</span></div>
+
+  <div class="mid">
+    <div class="qa">
+      <p class="label c2">Pergunta frequente</p>
+
+      <span class="mk" style="margin-top:36px">P.</span>
+      <h1 class="q" style="margin-top:36px"><span>Você atende</span><span>minha cidade?</span></h1>
+
+      <div class="sep c2"></div>
+
+      <span class="mk">R.</span>
+      <div>
+        <p class="a"><span>Atendo o Brasil todo,</span><span class="soft">100% online.</span></p>
+        <p class="note">Sou de Aracaju/SE.</p>
+      </div>
+
+      <span class="cta c2">Começar meu projeto <span class="arr">→</span></span>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="foot"><span>quem fecha o escopo é quem executa</span><span>haronedev.com.br</span></div>
+</div>
+</body>
+</html>

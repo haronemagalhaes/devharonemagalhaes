@@ -1,0 +1,817 @@
+/* =====================================================================
+   HERO — fundo
+
+   CINCO CAMADAS, E SÓ ESTAS CINCO:
+
+     1. cor chapada          .hero-paper   (background-color: --surface)
+     2. gradiente linear     .hero-paper   (background-image, vertical)
+     3. grão                 .hero-grain
+     4. monograma HM         .hero-wm
+     5. fio de base          .hero-paper::after
+
+   Nenhuma radial, em lugar nenhum. Isso é regra, não estado atual.
+
+   COMO SE CHEGOU AQUI, em três demolições:
+
+   (1) Saíram aurora, vinheta e realce — cinco gradientes radiais que
+       somavam uma nuvem acinzentada em volta do texto.
+
+   (2) Saiu a GRADE milimetrada. Duas coisas erradas com ela: tinha mais
+       contraste que o parágrafo (linha forte a Δ45 de luma contra um sub
+       que vive na casa dos Δ30), então o olho lia o fundo antes de ler o
+       H1; e ela obrigava a existir a máscara do item (3).
+
+   (3) Saiu a MÁSCARA elíptica. Ela zerava a grade atrás da headline, o que
+       resolvia o contraste e criava um problema pior: um oval sem grade no
+       meio de uma página com grade é uma mancha clara — a mesma nuvem de
+       antes, em negativo. Sem grade, a máscara não tem razão de existir.
+
+   A LIÇÃO, que fica valendo: o fundo do hero não compete. Se uma camada
+   precisa de máscara pra não atrapalhar a leitura, o problema é a camada,
+   não a falta de máscara. Isto substitui a regra anterior ("contraste se
+   resolve com máscara"), que era verdadeira pra grade e falsa pro hero.
+
+   Foram embora junto `@keyframes hero-breathe` e `hero-float`.
+   ===================================================================== */
+
+/* =====================================================================
+   PAPEL — cor chapada + UMA passagem de tom
+
+   Linear e vertical de propósito: radial tem centro, e centro tem forma —
+   é exatamente o que produz "nuvem". Num gradiente vertical toda linha
+   horizontal da capa tem a mesma cor, então não existe desenho nenhum pro
+   olho achar; existe só um leve peso de cima pra baixo.
+
+   A AMPLITUDE é de Δ4–6 de luma entre topo e base. Acima disso volta a
+   ler como camada; abaixo, some. Calibrado medindo, não no olho: no claro
+   `--surface` a 98% de `--ink` dá Δ5,5 (97% dava 8,0, 99% dava 3,0); no
+   escuro `--surface` a 86% de preto dá Δ5,4. As porcentagens são bem
+   diferentes entre os temas porque `color-mix` em oklch anda muito menos
+   em sRGB perto do branco do que perto do preto — a primeira tentativa no
+   escuro (72% de `--bg`) rendeu Δ0,95, praticamente nada.
+
+   Assimetria entre os temas, e o motivo: no claro `--surface` é #ffffff,
+   ou seja, o teto — não existe "um passo mais claro" que o branco. Então
+   no claro o topo é o próprio `--surface` e quem cede um passo é a BASE.
+   No escuro `--surface` é #1a1a18 e há espaço pros dois lados, então vale
+   a direção pedida: topo um passo mais escuro, base no `--surface`. Nos
+   dois casos o resultado percebido é o mesmo — mais luz em cima, menos
+   embaixo no claro; mais luz embaixo no escuro.
+   ===================================================================== */
+
+.hero-paper {
+  background-color: var(--surface);
+
+  background-image: linear-gradient(
+    to bottom,
+    var(--surface) 0%,
+    color-mix(in oklch, var(--surface) 98%, var(--ink)) 100%
+  );
+}
+
+.dark .hero-paper {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--surface) 86%, #000) 0%,
+    var(--surface) 100%
+  );
+}
+
+/* =====================================================================
+   FIO DE BASE — o único traço estrutural do hero
+
+   1px em tinta, largura total, sem margem lateral. Separa a capa 1 do que
+   vem depois. Fica no mobile: a capa 2 não tem borda própria (ela tem a
+   sombra da passagem, que é outra coisa — some conforme a capa sobe), e
+   sem o fio a emenda entre papel e tinta não tem nenhuma marca.
+   ===================================================================== */
+
+.hero-paper::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  /* 6% medido nos dois temas: Δ13,7 de luma no claro e Δ12,4 no escuro,
+     dentro da faixa de 10–14. A 12% dava Δ27/Δ25 e o fio virava borda de
+     caixa; a 4% caía pra Δ8,8/Δ8,5 e sumia contra o grão. */
+  background: color-mix(in oklch, var(--ink) 6%, transparent);
+  pointer-events: none;
+}
+
+/* =====================================================================
+   MONOGRAMA HM — marca d'água
+
+   Onde: sangrando pela borda DIREITA e ancorado na faixa de baixo da capa,
+   na altura do sub e do CTA. Não na altura do H1: a headline chega perto
+   da largura do container e não sobra lateral lá. Abaixo dela o conteúdo
+   afina (sub em 40rem, CTA em ~250px) e é essa diferença que abre o vão.
+
+   Quanto: 30vw com teto de 460px, 34% pra fora da borda. É presença de
+   marca, não elemento — a opacidade (5,5% no claro, 7% no escuro) é a
+   mesma ordem de grandeza da marca d'água do hero original, que era 5%.
+   No escuro precisa de um pouco mais porque a arte é preta e vai invertida
+   pra branca: branco a 5,5% sobre papel escuro pesa menos que preto a 5,5%
+   sobre papel claro.
+
+   Some abaixo de 900px — mesma régua do hero do rebrand. No telefone o
+   texto ocupa a largura toda, não existe lateral, e o monograma ali dentro
+   devolveria a variação de tom que a limpeza do fundo veio tirar.
+
+   Sem cunha diagonal e sem bloco: só o símbolo sobre o papel.
+   ===================================================================== */
+
+.hero-wm {
+  /*
+   * O terceiro termo é a trava de "não encostar", derivada e não chutada.
+   * A borda esquerda do monograma cai em `100vw − 0.66·w` (ele sangra 34%).
+   * O elemento mais largo na altura dele é o SUB, que tem 40rem de teto e é
+   * centrado, então termina em `50vw + 320px`. Exigindo 24px de respiro:
+   *
+   *     100vw − 0.66w ≥ 50vw + 320 + 24   →   w ≤ 75.76vw − 521px
+   *
+   * Sem essa trava o monograma encostava no sub a partir de ~1100px de
+   * largura (medido: −11px de folga em 1024, −58px em 1280). Com ela, em
+   * 1280 e acima quem manda é o 30vw; abaixo disso o monograma encolhe
+   * sozinho até caber no vão.
+   */
+  --wm-w: min(30vw, 460px, calc(75.76vw - 521px));
+
+  display: none;
+
+  width: var(--wm-w);
+  right: calc(var(--wm-w) * -0.34);
+  /* 8% e não 12%: a 12% o topo do monograma chegava a 12px da base do H1
+     em 1440×900. Aqui a folga vertical passa de 45px. */
+  bottom: 8%;
+}
+
+@media (width >= 900px) {
+  .hero-wm {
+    display: block;
+  }
+}
+
+/* =====================================================================
+   MOBILE (< 900px) — a dobra preenchida e com direção
+
+   Tudo daqui pra baixo vale SÓ abaixo de 900px. Acima disso nada muda:
+   as regras usam `#top .hero-recede` e `#hero-title`, que ganham das
+   utilitárias do Tailwind por especificidade, e vivem dentro da media
+   query — o desktop segue byte a byte o que era.
+
+   O problema: capa de 100svh com ~200px vazios em cima e ~230px embaixo,
+   H1 em quatro linhas e CTA de borda a borda. Limpo e sem direção.
+   ===================================================================== */
+
+@media (width < 900px) {
+  /* -------------------------------------------------------------------
+     H1 — TAMANHO ORIGINAL, QUEBRA POR BALANCE
+
+     Uma rodada atrás isto aqui derrubava o corpo pra `(100vw − 48px)/10.8`
+     (−21%) pra forçar "Você tem o que vender." numa linha só. Medido: a
+     frase tem 10,588em em Geist 600 / −0,025em, e em 390 sobram 342px de
+     caixa, então uma linha só custa 32,3px de corpo contra os 40,2px da
+     régua original. Caro demais pelo que compra — a headline é o elemento
+     nº 1 da dobra e encolheu 21% pra ganhar uma linha.
+
+     Voltou ao original, sem override nenhum: quem manda é a classe do
+     Tailwind, `clamp(2rem, (100vw − 48px)/8.5, 3.5rem)`. Quatro linhas
+     está bom desde que nenhuma tenha uma palavra só, e `text-wrap:
+     balance` nos dois <span> é o que garante isso — ele iguala as linhas
+     em vez de deixar a última órfã. Medido em 320/360/375/390/430: nenhuma
+     linha com menos de duas palavras.
+     ------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------
+     BLOCO DE TEXTO A 42% DA ALTURA
+
+     Padding embaixo sobe o bloco pela metade do que se acrescenta, então
+     pra levar o centro de 50% pra 42% da viewport são precisos ~16svh
+     mais os 76px do header que a seção já empurra pra baixo.
+
+     O `min()` é a trava: em tela curta esse padding não cabe. Em 320×568
+     o bloco sozinho quase preenche a capa, e 16svh + 76px empurraria ele
+     pra baixo do header. O segundo termo limita o padding ao que de fato
+     sobra — a constante 530px é o header (76) mais a altura do bloco de
+     texto com o H1 no tamanho original (~450 em 320) —, então em tela
+     curta o bloco só volta pro centro em vez de estourar. O texto nunca
+     cede.
+     ------------------------------------------------------------------- */
+  #top .hero-recede {
+    padding-bottom: min(calc(16svh + var(--header-h)), calc(100svh - 530px));
+  }
+
+  /* -------------------------------------------------------------------
+     MONOGRAMA — canto, não fundo
+
+     Ele preenche a faixa abaixo do CTA e dá direção à dobra, mas tem que
+     ler como CANTO. A rodada anterior o deixou em ~45% da altura da capa e
+     ele virou fundo. Agora dois tetos ao mesmo tempo:
+
+       altura         ≤ 32% da altura da capa
+       largura visível ≤ 60% da largura da tela
+
+     O `min()` é o que faz os dois valerem junto com a folga. O primeiro
+     termo é o teto de 32%; o segundo é a folga: com o bloco de texto
+     centrado em 42% e custando ~405px, sobra `58svh − 405/2` abaixo do
+     CTA, e tirando os 40px de respiro dá `58svh − 253px`. Em telefone
+     normal quem manda é a folga (237px em 390, 28% da capa); em tela alta
+     quem manda é o teto de 32%.
+
+     Ancorado na base (`bottom: 0`) e na direita, com 48% da largura dele
+     saindo pela borda. Sangrar quase metade é o que mantém a largura
+     visível em ~49–54% da tela mesmo com a peça grande.
+
+     Em 320×568 sobra pouquíssimo: o bloco de texto sozinho come quase a
+     capa inteira, então o monograma encolhe até caber com os 24px de
+     folga mínima. É a ordem certa — texto e CTA nunca cedem por causa
+     dele.
+
+     Fica ATRÁS de tudo: o bloco de texto é `z-10`, este div não tem
+     z-index nenhum.
+     ------------------------------------------------------------------- */
+
+  .hero-wm {
+    display: block;
+
+    --wm-h: min(32svh, calc(58svh - 253px));
+    --wm-w: calc(var(--wm-h) * 1.543);
+
+    width: var(--wm-w);
+    right: calc(var(--wm-w) * -0.48);
+    bottom: 0;
+  }
+
+  /*
+   * DUAS FAIXAS DE ALTURA, e o motivo é geométrico. O `58svh − K` supõe o
+   * bloco de texto centrado em 42% da viewport. Isso vale enquanto há
+   * folga; abaixo de ~760px de altura o `padding-bottom` do bloco bate no
+   * teto de segurança e o bloco para de subir — fica em ~48–53% —, então o
+   * CTA acaba mais baixo do que a fórmula prevê e a folga some. Medido em
+   * 320×667 com K=253: o monograma passaria 5px por baixo do CTA.
+   *
+   * K maior nessa faixa corrige sem tocar nos telefones normais.
+   */
+  @media (height < 760px) {
+    .hero-wm {
+      --wm-h: min(32svh, calc(58svh - 300px));
+    }
+  }
+
+  /*
+   * Abaixo de 640px de altura ele sai. Não é preferência, é conta: em
+   * 320×568 o bloco de texto mede 450px e o header come 76 — 526 dos 568
+   * disponíveis. Sobram 42px, e 24 deles são a folga mínima. O que
+   * couberasse ali seria uma tira de ~18px de altura, que não lê como
+   * monograma, lê como sujeira. Texto e CTA não cedem por causa dele, e
+   * essa é a última consequência dessa ordem.
+   */
+  @media (height < 640px) {
+    .hero-wm {
+      display: none;
+    }
+  }
+
+  /* Mais leve que no desktop: a mancha é muito maior aqui, e a mesma
+     opacidade viraria elemento em vez de presença. Alvo medido: Δ8–12 de
+     luma no claro, Δ10–14 no escuro. */
+  .hero-wm > img {
+    opacity: 0.04;
+  }
+
+  .dark .hero-wm > img {
+    opacity: 0.05;
+  }
+}
+
+/* =====================================================================
+   GRÃO
+
+   Vinha das artes do Instagram: .45 no claro e .6 no escuro. Com a grade
+   fora, o grão passou a ser a ÚNICA coisa com frequência alta no fundo, e
+   nesse nível ele parava de ler como papel e começava a ler como padrão.
+   Caiu pra ~57% do que era — .25 e .34 —, que é textura de superfície e
+   não trama.
+
+   baseFrequency .8, numOctaves 2, tile de 240px, mix-blend-mode
+   soft-light. `soft-light` é obrigatório — `multiply` deixa tudo cinza
+   barrento.
+   ===================================================================== */
+
+.hero-grain {
+  opacity: 0.25;
+  mix-blend-mode: soft-light;
+
+  background-size: 240px 240px;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.8 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.dark .hero-grain {
+  opacity: 0.34;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.8 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* =====================================================================
+   .hero-text-glow REMOVIDA (2026-09-04)
+
+   Era um gradiente vertical (tinta cheia → 72% de tinta) com
+   background-clip:text na 2ª linha do H1. Dois problemas:
+
+   1. TRÊS TONS na mesma headline — cinza na 1ª linha, e a 2ª valendo por
+      duas cores sozinha. O alvo é no máximo dois.
+   2. background-clip:text calcula a caixa pela line-height, então
+      descendente que passe dela SOME. "Seu cliente sabe te encontrar?" não
+      tem descendente hoje, mas a armadilha voltava a cada troca de texto —
+      é o mesmo defeito que já tinha aparecido na capa 2.
+
+   REGRA: headline com no máximo dois tons; a ênfase vem de contraste
+   chapado ENTRE linhas, nunca de gradiente dentro de uma linha; e nada de
+   background-clip:text em texto com descendente.
+   ===================================================================== */
+
+/* =====================================================================
+   MOBILE
+
+   Ponto e tile menores; a máscara radial encolhe junto porque o bloco de
+   texto ocupa proporcionalmente mais da tela.
+   ===================================================================== */
+
+@media (max-width: 767px) {
+
+}
+
+/* =====================================================================
+   REDUÇÃO DE MOVIMENTO
+   ===================================================================== */
+
+/* =====================================================================
+   PROFUNDIDADE NA PASSAGEM CAPA 1 → CAPA 2
+
+   O PROBLEMA. A capa 2 é opaca e sobe por cima da capa 1; sem mais nada, a
+   borda dela é uma reta que DECEPA a capa 1 no meio das letras do H1. O
+   olho lê recorte, não camada.
+
+   O QUE FOI DESCARTADO. Deixar a capa 2 semitransparente resolveria a
+   dureza e criaria coisa pior: a capa 1 aparecendo por trás da tinta vira
+   sujeira. A capa 2 continua 100% opaca.
+
+   A COMBINAÇÃO ESCOLHIDA — (a) sombra + (b) recuo. Elas atacam coisas
+   diferentes: a sombra conserta a BORDA (vira camada vindo pra frente), o
+   recuo conserta o QUE ESTÁ SENDO CORTADO (quando a borda chega no H1 ele
+   já está menor e mais apagado, então a leitura é "ficou pra trás" e não
+   "foi cortado"). Sozinha, nenhuma das duas fecha.
+
+   PARALAXE (c) FICOU DE FORA. A capa 1 é `sticky`: ela já anda a
+   velocidade ZERO em relação à viewport, que é o extremo do que a paralaxe
+   quer. Pra "fazer paralaxe" ali seria preciso empurrar a capa 1 pra cima
+   com translate — ou seja, tirar dela justamente a imobilidade que é o
+   efeito. Somado ao recuo, seria uma terceira pista de profundidade
+   dizendo a mesma coisa, com risco de desalinhar o bloco centralizado e de
+   comer a folga dos 100svh. Duas pistas bastam.
+
+   CALIBRAGEM. Escala até 0.965 e opacidade até 0.7 — dentro do teto
+   pedido (0.96–0.6) e no lado discreto dele. Isolado, nenhum dos dois é
+   percebido; o que se percebe é a passagem ficar macia.
+   ===================================================================== */
+
+/* (a) SOMBRA — nasce em ZERO e entra com a rolagem.
+
+   Era estática. Medido no fundo novo, parada ela pintava uma banda escura
+   de ~70px subindo pela base da capa 1: no claro a luma caía de 243 para
+   195 nos últimos pixels, com ±41 de variação DENTRO da linha por causa da
+   queda nos cantos. Ou seja, com o papel limpo ela virou a vinheta que a
+   limpeza tinha acabado de tirar — só que vindo de outro seletor.
+
+   A sombra só tem trabalho a fazer ENQUANTO a capa 2 sobe. Então ela é
+   ligada pela rolagem, no mesmo mecanismo do recuo: alfa 0 em repouso,
+   cheia em 10svh. Em repouso a base da capa 1 é papel liso com o fio de
+   1px, e a partir do primeiro gesto de rolagem a aresta ganha a
+   profundidade de sempre.
+
+   Sombra PRETA nos dois temas: no claro é um painel escuro sobre papel, no
+   escuro é um painel claro sobre papel escuro, e nos dois casos quem está
+   por baixo é que recebe sombra. `-30px` de deslocamento com `-30px` de
+   espalhamento mantém a sombra só na aresta de cima.
+
+   Sem suporte a `animation-timeline`, ou com prefers-reduced-motion, a
+   sombra simplesmente não existe e a capa 2 apenas cobre a capa 1 — que é
+   o comportamento já especificado pra movimento reduzido. */
+.hero-capa2 {
+  box-shadow: none;
+}
+
+@keyframes capa2-sombra {
+  from {
+    box-shadow: 0 -30px 70px -30px rgb(0 0 0 / 0);
+  }
+
+  to {
+    box-shadow: 0 -30px 70px -30px rgb(0 0 0 / 0.45);
+  }
+}
+
+@keyframes capa2-sombra-escura {
+  /* sobre #121211 uma sombra a 45% quase não aparece; aqui ela precisa ser
+     bem mais forte pra desenhar a mesma aresta */
+  from {
+    box-shadow: 0 -30px 70px -28px rgb(0 0 0 / 0);
+  }
+
+  to {
+    box-shadow: 0 -30px 70px -28px rgb(0 0 0 / 0.85);
+  }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-capa2 {
+      animation: capa2-sombra linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 10svh;
+    }
+
+    .dark .hero-capa2 {
+      animation-name: capa2-sombra-escura;
+    }
+  }
+}
+
+/* (b) RECUO — só o CONTEÚDO da capa 1 (.hero-recede), nunca o papel nem a
+   textura: chão não recua, o que recua é o que estava em cima dele. */
+@keyframes hero-recede {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0.7;
+    transform: scale(0.965);
+  }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-recede {
+      transform-origin: 50% 50%;
+
+      animation: hero-recede linear both;
+      animation-timeline: scroll(root block);
+      /* 70svh: a borda da capa 2 cruza o H1 (≈ 45% da viewport) por volta
+         dos 55svh de rolagem. Terminando em 70svh, ali o recuo já está a
+         79% do caminho — o H1 chega DESBOTADO no encontro, que é o ponto.
+         Terminar antes (50svh) deixava o recuo pronto cedo demais e dava
+         pra perceber ele parando; depois (100svh) chegava atrasado e o
+         corte voltava a aparecer. Mesma ressalva da faixa do leque: isto
+         mede a rolagem da RAIZ e só funciona porque o hero é o primeiro
+         elemento da página. */
+      animation-range: 0 70svh;
+    }
+  }
+}
+
+/* Sem `animation-timeline` (ou com prefers-reduced-motion) nada acontece:
+   a capa 2 simplesmente cobre a capa 1, com a sombra fazendo a aresta. */
+
+/* =====================================================================
+   LEQUE (capa 1) — cartões, entrada e passagem pra capa 2
+
+   Estava tudo em framer-motion dentro do hero-fan.tsx. Saiu de lá por uma
+   razão dura: a passagem pra capa 2 é uma animação guiada por scroll que
+   precisa mandar em `transform`, e o framer escreve transform inline —
+   inline ganha de folha de estilo, então uma das duas ficaria sem efeito.
+   Aqui cada elemento tem UMA animação e nenhuma disputa propriedade:
+
+     .fan-card      entrada (opacity + translate + rotate), tempo normal
+     .fan-card-box  passagem (scale + fade), guiada pelo scroll
+
+   Ganho de lambuja: o leque virou server component.
+   ===================================================================== */
+
+.hero-fan {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fan-card {
+  --rot: 0deg;
+  --y: 0px;
+  --d: 0s;
+
+  flex: none;
+  transform: translateY(var(--y)) rotate(var(--rot));
+  animation: fan-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both;
+}
+
+/* Giro, deslocamento e atraso por cartão. Ficam AQUI e não no `style` do
+   componente: inline ganha de folha de estilo, e enquanto estavam inline
+   nenhuma media query conseguia mudar a inclinação no mobile — a regra
+   existia e não valia nada. */
+.fan-card[data-card="gestao"] {
+  --rot: -6deg;
+  --y: 14px;
+  --d: 0.75s;
+}
+
+.fan-card[data-card="licitacoes"] {
+  --rot: 0deg;
+  --y: 0px;
+  --d: 0.85s;
+}
+
+.fan-card[data-card="passeios"] {
+  --rot: 6deg;
+  --y: 14px;
+  --d: 0.95s;
+}
+
+.fan-card + .fan-card {
+  margin-left: -20px;
+}
+
+.fan-card-box {
+  position: relative;
+  width: clamp(72px, 14svh, 196px);
+  aspect-ratio: 4 / 5;
+
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--surface);
+
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 24px 48px -28px color-mix(in oklch, var(--ink) 45%, transparent);
+}
+
+/* No escuro o print é claro e --line (quase preto) some contra ele: o fio
+   passa a ser tinta a 18%, e a sombra vira preta de verdade em vez de halo. */
+.dark .fan-card-box {
+  box-shadow:
+    0 0 0 1px color-mix(in oklch, var(--ink) 18%, transparent),
+    0 24px 48px -24px rgb(0 0 0 / 0.75);
+}
+
+@keyframes fan-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--y) + 28px)) rotate(0deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(var(--y)) rotate(var(--rot));
+  }
+}
+
+@media (width >= 768px) {
+  .fan-card + .fan-card {
+    margin-left: -28px;
+  }
+
+  .fan-card-box {
+    /* 16svh, não 17: o line-height 1.15 do H1 fez a capa passar 6px em 1024×768 */
+    width: clamp(96px, 16svh, 196px);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   MOBILE — os três cartões, dimensionados pela LARGURA
+
+   O ERRO QUE ISTO CONSERTA: o cartão vinha de `svh`. Altura de tela não
+   tem relação nenhuma com quanto de print cabe legível na horizontal, e o
+   resultado era um leque que inchava em telefone alto — o do meio tomando
+   a tela e as pontas reduzidas a tiras — e murchava em telefone baixo. A
+   régua certa é a largura da viewport, que é a mesma coisa que o leque
+   está tentando ocupar.
+
+     pontas  40vw (teto 190px)
+     meio    44vw (teto 209px)   — 10% maior, é o print que a capa 2 cita
+     sobrep. 6vw  (teto 28px)
+
+   A conta do trio: 40 + 44 + 40 − 6 − 6 = 112vw. Sobram 6vw pra fora de
+   cada lado (23px em 390), então a borda da TELA continua cortando as
+   pontas — mas o que fica visível de cada cartão de ponta é 28vw (109px em
+   390), cartão de verdade, não tira. O do meio aparece inteiro.
+
+   ALTURA: continua sendo a FOLGA que sobrar (`flex: 1`), porque a
+   hierarquia da dobra manda o leque ser o único item que cede — o texto
+   todo é `shrink-0`. O TETO é derivado da largura do cartão do meio:
+
+     teto = 1.05 × largura do meio + o recuo das pontas
+          ≈ 84% da altura do cartão
+
+   ou seja, a faixa mostra sempre ~84% do cartão e o resto se dissolve no
+   fade. Deixar o teto na altura CHEIA do cartão foi testado e sai pior:
+   em 390×844 a faixa ia a 269px (32% da tela) e o leque voltava a dominar
+   a dobra, que é o defeito que este ajuste veio consertar. A proporção
+   fixa também mantém o mesmo enquadramento em qualquer largura — 320 e
+   430 mostram a mesma fração do cartão — e o corte vira convite pra rolar
+   em vez de acidente. Nunca uma reta atravessando o meio de uma lista: o
+   fade em pixels garante isso.
+
+   `--fan-y: 14px` nas pontas não é enfeite: girando 10°, o canto de cima de
+   um cartão de 156×195 sobe (156·sen10° + 195·cos10° − 195)/2 ≈ 12px acima
+   da borda da caixa. Sem descer o cartão, esse canto seria decepado pelo
+   topo da faixa.
+   --------------------------------------------------------------------- */
+
+@media (width < 768px) {
+  .hero-fan {
+    --fan-w: min(40vw, 190px);
+    --fan-w-mid: min(44vw, 209px);
+    --fan-y: 14px;
+    --fan-fade: 40px;
+
+    /* a faixa: largura da tela inteira, ancorada no viewport mesmo estando
+       dentro do container com padding (a conta `50% - 50vw` cancela o
+       padding e a margem automática do container-studio) */
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+
+    flex: 1 1 auto;
+    min-height: 110px;
+    max-height: calc(var(--fan-w-mid) * 1.05 + var(--fan-y));
+    overflow: hidden;
+
+    /* cartões pendurados no topo da faixa; o excesso sai por baixo */
+    align-items: flex-start;
+
+    /* o fade em PIXELS, não em %: assim a faixa dissolvida tem sempre a
+       mesma espessura, em telefone alto ou baixo. Em % ela encolheria
+       junto com a faixa e o corte voltaria a endurecer justamente onde há
+       menos espaço, que é onde ele mais aparece. */
+    mask-image: linear-gradient(
+      to bottom,
+      #000 calc(100% - var(--fan-fade)),
+      transparent 100%
+    );
+
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 calc(100% - var(--fan-fade)),
+      transparent 100%
+    );
+
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  .fan-card {
+    position: relative;
+    z-index: 1;
+  }
+
+  .fan-card[data-card="licitacoes"] {
+    /* o do meio na frente e sem giro, como no desktop */
+    z-index: 2;
+    --rot: 0deg;
+    --y: 0px;
+  }
+
+  .fan-card[data-card="gestao"] {
+    --rot: -10deg;
+    --y: var(--fan-y);
+  }
+
+  .fan-card[data-card="passeios"] {
+    --rot: 10deg;
+    --y: var(--fan-y);
+  }
+
+  .fan-card-box {
+    width: var(--fan-w);
+  }
+
+  .fan-card[data-card="licitacoes"] .fan-card-box {
+    width: var(--fan-w-mid);
+  }
+
+  .fan-card + .fan-card {
+    margin-left: calc(min(6vw, 28px) * -1);
+  }
+}
+
+/* ---------------------------------------------------------------------
+   TELAS BAIXAS — o leque é o primeiro a sair, e só quando não há mais
+   espaçamento pra ceder
+
+   A ordem é a da trava: primeiro aperta-se o RITMO VERTICAL do mobile (as
+   margens do H1, do sub, do CTA e do próprio leque, no hero-aurora.tsx),
+   e só depois se mexe no leque. Com a janela de altura própria, o leque
+   agora custa `clamp(120px, 21svh, 230px)` em vez da altura de um cartão,
+   e o piso de 120px é o que faz ele caber em telas onde antes ele
+   simplesmente sumia.
+
+   Abaixo de 600px de altura não sobra nem o piso de 110px — medido em
+   320/340/360/375/390/412/430 de largura, varrendo a altura de 20 em 20
+   com a regra de esconder desligada: em 580px o eyebrow já passa por baixo
+   do header em 412px de largura, e em 540 e menos falha em todas. Em 600
+   passa em todas as larguras. Aí, e só aí, o leque sai — última posição da
+   hierarquia da dobra.
+
+   A régua anterior era `height < 600px` MAIS `(width < 768px) and
+   (height < 701px)`: telefone nenhum com menos de 701px de altura via o
+   leque. Agora é uma régua só, e o que comprou os 101px foi o sub curto,
+   não o leque ter encolhido.
+   --------------------------------------------------------------------- */
+
+@media (height < 600px) {
+  .hero-fan {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   PASSAGEM PRA CAPA 2 — os cartões crescem e desbotam enquanto a capa 2
+   sobe por cima deles
+
+   O CONFLITO. A capa 2 é `relative z-10` e sobe de baixo pra cima; o leque
+   mora na BASE da capa 1, que é `sticky z-0`. A capa 2 alcança a base dos
+   cartões depois de ~70px de rolagem e cobre o leque inteiro em ~220px, e
+   um filho da capa 1 não tem como pintar acima dela (a capa 1 tem z-index
+   próprio, logo contexto de empilhamento). Ou seja: qualquer efeito longo
+   aconteceria escondido.
+
+   A SAÍDA, em três partes:
+   1. o movimento inteiro cabe em 18svh de rolagem — acaba antes da capa 2
+      alcançar o topo dos cartões, não depois;
+   2. `transform-origin: 50% 90%`, quase na base: crescer empurra o cartão
+      pra CIMA, na direção contrária à borda da capa 2 que sobe. O pedaço
+      que cresce é justamente o que ainda está visível;
+   3. o desbote anda junto com o crescimento, então o que a capa 2 cobre
+      no fim já está quase transparente. Lê "atravessei", não "sumiram".
+
+   TIMELINE. `scroll(root block)` com faixa em comprimento absoluto: o
+   hero é o primeiro elemento da página, então rolagem 0 = topo da capa 1.
+   Se um dia entrar qualquer coisa acima do hero, esta faixa sai do lugar —
+   trocar por `view-timeline` na capa 2 e `timeline-scope`.
+   `view()` no próprio leque não serve: a capa 1 é sticky, o leque não
+   muda de posição na viewport e o progresso ficaria parado em 0.
+
+   O @supports é obrigatório, não é capricho: sem `animation-timeline` o
+   navegador roda `fan-pass` na linha do tempo NORMAL — os cartões
+   cresceriam e sumiriam sozinhos no carregamento, e ficariam sumidos.
+   Com o guarda, onde não há suporte simplesmente não acontece nada e o
+   hero segue igual. Melhoria progressiva de verdade.
+
+   Escala: 1,18 nas pontas e 1,30 no centro. O centro crescer mais é o que
+   dá profundidade — o leque abre em direção ao usuário em vez de inflar
+   em bloco. Acima de ~1,4 o cartão vira anúncio.
+   ===================================================================== */
+
+@keyframes fan-pass {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* o desbote segura até os 40%: o cartão cresce LEGÍVEL antes de
+     dissolver. Se opacidade e escala andassem juntas desde o 0, o print
+     virava fantasma antes de o crescimento ser percebido. */
+  40% {
+    opacity: 0.9;
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(var(--pass, 1.18));
+  }
+}
+
+@supports (animation-timeline: scroll(root block)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .fan-card-box {
+      transform-origin: 50% 90%;
+
+      animation: fan-pass linear both;
+      animation-timeline: scroll(root block);
+      /* 24svh: medido em 390×844 — a borda da capa 2 alcança o topo do
+         cartão aos 206px de rolagem (24,4svh). Terminar aí é o que faz a
+         leitura fechar: o cartão acaba de se dissolver no instante em que
+         a capa 2 chega nele, sem sumir cedo e deixar papel vazio (a 18svh
+         sobravam 140px de nada) nem ficar opaco sendo cortado pela borda.
+         Segue dentro do primeiro terço da passagem (100svh). */
+      animation-range: 0 24svh;
+    }
+
+    /* o do meio cresce mais: é o que abre o leque em direção ao usuário */
+    .fan-card[data-card="licitacoes"] .fan-card-box {
+      --pass: 1.3;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------
+   REDUÇÃO DE MOVIMENTO — sem entrada, sem crescimento, sem desbote.
+   A passagem já está fechada dentro do `prefers-reduced-motion:
+   no-preference` acima; aqui fica a entrada.
+   --------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card {
+    animation: none;
+  }
+}
