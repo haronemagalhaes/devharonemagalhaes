@@ -59,7 +59,12 @@ import { cn } from "@/lib/utils";
  *   - print em P&B, ganha cor no hover ou quando o card cruza o meio da tela;
  *     parallax de ±8px (16px de curso) a partir de md
  *   - chips com autoplay de 7s; pausa com ponteiro em cima, foco de teclado,
- *     aba oculta, seção fora da tela ou o botão de pausar (WCAG 2.2.2)
+ *     dedo na linha de chips, aba oculta, seção fora da tela ou o botão de
+ *     pausar (WCAG 2.2.2)
+ *   - mobile: os chips viram carrossel — sangram até a borda da tela, snap
+ *     no centro de cada chip, fade nas pontas que têm mais chip — e o chip
+ *     ativo desliza pro centro a cada troca (autoplay, setas, swipe, toque).
+ *     Arrastar a linha só rola; quem troca de case é o toque no chip
  *   - reduced-motion: sem autoplay, sem parallax, sem wipe; só fade de 200ms
  *
  * Degradação: 0 cases → a seção não renderiza; 1 case → o card sozinho, sem
@@ -890,9 +895,11 @@ function CaseDeck({ cases }: { cases: Case[] }) {
   const [hovered, setHovered] = useState(false); // mouse em cima
   const [focused, setFocused] = useState(false); // foco de teclado dentro
   const [pageHidden, setPageHidden] = useState(false);
+  const [dragging, setDragging] = useState(false); // dedo na linha de chips
 
   const rootRef = useRef<HTMLDivElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
+  const stripRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const touch = useRef<{ x: number; y: number } | null>(null);
 
@@ -901,8 +908,10 @@ function CaseDeck({ cases }: { cases: Case[] }) {
   /* o print ganha cor quando o card cruza a faixa do meio da tela */
   const active = useInView(cardRef, { margin: "-40% 0px -40% 0px" });
 
+  /* `dragging` pausa: sem ele o autoplay podia trocar o case no meio do
+     arrasto e o scrollTo abaixo brigaria com o dedo */
   const running =
-    multi && !reduced && !paused && !hovered && !focused && !pageHidden && onScreen;
+    multi && !reduced && !paused && !hovered && !focused && !dragging && !pageHidden && onScreen;
 
   useEffect(() => {
     const sync = () => setPageHidden(document.visibilityState === "hidden");
@@ -910,6 +919,48 @@ function CaseDeck({ cases }: { cases: Case[] }) {
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
   }, []);
+
+  /* fade das pontas da linha de chips: só do lado em que ainda tem chip
+     escondido. Atributo direto no DOM — a rolagem não passa pelo React.
+     O ResizeObserver cobre giro de tela e a troca de fonte (chip muda de
+     largura quando a Inter carrega). */
+  useEffect(() => {
+    const strip = stripRef.current;
+    if (!strip) return;
+    const sync = () => {
+      const max = strip.scrollWidth - strip.clientWidth;
+      strip.toggleAttribute("data-fade-start", strip.scrollLeft > 1);
+      strip.toggleAttribute("data-fade-end", strip.scrollLeft < max - 1);
+    };
+    sync();
+    strip.addEventListener("scroll", sync, { passive: true });
+    const ro = new ResizeObserver(sync);
+    ro.observe(strip);
+    if (strip.firstElementChild) ro.observe(strip.firstElementChild);
+    return () => {
+      strip.removeEventListener("scroll", sync);
+      ro.disconnect();
+    };
+  }, [multi]);
+
+  /* mobile: a cada troca o chip ativo desliza pro centro da linha.
+     scrollTo no próprio contêiner, pelo offsetLeft (a linha é `relative`,
+     então é o offsetParent) — scrollIntoView rolaria a página na vertical
+     junto. O clamp deixa o primeiro e o último chip nas pontas, que também
+     são posições de snap. `behavior: "auto"` no reduced-motion: "smooth"
+     explícito passaria por cima do scroll-behavior do CSS global. */
+  useEffect(() => {
+    const strip = stripRef.current;
+    const tab = tabRefs.current[index];
+    if (wide || !strip || !tab) return;
+    const max = strip.scrollWidth - strip.clientWidth;
+    if (max <= 0) return;
+    const left = tab.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2;
+    strip.scrollTo({
+      left: Math.min(Math.max(left, 0), max),
+      behavior: reduced ? "auto" : "smooth",
+    });
+  }, [index, wide, reduced]);
 
   const go = useCallback(
     (delta: number) => {
@@ -973,9 +1024,25 @@ function CaseDeck({ cases }: { cases: Case[] }) {
     >
       {multi && (
         <div className="flex flex-col gap-3 pb-6 md:flex-row md:items-center md:justify-between md:gap-8 md:pb-8">
-          {/* chips: rolagem horizontal no mobile, sangrando até a borda */}
-          <div className="-mx-6 overflow-x-auto px-6 pb-3 pt-1 [scrollbar-width:none] md:mx-0 md:min-w-0 md:flex-1 md:px-1 [&::-webkit-scrollbar]:hidden">
-            <div role="tablist" aria-label="Cases" className="flex w-max gap-2">
+          {/* chips: carrossel no mobile. Sangra até a borda da tela (-mx-6 =
+              gutter do container-studio), snap no centro de cada chip,
+              scroll-padding igual ao gutter e fade nas pontas (.case-chips,
+              no CSS). O respiro das pontas mora no trilho (px-6), não no
+              contêiner: padding do fim de um contêiner rolável nem sempre
+              entra na área rolável, e aí o último chip colaria na borda.
+              Do md pra cima fica como sempre foi: sem snap, sem fade. */}
+          <div
+            ref={stripRef}
+            className={cn(
+              "case-chips relative -mx-6 snap-x snap-mandatory scroll-px-6 overflow-x-auto pb-3 pt-1",
+              "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+              "md:mx-0 md:min-w-0 md:flex-1 md:snap-none md:scroll-px-0",
+            )}
+            onTouchStart={() => setDragging(true)}
+            onTouchEnd={() => setDragging(false)}
+            onTouchCancel={() => setDragging(false)}
+          >
+            <div role="tablist" aria-label="Cases" className="flex w-max flex-nowrap gap-2 px-6 md:px-1">
               {cases.map((item, i) => {
                 const selected = i === index;
                 return (
@@ -992,7 +1059,7 @@ function CaseDeck({ cases }: { cases: Case[] }) {
                     tabIndex={selected ? 0 : -1}
                     onClick={() => select(i)}
                     className={cn(
-                      "relative shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-[14px] leading-5",
+                      "relative shrink-0 snap-center whitespace-nowrap rounded-full border px-4 py-2 text-[14px] leading-5",
                       "transition-colors duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
                       selected
                         ? "border-ink text-ink"

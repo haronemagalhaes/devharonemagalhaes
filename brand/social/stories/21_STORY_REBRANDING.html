@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>STORY_REBRANDING — A identidade evoluiu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="stories.css">
+<!--
+  STORY_REBRANDING · apresentação da mudança de paleta.
+  Ideia: duas "tiras" de cor lidas lado a lado, linha a linha — cada cor
+  antiga está na mesma altura da cor nova que ocupou o lugar dela
+  (fundo → papel, apoio → linha, acento → tinta 3, apoio → tinta 2,
+  texto → tinta). A tira nova é mais larga: é a fase que importa.
+  Headline em dois tons: o que era (cinza) → o que é (tinta).
+-->
+<style>
+  .hd .h1 { font-size: 124px; line-height: 1.02; letter-spacing: -.045em; margin-left: -.04em; }
+  .hd .h1 span { display: block; white-space: nowrap; }
+  .hd .sub { margin-top: 36px; }
+
+  .cmp { display: grid; grid-template-columns: 340px 528px; column-gap: 28px; }
+  .col-h { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .col-h .k { font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .22em; text-transform: uppercase; color: var(--fg3); }
+  .col-h b { font-weight: 600; font-size: 30px; letter-spacing: -.02em; line-height: 1; }
+  .old .col-h b { color: var(--fg2); }
+  .new .col-h .k { color: var(--fg2); }
+
+  .strip { border: 1px solid var(--ln); border-radius: 8px; overflow: hidden; }
+  .band { height: 108px; padding: 0 22px 18px; display: flex; flex-direction: column; justify-content: flex-end; gap: 6px; }
+  .band code { font: 500 18px/1 "Geist Mono", monospace; letter-spacing: .02em; }
+  .band small { font: 400 13px/1 "Geist Mono", monospace; letter-spacing: .18em; text-transform: uppercase; opacity: .72; }
+  .band + .band { border-top: 1px solid rgba(19, 19, 16, .06); }
+
+  .cap { margin-top: 20px; font: 400 16px/1 "Geist Mono", monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--fg3); }
+  .new .cap { color: var(--fg2); }
+</style>
+</head>
+<body>
+<div class="spot"></div>
+<div class="grain"></div>
+<div class="stage">
+  <div class="crumb"><span>haronedev_</span><span>Rebranding / 2026</span></div>
+  <div class="mid"></div>
+
+  <div class="zone hd" style="top:372px">
+    <p class="label">Identidade visual</p>
+    <h1 class="h1 gap-s"><span class="dim">A identidade</span><span>evoluiu.</span></h1>
+    <p class="sub">Uma nova linguagem visual para uma nova fase.</p>
+  </div>
+
+  <div class="zone cmp" style="top:884px">
+    <div class="old">
+      <div class="col-h"><span class="k">01 · Antes</span><b>Identidade anterior</b></div>
+      <div class="strip">
+        <div class="band" style="background:#F6F6F6;color:#5C3D1E"><code>#F6F6F6</code><small>Fundo</small></div>
+        <div class="band" style="background:#EFE8DF;color:#5C3D1E"><code>#EFE8DF</code><small>Apoio</small></div>
+        <div class="band" style="background:#8B6F47;color:#F6F6F6"><code>#8B6F47</code><small>Acento</small></div>
+        <div class="band" style="background:#5C3D1E;color:#EFE8DF"><code>#5C3D1E</code><small>Apoio</small></div>
+        <div class="band" style="background:#170B01;color:#EFE8DF"><code>#170B01</code><small>Texto</small></div>
+      </div>
+      <p class="cap">Quente · terrosa</p>
+    </div>
+
+    <div class="new">
+      <div class="col-h"><span class="k">02 · Agora</span><b>Nova identidade</b></div>
+      <div class="strip">
+        <div class="band" style="background:#F6F5F1;color:#6E6C63"><code>#F6F5F1</code><small>Papel</small></div>
+        <div class="band" style="background:#E3E1D9;color:#6E6C63"><code>#E3E1D9</code><small>Linha</small></div>
+        <div class="band" style="background:#9E9C91;color:#131310"><code>#9E9C91</code><small>Tinta 3</small></div>
+        <div class="band" style="background:#6E6C63;color:#F6F5F1"><code>#6E6C63</code><small>Tinta 2</small></div>
+        <div class="band" style="background:#131310;color:#F6F5F1"><code>#131310</code><small>Tinta</small></div>
+      </div>
+      <p class="cap">Neutra · limpa · contemporânea</p>
+    </div>
+  </div>
+
+  <div class="rule"></div>
+  <div class="foot"><span>Estúdio de tecnologia e presença digital</span><span>haronedev.com.br</span></div>
+</div>
+</body>
+</html>

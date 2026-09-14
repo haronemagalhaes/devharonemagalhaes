@@ -21,3 +21,52 @@
     display: none;
   }
 }
+
+/* Linha de chips no mobile: fade de 32px só na ponta que ainda tem chip
+   escondido — é o sinal de que dá pra arrastar. O CaseDeck liga
+   data-fade-start / data-fade-end conforme a rolagem. As variáveis são
+   registradas pra o fade entrar e sair com transição; com reduced-motion o
+   CSS global corta a transição e ele só troca. Do md pra cima, sem máscara. */
+@property --case-fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --case-fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+.case-chips {
+  --case-fade-start: 0px;
+  --case-fade-end: 0px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--case-fade-start),
+    #000 calc(100% - var(--case-fade-end)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--case-fade-start),
+    #000 calc(100% - var(--case-fade-end)),
+    transparent
+  );
+  transition:
+    --case-fade-start 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    --case-fade-end 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.case-chips[data-fade-start] {
+  --case-fade-start: 32px;
+}
+.case-chips[data-fade-end] {
+  --case-fade-end: 32px;
+}
+@media (width >= 768px) {
+  .case-chips {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
